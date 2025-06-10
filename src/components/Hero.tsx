@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Users, MapPin } from 'lucide-react';
+import { ArrowRight, Star, Users, MapPin, BookOpen } from 'lucide-react';
 
 const Hero = () => {
   return (
