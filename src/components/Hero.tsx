@@ -68,7 +68,7 @@ const Hero = () => {
           <div className="relative">
             <div className="relative z-10">
               <img
-                src="/lovable-uploads/0a5e33e3-a302-420d-bd0e-62962b1ae983.png"
+                src="/lovable-uploads/a79ddd44-1b65-4ed7-bbcd-4a4f4326b27f.png"
                 alt="Quality Education at Pranavam Study Centre"
                 className="w-full h-auto rounded-2xl shadow-2xl"
               />
