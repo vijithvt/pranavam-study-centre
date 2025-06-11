@@ -11,7 +11,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="md:col-span-2">
             <div className="flex items-center mb-4">
-              <img src="/image1.png" alt="Pranavam Study Centre" className="h-10 w-10 mr-3" />
+              <img src="/lovable-uploads/f1375cac-1988-4227-98e7-d4a89e68c1af.png" alt="Pranavam Study Centre" className="h-10 w-10 mr-3" />
               <h3 className="text-xl font-bold">Pranavam Study Centre</h3>
             </div>
             <p className="text-gray-300 mb-4 max-w-md">
