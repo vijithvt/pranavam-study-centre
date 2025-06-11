@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Users, MapPin, BookOpen } from 'lucide-react';
@@ -82,9 +83,9 @@ const Hero = () => {
           <div className="relative">
             <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                src="/image2.png"
                 alt="Student learning with tutor"
-                className="rounded-2xl shadow-xl"
+                className="rounded-2xl shadow-xl w-full h-auto"
               />
               <div className="absolute -top-4 -right-4 bg-white rounded-full p-4 shadow-lg">
                 <BookOpen className="h-8 w-8 text-primary" />

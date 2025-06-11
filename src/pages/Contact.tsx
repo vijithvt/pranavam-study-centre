@@ -23,25 +23,25 @@ const Contact = () => {
     {
       icon: Phone,
       title: 'Phone',
-      details: '+91 98765 43210',
+      details: '+91 94963 15903',
       subtext: 'Available Mon-Sat, 9 AM - 8 PM'
     },
     {
       icon: Mail,
       title: 'Email',
-      details: 'info@pranavamstudycentre.com',
+      details: 'pranavamonline@gmail.com',
       subtext: 'We respond within 24 hours'
     },
     {
       icon: MapPin,
-      title: 'Location',
-      details: 'Pranavam Study Centre',
-      subtext: 'Serving all districts of Kerala'
+      title: 'Address',
+      details: 'Elavoorkkonam, Vilappilsala-Kundamoozhi Temple Rd',
+      subtext: 'near Green Valley International School, Vilappilsala, Kerala 695573'
     },
     {
       icon: MessageCircle,
       title: 'WhatsApp',
-      details: '+91 98765 43210',
+      details: '+91 94963 15903',
       subtext: 'Quick queries and updates'
     }
   ];

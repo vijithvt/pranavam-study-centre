@@ -9,7 +9,126 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          role: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          role?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          role?: string | null
+        }
+        Relationships: []
+      }
+      student_registrations: {
+        Row: {
+          class_grade: string
+          created_at: string
+          district: string
+          email: string
+          id: string
+          location: string
+          mode: string
+          parent_name: string
+          phone: string
+          special_requests: string | null
+          student_name: string
+          subjects: string[]
+          time_preference: string | null
+        }
+        Insert: {
+          class_grade: string
+          created_at?: string
+          district: string
+          email: string
+          id?: string
+          location: string
+          mode: string
+          parent_name: string
+          phone: string
+          special_requests?: string | null
+          student_name: string
+          subjects: string[]
+          time_preference?: string | null
+        }
+        Update: {
+          class_grade?: string
+          created_at?: string
+          district?: string
+          email?: string
+          id?: string
+          location?: string
+          mode?: string
+          parent_name?: string
+          phone?: string
+          special_requests?: string | null
+          student_name?: string
+          subjects?: string[]
+          time_preference?: string | null
+        }
+        Relationships: []
+      }
+      tutor_registrations: {
+        Row: {
+          availability: string
+          classes: string[]
+          created_at: string
+          district: string
+          email: string
+          experience: number
+          full_name: string
+          id: string
+          languages: string[]
+          location: string
+          mode: string
+          phone: string
+          qualification: string
+          subjects: string[]
+        }
+        Insert: {
+          availability: string
+          classes: string[]
+          created_at?: string
+          district: string
+          email: string
+          experience: number
+          full_name: string
+          id?: string
+          languages: string[]
+          location: string
+          mode: string
+          phone: string
+          qualification: string
+          subjects: string[]
+        }
+        Update: {
+          availability?: string
+          classes?: string[]
+          created_at?: string
+          district?: string
+          email?: string
+          experience?: number
+          full_name?: string
+          id?: string
+          languages?: string[]
+          location?: string
+          mode?: string
+          phone?: string
+          qualification?: string
+          subjects?: string[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

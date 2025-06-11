@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Users, Award, MapPin, Heart } from 'lucide-react';
 
@@ -30,7 +29,7 @@ const About = () => {
     { number: '500+', label: 'Verified Tutors' },
     { number: '1000+', label: 'Happy Students' },
     { number: '14', label: 'Districts Covered' },
-    { number: '5', label: 'Years of Experience' }
+    { number: '9', label: 'Years of Experience' }
   ];
 
   return (
@@ -64,7 +63,7 @@ const About = () => {
                 with qualified, passionate tutors who can unlock their full potential.
               </p>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                Founded with the vision of making quality education accessible to all, we have been serving 
+                Established in Vilappilsala, Thiruvananthapuram, we have been serving 
                 families across Kerala by providing personalized home tuition services that respect both 
                 traditional values and modern educational needs.
               </p>
@@ -151,30 +150,23 @@ const About = () => {
           
           <div className="prose prose-lg mx-auto text-gray-600">
             <p>
-              Pranavam Study Centre was born out of a simple observation: while Kerala has always 
-              been known for its high literacy rates and educational excellence, many students 
-              still struggled to get the personalized attention they needed to truly excel.
+              Pranavam Study Centre was born out of a heartfelt realization: even in a state like Kerala—celebrated for its high literacy and strong academic foundations—many students in rural and semi-urban areas still lacked access to personalized guidance that could unlock their full potential.
             </p>
             
             <p>
-              Founded in 2019, we started as a small initiative to connect local tutors with 
-              students in Kochi. What began as a community effort has now grown into Kerala's 
-              most trusted platform for home tuition services, serving families across all 14 districts.
+              Established in 2016 in Vilappilsala, Thiruvananthapuram, Pranavam began as a humble effort to bridge this gap. What started with just a few passionate tutors helping local students has grown into a trusted educational hub that continues to serve the academic needs of our community with dedication and care.
             </p>
             
             <p>
-              Our approach is deeply rooted in Kerala's educational traditions while embracing 
-              modern teaching methodologies. We understand that each student is unique, with 
-              their own learning pace, style, and aspirations. That's why we carefully match 
-              students with tutors who not only have subject expertise but also the patience 
-              and dedication to nurture young minds.
+              Rooted deeply in Kerala's rich educational values, our approach blends traditional mentorship with modern teaching techniques. We believe that every child learns differently—with their own pace, strengths, and dreams. That's why we thoughtfully pair students with tutors who are not just subject matter experts but also patient mentors, committed to nurturing curiosity and confidence.
             </p>
             
             <p>
-              Today, we're proud to be part of hundreds of success stories across Kerala - 
-              from students who discovered their love for mathematics to those who gained 
-              confidence in English communication, from exam toppers to students who simply 
-              learned to enjoy learning again.
+              Over the years, we've become part of countless student journeys—from those who overcame their fear of science and math, to those who found their voice in English communication, and many who simply rediscovered the joy of learning.
+            </p>
+
+            <p>
+              Today, Pranavam Study Centre stands as a symbol of hope and excellence in Vilappilsala—committed to helping every learner thrive.
             </p>
           </div>
         </div>

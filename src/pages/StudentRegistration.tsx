@@ -9,18 +9,58 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Request Submitted!",
-      description: "We'll find suitable tutors and contact you within 24 hours.",
-    });
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    // Get checkbox values
+    const subjects = Array.from(formData.getAll('subjects'));
+    
+    try {
+      const { error } = await supabase
+        .from('student_registrations')
+        .insert({
+          student_name: formData.get('studentName') as string,
+          parent_name: formData.get('parentName') as string,
+          email: formData.get('email') as string,
+          phone: formData.get('parentPhone') as string,
+          class_grade: formData.get('class') as string,
+          subjects: subjects as string[],
+          mode: formData.get('mode') as string,
+          district: formData.get('district') as string,
+          location: formData.get('area') as string,
+          time_preference: formData.get('preferredTime') as string,
+          special_requests: formData.get('requirements') as string
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Request Submitted!",
+        description: "We'll find suitable tutors and contact you within 24 hours.",
+      });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting registration:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your request. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -75,11 +115,11 @@ const StudentRegistration = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="studentName">Student Name *</Label>
-                  <Input id="studentName" required className="mt-1" />
+                  <Input name="studentName" id="studentName" required className="mt-1" />
                 </div>
                 <div>
                   <Label htmlFor="class">Class/Grade *</Label>
-                  <Select required>
+                  <Select name="class" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select class" />
                     </SelectTrigger>
@@ -105,24 +145,24 @@ const StudentRegistration = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="parentName">Parent/Guardian Name *</Label>
-                  <Input id="parentName" required className="mt-1" />
+                  <Input name="parentName" id="parentName" required className="mt-1" />
                 </div>
                 <div>
                   <Label htmlFor="parentPhone">Contact Number *</Label>
-                  <Input id="parentPhone" type="tel" required className="mt-1" />
+                  <Input name="parentPhone" id="parentPhone" type="tel" required className="mt-1" />
                 </div>
               </div>
 
               <div>
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" className="mt-1" />
+                <Input name="email" id="email" type="email" className="mt-1" />
               </div>
 
               {/* Location */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="district">District *</Label>
-                  <Select required>
+                  <Select name="district" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select your district" />
                     </SelectTrigger>
@@ -146,7 +186,7 @@ const StudentRegistration = () => {
                 </div>
                 <div>
                   <Label htmlFor="area">Area/Locality *</Label>
-                  <Input id="area" required className="mt-1" placeholder="Enter your area or nearby landmark" />
+                  <Input name="area" id="area" required className="mt-1" placeholder="Enter your area or nearby landmark" />
                 </div>
               </div>
 
@@ -156,7 +196,7 @@ const StudentRegistration = () => {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
                   {['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'Malayalam', 'Hindi', 'Social Science', 'Computer Science', 'Accountancy'].map((subject) => (
                     <div key={subject} className="flex items-center space-x-2">
-                      <Checkbox id={subject} />
+                      <Checkbox name="subjects" value={subject} id={subject} />
                       <Label htmlFor={subject} className="text-sm">{subject}</Label>
                     </div>
                   ))}
@@ -168,15 +208,15 @@ const StudentRegistration = () => {
                 <Label>Preferred Mode *</Label>
                 <div className="flex space-x-6 mt-2">
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="homeVisit" />
+                    <Checkbox name="mode" value="home" id="homeVisit" />
                     <Label htmlFor="homeVisit">Home Tuition</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="onlineClass" />
+                    <Checkbox name="mode" value="online" id="onlineClass" />
                     <Label htmlFor="onlineClass">Online Classes</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="flexible" />
+                    <Checkbox name="mode" value="flexible" id="flexible" />
                     <Label htmlFor="flexible">Either is fine</Label>
                   </div>
                 </div>
@@ -197,7 +237,7 @@ const StudentRegistration = () => {
                 </div>
                 <div>
                   <Label htmlFor="preferredTime">Preferred Time *</Label>
-                  <Select required>
+                  <Select name="preferredTime" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select time slot" />
                     </SelectTrigger>
@@ -247,6 +287,7 @@ const StudentRegistration = () => {
               <div>
                 <Label htmlFor="requirements">Special Requirements or Comments</Label>
                 <Textarea 
+                  name="requirements"
                   id="requirements" 
                   className="mt-1" 
                   placeholder="Any specific requirements, learning difficulties, exam preparations, etc."
@@ -278,8 +319,8 @@ const StudentRegistration = () => {
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full btn-primary text-lg py-6">
-                Submit Request - Find My Tutor
+              <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6">
+                {isSubmitting ? "Submitting..." : "Submit Request - Find My Tutor"}
               </Button>
 
               <div className="text-center text-sm text-gray-500 space-y-1">

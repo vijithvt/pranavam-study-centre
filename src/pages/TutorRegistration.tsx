@@ -9,19 +9,60 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserPlus, Upload, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const TutorRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    toast({
-      title: "Registration Successful!",
-      description: "We'll review your application and contact you within 24 hours.",
-    });
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    // Get checkbox values
+    const classes = Array.from(formData.getAll('classes'));
+    const languages = Array.from(formData.getAll('languages'));
+    
+    try {
+      const { error } = await supabase
+        .from('tutor_registrations')
+        .insert({
+          full_name: formData.get('fullName') as string,
+          email: formData.get('email') as string,
+          phone: formData.get('phone') as string,
+          district: formData.get('district') as string,
+          location: formData.get('area') as string,
+          subjects: [formData.get('subjects') as string],
+          classes: classes as string[],
+          qualification: formData.get('qualification') as string,
+          experience: parseInt(formData.get('experience') as string) || 0,
+          availability: formData.get('mode') as string,
+          languages: languages as string[],
+          mode: formData.get('teachingMode') as string
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Registration Successful!",
+        description: "We'll review your application and contact you within 24 hours.",
+      });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting registration:', error);
+      toast({
+        title: "Registration Failed",
+        description: "There was an error submitting your registration. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -71,22 +112,22 @@ const TutorRegistration = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="fullName">Full Name *</Label>
-                  <Input id="fullName" required className="mt-1" />
+                  <Input name="fullName" id="fullName" required className="mt-1" />
                 </div>
                 <div>
                   <Label htmlFor="email">Email Address *</Label>
-                  <Input id="email" type="email" required className="mt-1" />
+                  <Input name="email" id="email" type="email" required className="mt-1" />
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="phone">Phone Number *</Label>
-                  <Input id="phone" type="tel" required className="mt-1" />
+                  <Input name="phone" id="phone" type="tel" required className="mt-1" />
                 </div>
                 <div>
                   <Label htmlFor="whatsapp">WhatsApp Number</Label>
-                  <Input id="whatsapp" type="tel" className="mt-1" />
+                  <Input name="whatsapp" id="whatsapp" type="tel" className="mt-1" />
                 </div>
               </div>
 
@@ -94,7 +135,7 @@ const TutorRegistration = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="district">District *</Label>
-                  <Select required>
+                  <Select name="district" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select your district" />
                     </SelectTrigger>
@@ -118,7 +159,7 @@ const TutorRegistration = () => {
                 </div>
                 <div>
                   <Label htmlFor="area">Area/Town *</Label>
-                  <Input id="area" required className="mt-1" />
+                  <Input name="area" id="area" required className="mt-1" />
                 </div>
               </div>
 
@@ -126,7 +167,7 @@ const TutorRegistration = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="qualification">Highest Qualification *</Label>
-                  <Select required>
+                  <Select name="qualification" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select qualification" />
                     </SelectTrigger>
@@ -145,16 +186,16 @@ const TutorRegistration = () => {
                 </div>
                 <div>
                   <Label htmlFor="experience">Teaching Experience *</Label>
-                  <Select required>
+                  <Select name="experience" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select experience" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="0-1">0-1 years</SelectItem>
-                      <SelectItem value="1-3">1-3 years</SelectItem>
-                      <SelectItem value="3-5">3-5 years</SelectItem>
-                      <SelectItem value="5-10">5-10 years</SelectItem>
-                      <SelectItem value="10+">10+ years</SelectItem>
+                      <SelectItem value="0">0-1 years</SelectItem>
+                      <SelectItem value="1">1-3 years</SelectItem>
+                      <SelectItem value="3">3-5 years</SelectItem>
+                      <SelectItem value="5">5-10 years</SelectItem>
+                      <SelectItem value="10">10+ years</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -164,6 +205,7 @@ const TutorRegistration = () => {
               <div>
                 <Label htmlFor="subjects">Subjects You Can Teach *</Label>
                 <Textarea 
+                  name="subjects"
                   id="subjects" 
                   required 
                   className="mt-1" 
@@ -176,7 +218,7 @@ const TutorRegistration = () => {
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-4 mt-2">
                   {['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'].map((grade) => (
                     <div key={grade} className="flex items-center space-x-2">
-                      <Checkbox id={grade} />
+                      <Checkbox name="classes" value={grade} id={grade} />
                       <Label htmlFor={grade} className="text-sm">{grade}</Label>
                     </div>
                   ))}
@@ -188,15 +230,15 @@ const TutorRegistration = () => {
                 <Label>Preferred Teaching Mode *</Label>
                 <div className="flex space-x-6 mt-2">
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="home" />
+                    <Checkbox name="teachingMode" value="home" id="home" />
                     <Label htmlFor="home">Home Visit</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="online" />
+                    <Checkbox name="teachingMode" value="online" id="online" />
                     <Label htmlFor="online">Online</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="both" />
+                    <Checkbox name="teachingMode" value="both" id="both" />
                     <Label htmlFor="both">Both</Label>
                   </div>
                 </div>
@@ -208,7 +250,7 @@ const TutorRegistration = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
                   {['English', 'Malayalam', 'Hindi', 'Tamil'].map((lang) => (
                     <div key={lang} className="flex items-center space-x-2">
-                      <Checkbox id={lang} />
+                      <Checkbox name="languages" value={lang} id={lang} />
                       <Label htmlFor={lang} className="text-sm">{lang}</Label>
                     </div>
                   ))}
@@ -252,8 +294,8 @@ const TutorRegistration = () => {
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full btn-primary text-lg py-6">
-                Submit Registration
+              <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6">
+                {isSubmitting ? "Submitting..." : "Submit Registration"}
               </Button>
             </form>
           </CardContent>
