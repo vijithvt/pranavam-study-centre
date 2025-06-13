@@ -33,11 +33,13 @@ export type Database = {
       student_registrations: {
         Row: {
           admin_comments: string | null
+          budget: string | null
           class_grade: string
           created_at: string
           district: string
           email: string
           id: string
+          languages: string | null
           location: string
           mode: string
           parent_name: string
@@ -46,16 +48,21 @@ export type Database = {
           status: string
           student_name: string
           subjects: string[]
+          syllabus: string | null
           time_preference: string | null
+          tutor_gender: string | null
           updated_at: string | null
+          urgency: string | null
         }
         Insert: {
           admin_comments?: string | null
+          budget?: string | null
           class_grade: string
           created_at?: string
           district: string
           email: string
           id?: string
+          languages?: string | null
           location: string
           mode: string
           parent_name: string
@@ -64,16 +71,21 @@ export type Database = {
           status?: string
           student_name: string
           subjects: string[]
+          syllabus?: string | null
           time_preference?: string | null
+          tutor_gender?: string | null
           updated_at?: string | null
+          urgency?: string | null
         }
         Update: {
           admin_comments?: string | null
+          budget?: string | null
           class_grade?: string
           created_at?: string
           district?: string
           email?: string
           id?: string
+          languages?: string | null
           location?: string
           mode?: string
           parent_name?: string
@@ -82,8 +94,11 @@ export type Database = {
           status?: string
           student_name?: string
           subjects?: string[]
+          syllabus?: string | null
           time_preference?: string | null
+          tutor_gender?: string | null
           updated_at?: string | null
+          urgency?: string | null
         }
         Relationships: []
       }
