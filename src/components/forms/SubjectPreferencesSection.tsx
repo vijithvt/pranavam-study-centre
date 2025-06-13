@@ -10,7 +10,29 @@ const SubjectPreferencesSection = () => {
       <div>
         <Label htmlFor="subjects">Subjects Needed *</Label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-          {['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'Malayalam', 'Hindi', 'Social Science', 'Computer Science', 'Accountancy'].map((subject) => (
+          {[
+            'Mathematics', 
+            'Physics', 
+            'Chemistry', 
+            'Biology', 
+            'English', 
+            'Malayalam', 
+            'Hindi', 
+            'Social Science', 
+            'Computer Science', 
+            'Accountancy',
+            'Economics',
+            'Business Studies',
+            'Political Science',
+            'History',
+            'Geography',
+            'Psychology',
+            'Sociology',
+            'Statistics',
+            'Music',
+            'Dance',
+            'Drawing/Art'
+          ].map((subject) => (
             <div key={subject} className="flex items-center space-x-2">
               <Checkbox name="subjects" value={subject} id={subject} />
               <Label htmlFor={subject} className="text-sm">{subject}</Label>

@@ -31,6 +31,25 @@ const PersonalInfoSection = () => {
               <SelectItem value="10">Class 10</SelectItem>
               <SelectItem value="11">Class 11</SelectItem>
               <SelectItem value="12">Class 12</SelectItem>
+              <SelectItem value="btech">B.Tech</SelectItem>
+              <SelectItem value="bsc">B.Sc</SelectItem>
+              <SelectItem value="ba">B.A</SelectItem>
+              <SelectItem value="bcom">B.Com</SelectItem>
+              <SelectItem value="llb">LLB</SelectItem>
+              <SelectItem value="mtech">M.Tech</SelectItem>
+              <SelectItem value="msc">M.Sc</SelectItem>
+              <SelectItem value="ma">M.A</SelectItem>
+              <SelectItem value="mcom">M.Com</SelectItem>
+              <SelectItem value="neet">NEET</SelectItem>
+              <SelectItem value="jee">JEE</SelectItem>
+              <SelectItem value="upsc">UPSC</SelectItem>
+              <SelectItem value="psc">PSC</SelectItem>
+              <SelectItem value="banking">Banking Exams</SelectItem>
+              <SelectItem value="ssc">SSC</SelectItem>
+              <SelectItem value="railway">Railway Exams</SelectItem>
+              <SelectItem value="music">Music</SelectItem>
+              <SelectItem value="dance">Dance</SelectItem>
+              <SelectItem value="art">Art/Drawing</SelectItem>
             </SelectContent>
           </Select>
         </div>

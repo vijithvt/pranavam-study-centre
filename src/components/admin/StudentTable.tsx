@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Eye } from 'lucide-react';
+import WhatsAppCopyButton from './WhatsAppCopyButton';
 
 interface StudentRegistration {
   id: string;
@@ -54,9 +55,12 @@ const StudentTable = ({ students, onViewDetails, formatDate }: StudentTableProps
             <TableCell>{student.location}, {student.district}</TableCell>
             <TableCell>{formatDate(student.created_at)}</TableCell>
             <TableCell>
-              <Button variant="outline" size="sm" onClick={() => onViewDetails(student)}>
-                <Eye className="h-4 w-4" />
-              </Button>
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" onClick={() => onViewDetails(student)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <WhatsAppCopyButton student={student} />
+              </div>
             </TableCell>
           </TableRow>
         ))}

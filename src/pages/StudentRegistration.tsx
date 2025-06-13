@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, CheckCircle } from 'lucide-react';
+import { BookOpen, CheckCircle, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
@@ -16,7 +16,67 @@ import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSect
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedData, setSubmittedData] = useState<any>(null);
   const { toast } = useToast();
+
+  const generateWhatsAppFormat = (data: any) => {
+    const generateId = () => {
+      const date = new Date();
+      const year = date.getFullYear().toString().slice(-2);
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      return `EN${year}${month}${day}${random}`;
+    };
+
+    const generateNote = (location: string, subjects: string[]) => {
+      const nearbyAreas = {
+        'pongumoodu': 'Pongumoodu, Chavadimukk, Kallampally, Sreekaryam, Cheruvakkal, Parottukonam, Ulloor, Keshavadhasapuram, Kottamugal',
+        'trivandrum': 'Trivandrum city, Palayam, Statue, East Fort, Central Station, Medical College, Kowdiar',
+        'kollam': 'Kollam city, Chinnakada, Sakthikulangara, Eravipuram, Kadappakada',
+        'default': location
+      };
+
+      const area = nearbyAreas[location.toLowerCase()] || nearbyAreas['default'];
+      const subjectText = subjects.join(', ');
+      
+      return `Parents are seeking a qualified and experienced tutor to teach ${subjectText}. The ideal candidate should possess excellent communication and teaching skills and have a proven track record of helping students achieve outstanding results, with preference given to tutors residing in or near ${area}.`;
+    };
+
+    const budgetMap = {
+      '1000-2000': { rate: '150', hours: '10' },
+      '2000-3000': { rate: '250', hours: '12' },
+      '3000-5000': { rate: '350', hours: '14' },
+      '5000-8000': { rate: '450', hours: '16' },
+      '8000-12000': { rate: '600', hours: '18' },
+      '12000+': { rate: '700', hours: '20' }
+    };
+
+    const budget = budgetMap[data.budget] || { rate: '400', hours: '12' };
+
+    return `ID-${generateId()}
+Subject - ${data.subjects.join(', ')}
+Grade - ${data.class_grade}
+Syllabus- ${data.class_grade} Curriculum
+Location - ${data.location}
+Tutor Gender required - ${data.tutorGender || 'No Preference'}
+Medium of Teaching- ${data.languages || 'English/Malayalam'}
+Probable hrs in month- ${budget.hours} hrs
+Hour Rate- ${budget.rate}
+Contact ${data.phone}
+Note- ${generateNote(data.location, data.subjects)}`;
+  };
+
+  const copyToClipboard = () => {
+    if (submittedData) {
+      const whatsappText = generateWhatsAppFormat(submittedData);
+      navigator.clipboard.writeText(whatsappText);
+      toast({
+        title: "Copied to clipboard!",
+        description: "WhatsApp format copied successfully.",
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,27 +87,33 @@ const StudentRegistration = () => {
     // Get checkbox values
     const subjects = Array.from(formData.getAll('subjects'));
     
+    const studentData = {
+      student_name: formData.get('studentName') as string,
+      parent_name: formData.get('parentName') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('parentPhone') as string,
+      class_grade: formData.get('class') as string,
+      subjects: subjects as string[],
+      mode: formData.get('mode') as string,
+      district: formData.get('district') as string,
+      location: formData.get('area') as string,
+      time_preference: formData.get('preferredTime') as string,
+      special_requests: formData.get('requirements') as string,
+      tutor_gender: formData.get('tutorGender') as string,
+      budget: formData.get('budget') as string,
+      urgency: formData.get('urgency') as string
+    };
+
     try {
       const { error } = await supabase
         .from('student_registrations')
-        .insert({
-          student_name: formData.get('studentName') as string,
-          parent_name: formData.get('parentName') as string,
-          email: formData.get('email') as string,
-          phone: formData.get('parentPhone') as string,
-          class_grade: formData.get('class') as string,
-          subjects: subjects as string[],
-          mode: formData.get('mode') as string,
-          district: formData.get('district') as string,
-          location: formData.get('area') as string,
-          time_preference: formData.get('preferredTime') as string,
-          special_requests: formData.get('requirements') as string
-        });
+        .insert(studentData);
 
       if (error) {
         throw error;
       }
 
+      setSubmittedData(studentData);
       toast({
         title: "Request Submitted!",
         description: "We'll find suitable tutors and contact you within 24 hours.",
@@ -82,9 +148,15 @@ const StudentRegistration = () => {
               <p>👨‍🏫 We'll share tutor profiles</p>
               <p>📅 Schedule trial classes</p>
             </div>
-            <Button onClick={() => setIsSubmitted(false)} className="w-full">
-              Submit Another Request
-            </Button>
+            <div className="space-y-3">
+              <Button onClick={copyToClipboard} variant="outline" className="w-full">
+                <Copy className="h-4 w-4 mr-2" />
+                Copy WhatsApp Format
+              </Button>
+              <Button onClick={() => setIsSubmitted(false)} className="w-full">
+                Submit Another Request
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -121,7 +193,7 @@ const StudentRegistration = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="tutorGender">Tutor Gender Preference</Label>
-                  <Select>
+                  <Select name="tutorGender">
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Any preference?" />
                     </SelectTrigger>
@@ -134,15 +206,17 @@ const StudentRegistration = () => {
                 </div>
                 <div>
                   <Label htmlFor="budget">Budget Range (per month)</Label>
-                  <Select>
+                  <Select name="budget">
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select budget range" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="1000-2000">₹1,000 - ₹2,000</SelectItem>
                       <SelectItem value="2000-3000">₹2,000 - ₹3,000</SelectItem>
                       <SelectItem value="3000-5000">₹3,000 - ₹5,000</SelectItem>
                       <SelectItem value="5000-8000">₹5,000 - ₹8,000</SelectItem>
-                      <SelectItem value="8000+">₹8,000+</SelectItem>
+                      <SelectItem value="8000-12000">₹8,000 - ₹12,000</SelectItem>
+                      <SelectItem value="12000+">₹12,000+</SelectItem>
                       <SelectItem value="discuss">Discuss with tutor</SelectItem>
                     </SelectContent>
                   </Select>
@@ -163,7 +237,7 @@ const StudentRegistration = () => {
               {/* Urgency */}
               <div>
                 <Label htmlFor="urgency">When do you want to start? *</Label>
-                <Select required>
+                <Select name="urgency" required>
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select start time" />
                   </SelectTrigger>
