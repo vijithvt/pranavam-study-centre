@@ -57,6 +57,25 @@ const PersonalInfoSection = () => {
         </div>
       </div>
 
+      <div>
+        <Label htmlFor="syllabus">Syllabus *</Label>
+        <Select name="syllabus" required>
+          <SelectTrigger className="mt-1">
+            <SelectValue placeholder="Select syllabus" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="CBSE">CBSE</SelectItem>
+            <SelectItem value="ICSE">ICSE</SelectItem>
+            <SelectItem value="IGCSE">IGCSE</SelectItem>
+            <SelectItem value="STATE">State Board</SelectItem>
+            <SelectItem value="IB">International Baccalaureate (IB)</SelectItem>
+            <SelectItem value="CAMBRIDGE">Cambridge</SelectItem>
+            <SelectItem value="NIOS">NIOS</SelectItem>
+            <SelectItem value="OTHER">Other</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="parentName">Parent/Guardian Name *</Label>
@@ -71,6 +90,22 @@ const PersonalInfoSection = () => {
       <div>
         <Label htmlFor="email">Email Address *</Label>
         <Input name="email" id="email" type="email" required className="mt-1" />
+      </div>
+
+      <div>
+        <Label htmlFor="languages">Medium of Teaching *</Label>
+        <Select name="languages" required>
+          <SelectTrigger className="mt-1">
+            <SelectValue placeholder="Select medium of teaching" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="English">English</SelectItem>
+            <SelectItem value="Malayalam">Malayalam</SelectItem>
+            <SelectItem value="English/Malayalam">English/Malayalam</SelectItem>
+            <SelectItem value="Hindi">Hindi</SelectItem>
+            <SelectItem value="Tamil">Tamil</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

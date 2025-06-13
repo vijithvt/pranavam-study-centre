@@ -36,7 +36,7 @@ const SubjectPreferencesSection = () => {
             'Violin (Western)'
           ].map((subject) => (
             <div key={subject} className="flex items-center space-x-2">
-              <Checkbox name="subjects" value={subject} id={subject} />
+              <Checkbox name="subjects" value={subject} id={subject} required />
               <Label htmlFor={subject} className="text-sm">{subject}</Label>
             </div>
           ))}
@@ -47,15 +47,15 @@ const SubjectPreferencesSection = () => {
         <Label>Preferred Mode *</Label>
         <div className="flex space-x-6 mt-2">
           <div className="flex items-center space-x-2">
-            <Checkbox name="mode" value="home" id="homeVisit" />
+            <Checkbox name="mode" value="home" id="homeVisit" required />
             <Label htmlFor="homeVisit">Home Tuition</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <Checkbox name="mode" value="online" id="onlineClass" />
+            <Checkbox name="mode" value="online" id="onlineClass" required />
             <Label htmlFor="onlineClass">Online Classes</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <Checkbox name="mode" value="flexible" id="flexible" />
+            <Checkbox name="mode" value="flexible" id="flexible" required />
             <Label htmlFor="flexible">Either is fine</Label>
           </div>
         </div>

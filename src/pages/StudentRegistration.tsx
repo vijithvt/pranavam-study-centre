@@ -29,27 +29,31 @@ const StudentRegistration = () => {
       return `EN${year}${month}${day}${random}`;
     };
 
-    const generateNote = (location: string, subjects: string[]) => {
+    const generateNote = (location: string, subjects: string[], syllabus: string, grade: string) => {
       const nearbyAreas = {
         'pongumoodu': 'Pongumoodu, Chavadimukk, Kallampally, Sreekaryam, Cheruvakkal, Parottukonam, Ulloor, Keshavadhasapuram, Kottamugal',
         'trivandrum': 'Trivandrum city, Palayam, Statue, East Fort, Central Station, Medical College, Kowdiar',
         'kollam': 'Kollam city, Chinnakada, Sakthikulangara, Eravipuram, Kadappakada',
+        'vattiyoorkavu': 'Peroorkada, Peyad, Poojappura, Kowdiar, Palayam, Nandavanam, Karamana, Thampanoor',
+        'keshavadhasapuram': 'Keshavadhasapuram, Ulloor, Pattom, Mangulam, Muttada, Murinjapalam, Parottukonam',
+        'parottukonam': 'Parottukonam, Ulloor, Kochulloor, Muttada, Nalanchira, Paruthippara, Keshavadhasapuram, Murinjapalam, Pattom',
+        'anayara': 'Anayara, Balaramapuram, Neyyattinkara, Pothencode, Venjaramoodu',
         'default': location
       };
 
       const area = nearbyAreas[location.toLowerCase()] || nearbyAreas['default'];
       const subjectText = subjects.join(', ');
       
-      return `Parents are seeking a qualified and experienced tutor to teach ${subjectText}. The ideal candidate should possess excellent communication and teaching skills and have a proven track record of helping students achieve outstanding results, with preference given to tutors residing in or near ${area}.`;
+      return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade}-grade student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
     };
 
     const budgetMap = {
-      '1000-2000': { rate: '150', hours: '10' },
+      '1000-2000': { rate: '200', hours: '12' },
       '2000-3000': { rate: '250', hours: '12' },
-      '3000-5000': { rate: '350', hours: '14' },
-      '5000-8000': { rate: '450', hours: '16' },
-      '8000-12000': { rate: '600', hours: '18' },
-      '12000+': { rate: '700', hours: '20' }
+      '3000-5000': { rate: '350', hours: '12' },
+      '5000-8000': { rate: '400', hours: '16' },
+      '8000-12000': { rate: '500', hours: '16' },
+      '12000+': { rate: '600', hours: '20' }
     };
 
     const budget = budgetMap[data.budget] || { rate: '400', hours: '12' };
@@ -57,14 +61,14 @@ const StudentRegistration = () => {
     return `ID-${generateId()}
 Subject - ${data.subjects.join(', ')}
 Grade - ${data.class_grade}
-Syllabus- ${data.class_grade} Curriculum
-Location - ${data.location}
-Tutor Gender required - ${data.tutorGender || 'No Preference'}
-Medium of Teaching- ${data.languages || 'English/Malayalam'}
-Probable hrs in month- ${budget.hours} hrs
-Hour Rate- ${budget.rate}
-Contact ${data.phone}
-Note- ${generateNote(data.location, data.subjects)}`;
+Syllabus - ${data.syllabus}
+Location - ${data.mode === 'online' ? 'Online' : data.location}
+Tutor Gender required - ${data.tutor_gender || 'No Preference'}
+Medium of Teaching - ${data.languages || 'English/Malayalam'}
+Probable hrs in month - ${budget.hours} hrs
+Hour Rate - ${budget.rate}
+Contact 9496315903
+Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_grade)}`;
   };
 
   const copyToClipboard = () => {
@@ -93,6 +97,7 @@ Note- ${generateNote(data.location, data.subjects)}`;
       email: formData.get('email') as string,
       phone: formData.get('parentPhone') as string,
       class_grade: formData.get('class') as string,
+      syllabus: formData.get('syllabus') as string,
       subjects: subjects as string[],
       mode: formData.get('mode') as string,
       district: formData.get('district') as string,
@@ -101,7 +106,8 @@ Note- ${generateNote(data.location, data.subjects)}`;
       special_requests: formData.get('requirements') as string,
       tutor_gender: formData.get('tutorGender') as string,
       budget: formData.get('budget') as string,
-      urgency: formData.get('urgency') as string
+      urgency: formData.get('urgency') as string,
+      languages: formData.get('languages') as string
     };
 
     try {
@@ -192,10 +198,10 @@ Note- ${generateNote(data.location, data.subjects)}`;
               {/* Additional Preferences */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="tutorGender">Tutor Gender Preference</Label>
-                  <Select name="tutorGender">
+                  <Label htmlFor="tutorGender">Tutor Gender Preference *</Label>
+                  <Select name="tutorGender" required>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Any preference?" />
+                      <SelectValue placeholder="Select preference" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="male">Male</SelectItem>
@@ -205,8 +211,8 @@ Note- ${generateNote(data.location, data.subjects)}`;
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="budget">Budget Range (per month)</Label>
-                  <Select name="budget">
+                  <Label htmlFor="budget">Budget Range (per month) *</Label>
+                  <Select name="budget" required>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select budget range" />
                     </SelectTrigger>
@@ -217,7 +223,6 @@ Note- ${generateNote(data.location, data.subjects)}`;
                       <SelectItem value="5000-8000">₹5,000 - ₹8,000</SelectItem>
                       <SelectItem value="8000-12000">₹8,000 - ₹12,000</SelectItem>
                       <SelectItem value="12000+">₹12,000+</SelectItem>
-                      <SelectItem value="discuss">Discuss with tutor</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
