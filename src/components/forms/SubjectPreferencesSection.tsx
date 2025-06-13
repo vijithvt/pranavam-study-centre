@@ -3,6 +3,7 @@ import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const SubjectPreferencesSection = () => {
   return (
@@ -36,7 +37,7 @@ const SubjectPreferencesSection = () => {
             'Violin (Western)'
           ].map((subject) => (
             <div key={subject} className="flex items-center space-x-2">
-              <Checkbox name="subjects" value={subject} id={subject} required />
+              <Checkbox name="subjects" value={subject} id={subject} />
               <Label htmlFor={subject} className="text-sm">{subject}</Label>
             </div>
           ))}
@@ -45,20 +46,20 @@ const SubjectPreferencesSection = () => {
 
       <div>
         <Label>Preferred Mode *</Label>
-        <div className="flex space-x-6 mt-2">
+        <RadioGroup name="mode" className="flex space-x-6 mt-2" required>
           <div className="flex items-center space-x-2">
-            <Checkbox name="mode" value="home" id="homeVisit" required />
+            <RadioGroupItem value="home" id="homeVisit" />
             <Label htmlFor="homeVisit">Home Tuition</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <Checkbox name="mode" value="online" id="onlineClass" required />
+            <RadioGroupItem value="online" id="onlineClass" />
             <Label htmlFor="onlineClass">Online Classes</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <Checkbox name="mode" value="flexible" id="flexible" required />
+            <RadioGroupItem value="flexible" id="flexible" />
             <Label htmlFor="flexible">Either is fine</Label>
           </div>
-        </div>
+        </RadioGroup>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

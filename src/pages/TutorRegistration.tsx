@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,7 +40,7 @@ const TutorRegistration = () => {
           classes: classes as string[],
           qualification: formData.get('qualification') as string,
           experience: parseInt(formData.get('experience') as string) || 0,
-          availability: formData.get('mode') as string,
+          availability: formData.get('teachingMode') as string,
           languages: languages as string[],
           mode: formData.get('teachingMode') as string
         });
@@ -114,19 +113,12 @@ const TutorRegistration = () => {
               <LocationSection />
               <TutorQualificationSection />
 
-              {/* File Uploads */}
+              {/* CV Upload Only */}
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="resume">Upload Resume/CV *</Label>
                   <div className="mt-1 flex items-center space-x-2">
                     <Input id="resume" type="file" accept=".pdf,.doc,.docx" required />
-                    <Upload className="h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="certificates">Upload Qualification Certificates *</Label>
-                  <div className="mt-1 flex items-center space-x-2">
-                    <Input id="certificates" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple required />
                     <Upload className="h-5 w-5 text-gray-400" />
                   </div>
                 </div>

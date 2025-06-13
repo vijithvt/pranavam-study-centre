@@ -91,6 +91,17 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
     // Get checkbox values
     const subjects = Array.from(formData.getAll('subjects'));
     
+    // Validate that at least one subject is selected
+    if (subjects.length === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please select at least one subject.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     const studentData = {
       student_name: formData.get('studentName') as string,
       parent_name: formData.get('parentName') as string,

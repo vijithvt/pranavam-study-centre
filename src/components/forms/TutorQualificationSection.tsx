@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const TutorQualificationSection = () => {
   return (
@@ -60,16 +61,20 @@ const TutorQualificationSection = () => {
         </div>
         <div>
           <Label htmlFor="teachingMode">Teaching Mode *</Label>
-          <Select name="teachingMode" required>
-            <SelectTrigger className="mt-1">
-              <SelectValue placeholder="Select mode" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="home">Home Tuition</SelectItem>
-              <SelectItem value="online">Online Classes</SelectItem>
-              <SelectItem value="both">Both</SelectItem>
-            </SelectContent>
-          </Select>
+          <RadioGroup name="teachingMode" className="mt-1" required>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="home" id="home" />
+              <Label htmlFor="home">Home Tuition</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="online" id="online" />
+              <Label htmlFor="online">Online Classes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="both" id="both" />
+              <Label htmlFor="both">Both</Label>
+            </div>
+          </RadioGroup>
         </div>
       </div>
 
