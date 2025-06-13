@@ -1,13 +1,17 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { LogOut, Users, BookOpen, Phone, Mail, MapPin, Calendar, Download, Eye } from 'lucide-react';
+import { LogOut, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import StatsCards from '@/components/admin/StatsCards';
+import TutorTable from '@/components/admin/TutorTable';
+import StudentTable from '@/components/admin/StudentTable';
+import TutorDetailsDialog from '@/components/admin/TutorDetailsDialog';
+import StudentDetailsDialog from '@/components/admin/StudentDetailsDialog';
 
 interface TutorRegistration {
   id: string;
@@ -46,6 +50,10 @@ const AdminDashboard = () => {
   const [tutorRegistrations, setTutorRegistrations] = useState<TutorRegistration[]>([]);
   const [studentRegistrations, setStudentRegistrations] = useState<StudentRegistration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTutor, setSelectedTutor] = useState<TutorRegistration | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<StudentRegistration | null>(null);
+  const [isTutorDialogOpen, setIsTutorDialogOpen] = useState(false);
+  const [isStudentDialogOpen, setIsStudentDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -151,6 +159,16 @@ const AdminDashboard = () => {
     document.body.removeChild(link);
   };
 
+  const handleTutorViewDetails = (tutor: TutorRegistration) => {
+    setSelectedTutor(tutor);
+    setIsTutorDialogOpen(true);
+  };
+
+  const handleStudentViewDetails = (student: StudentRegistration) => {
+    setSelectedStudent(student);
+    setIsStudentDialogOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -173,41 +191,10 @@ const AdminDashboard = () => {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-blue-500 mr-3" />
-                <div>
-                  <p className="text-2xl font-bold">{tutorRegistrations.length}</p>
-                  <p className="text-gray-600">Tutor Registrations</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <BookOpen className="h-8 w-8 text-green-500 mr-3" />
-                <div>
-                  <p className="text-2xl font-bold">{studentRegistrations.length}</p>
-                  <p className="text-gray-600">Student Requests</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Calendar className="h-8 w-8 text-purple-500 mr-3" />
-                <div>
-                  <p className="text-2xl font-bold">{tutorRegistrations.length + studentRegistrations.length}</p>
-                  <p className="text-gray-600">Total Registrations</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <StatsCards 
+          tutorCount={tutorRegistrations.length}
+          studentCount={studentRegistrations.length}
+        />
 
         <Tabs defaultValue="tutors" className="space-y-6">
           <TabsList>
@@ -230,38 +217,11 @@ const AdminDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Subjects</TableHead>
-                      <TableHead>Experience</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {tutorRegistrations.map((tutor) => (
-                      <TableRow key={tutor.id}>
-                        <TableCell className="font-medium">{tutor.full_name}</TableCell>
-                        <TableCell>{tutor.email}</TableCell>
-                        <TableCell>{tutor.phone}</TableCell>
-                        <TableCell>{tutor.location}, {tutor.district}</TableCell>
-                        <TableCell>{tutor.subjects.slice(0, 2).join(', ')}{tutor.subjects.length > 2 ? '...' : ''}</TableCell>
-                        <TableCell>{tutor.experience} years</TableCell>
-                        <TableCell>{formatDate(tutor.created_at)}</TableCell>
-                        <TableCell>
-                          <Button variant="outline" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <TutorTable 
+                  tutors={tutorRegistrations}
+                  onViewDetails={handleTutorViewDetails}
+                  formatDate={formatDate}
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -281,44 +241,29 @@ const AdminDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Student Name</TableHead>
-                      <TableHead>Parent Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Class</TableHead>
-                      <TableHead>Subjects</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {studentRegistrations.map((student) => (
-                      <TableRow key={student.id}>
-                        <TableCell className="font-medium">{student.student_name}</TableCell>
-                        <TableCell>{student.parent_name}</TableCell>
-                        <TableCell>{student.email}</TableCell>
-                        <TableCell>{student.phone}</TableCell>
-                        <TableCell>Class {student.class_grade}</TableCell>
-                        <TableCell>{student.subjects.slice(0, 2).join(', ')}{student.subjects.length > 2 ? '...' : ''}</TableCell>
-                        <TableCell>{student.location}, {student.district}</TableCell>
-                        <TableCell>{formatDate(student.created_at)}</TableCell>
-                        <TableCell>
-                          <Button variant="outline" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <StudentTable 
+                  students={studentRegistrations}
+                  onViewDetails={handleStudentViewDetails}
+                  formatDate={formatDate}
+                />
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        <TutorDetailsDialog
+          tutor={selectedTutor}
+          isOpen={isTutorDialogOpen}
+          onClose={() => setIsTutorDialogOpen(false)}
+          formatDate={formatDate}
+        />
+
+        <StudentDetailsDialog
+          student={selectedStudent}
+          isOpen={isStudentDialogOpen}
+          onClose={() => setIsStudentDialogOpen(false)}
+          formatDate={formatDate}
+        />
       </div>
     </div>
   );

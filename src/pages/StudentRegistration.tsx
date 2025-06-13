@@ -1,6 +1,6 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { BookOpen, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
+import LocationSection from '@/components/forms/LocationSection';
+import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -110,147 +113,11 @@ const StudentRegistration = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Student Information */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="studentName">Student Name *</Label>
-                  <Input name="studentName" id="studentName" required className="mt-1" />
-                </div>
-                <div>
-                  <Label htmlFor="class">Class/Grade *</Label>
-                  <Select name="class" required>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Class 1</SelectItem>
-                      <SelectItem value="2">Class 2</SelectItem>
-                      <SelectItem value="3">Class 3</SelectItem>
-                      <SelectItem value="4">Class 4</SelectItem>
-                      <SelectItem value="5">Class 5</SelectItem>
-                      <SelectItem value="6">Class 6</SelectItem>
-                      <SelectItem value="7">Class 7</SelectItem>
-                      <SelectItem value="8">Class 8</SelectItem>
-                      <SelectItem value="9">Class 9</SelectItem>
-                      <SelectItem value="10">Class 10</SelectItem>
-                      <SelectItem value="11">Class 11</SelectItem>
-                      <SelectItem value="12">Class 12</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              <PersonalInfoSection />
+              <LocationSection />
+              <SubjectPreferencesSection />
 
-              {/* Parent Information */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="parentName">Parent/Guardian Name *</Label>
-                  <Input name="parentName" id="parentName" required className="mt-1" />
-                </div>
-                <div>
-                  <Label htmlFor="parentPhone">Contact Number *</Label>
-                  <Input name="parentPhone" id="parentPhone" type="tel" required className="mt-1" />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="email">Email Address *</Label>
-                <Input name="email" id="email" type="email" required className="mt-1" />
-              </div>
-
-              {/* Location */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="district">District *</Label>
-                  <Select name="district" required>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select your district" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="thiruvananthapuram">Thiruvananthapuram</SelectItem>
-                      <SelectItem value="kollam">Kollam</SelectItem>
-                      <SelectItem value="pathanamthitta">Pathanamthitta</SelectItem>
-                      <SelectItem value="alappuzha">Alappuzha</SelectItem>
-                      <SelectItem value="kottayam">Kottayam</SelectItem>
-                      <SelectItem value="idukki">Idukki</SelectItem>
-                      <SelectItem value="ernakulam">Ernakulam</SelectItem>
-                      <SelectItem value="thrissur">Thrissur</SelectItem>
-                      <SelectItem value="palakkad">Palakkad</SelectItem>
-                      <SelectItem value="malappuram">Malappuram</SelectItem>
-                      <SelectItem value="kozhikode">Kozhikode</SelectItem>
-                      <SelectItem value="wayanad">Wayanad</SelectItem>
-                      <SelectItem value="kannur">Kannur</SelectItem>
-                      <SelectItem value="kasaragod">Kasaragod</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="area">Area/Locality *</Label>
-                  <Input name="area" id="area" required className="mt-1" placeholder="Enter your area or nearby landmark" />
-                </div>
-              </div>
-
-              {/* Subject Requirements */}
-              <div>
-                <Label htmlFor="subjects">Subjects Needed *</Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-                  {['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'Malayalam', 'Hindi', 'Social Science', 'Computer Science', 'Accountancy'].map((subject) => (
-                    <div key={subject} className="flex items-center space-x-2">
-                      <Checkbox name="subjects" value={subject} id={subject} />
-                      <Label htmlFor={subject} className="text-sm">{subject}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tuition Preferences */}
-              <div>
-                <Label>Preferred Mode *</Label>
-                <div className="flex space-x-6 mt-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox name="mode" value="home" id="homeVisit" />
-                    <Label htmlFor="homeVisit">Home Tuition</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox name="mode" value="online" id="onlineClass" />
-                    <Label htmlFor="onlineClass">Online Classes</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox name="mode" value="flexible" id="flexible" />
-                    <Label htmlFor="flexible">Either is fine</Label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Timing Preferences */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="preferredDays">Preferred Days</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                      <div key={day} className="flex items-center space-x-2">
-                        <Checkbox id={day} />
-                        <Label htmlFor={day} className="text-sm">{day.slice(0, 3)}</Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="preferredTime">Preferred Time *</Label>
-                  <Select name="preferredTime" required>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select time slot" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="morning">Morning (6 AM - 12 PM)</SelectItem>
-                      <SelectItem value="afternoon">Afternoon (12 PM - 6 PM)</SelectItem>
-                      <SelectItem value="evening">Evening (6 PM - 9 PM)</SelectItem>
-                      <SelectItem value="flexible">Flexible</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Tutor Preferences */}
+              {/* Additional Preferences */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="tutorGender">Tutor Gender Preference</Label>
