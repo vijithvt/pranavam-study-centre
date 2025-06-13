@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +11,8 @@ import TutorTable from '@/components/admin/TutorTable';
 import StudentTable from '@/components/admin/StudentTable';
 import TutorDetailsDialog from '@/components/admin/TutorDetailsDialog';
 import StudentDetailsDialog from '@/components/admin/StudentDetailsDialog';
+import StatusFilter from '@/components/admin/StatusFilter';
+import StatusUpdateDialog from '@/components/admin/StatusUpdateDialog';
 
 interface TutorRegistration {
   id: string;
@@ -27,7 +28,10 @@ interface TutorRegistration {
   availability: string;
   languages: string[];
   mode: string;
+  status: string;
+  admin_comments: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 
 interface StudentRegistration {
@@ -43,17 +47,28 @@ interface StudentRegistration {
   location: string;
   time_preference: string;
   special_requests: string;
+  status: string;
+  admin_comments: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 
 const AdminDashboard = () => {
   const [tutorRegistrations, setTutorRegistrations] = useState<TutorRegistration[]>([]);
   const [studentRegistrations, setStudentRegistrations] = useState<StudentRegistration[]>([]);
+  const [filteredTutors, setFilteredTutors] = useState<TutorRegistration[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<StudentRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTutor, setSelectedTutor] = useState<TutorRegistration | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<StudentRegistration | null>(null);
   const [isTutorDialogOpen, setIsTutorDialogOpen] = useState(false);
   const [isStudentDialogOpen, setIsStudentDialogOpen] = useState(false);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+  const [statusUpdateType, setStatusUpdateType] = useState<'tutor' | 'student'>('tutor');
+  const [statusUpdateId, setStatusUpdateId] = useState('');
+  const [currentStatus, setCurrentStatus] = useState('');
+  const [tutorStatusFilter, setTutorStatusFilter] = useState('all');
+  const [studentStatusFilter, setStudentStatusFilter] = useState('all');
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -61,6 +76,30 @@ const AdminDashboard = () => {
     checkAuth();
     fetchRegistrations();
   }, []);
+
+  useEffect(() => {
+    filterTutors();
+  }, [tutorRegistrations, tutorStatusFilter]);
+
+  useEffect(() => {
+    filterStudents();
+  }, [studentRegistrations, studentStatusFilter]);
+
+  const filterTutors = () => {
+    if (tutorStatusFilter === 'all') {
+      setFilteredTutors(tutorRegistrations);
+    } else {
+      setFilteredTutors(tutorRegistrations.filter(tutor => tutor.status === tutorStatusFilter));
+    }
+  };
+
+  const filterStudents = () => {
+    if (studentStatusFilter === 'all') {
+      setFilteredStudents(studentRegistrations);
+    } else {
+      setFilteredStudents(studentRegistrations.filter(student => student.status === studentStatusFilter));
+    }
+  };
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -169,6 +208,24 @@ const AdminDashboard = () => {
     setIsStudentDialogOpen(true);
   };
 
+  const handleTutorStatusUpdate = (tutorId: string, status: string) => {
+    setStatusUpdateType('tutor');
+    setStatusUpdateId(tutorId);
+    setCurrentStatus(status);
+    setIsStatusDialogOpen(true);
+  };
+
+  const handleStudentStatusUpdate = (studentId: string, status: string) => {
+    setStatusUpdateType('student');
+    setStatusUpdateId(studentId);
+    setCurrentStatus(status);
+    setIsStatusDialogOpen(true);
+  };
+
+  const handleStatusUpdated = () => {
+    fetchRegistrations();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -207,19 +264,26 @@ const AdminDashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>Tutor Registrations ({tutorRegistrations.length})</CardTitle>
+                    <CardTitle>Tutor Registrations ({filteredTutors.length})</CardTitle>
                     <CardDescription>All registered tutors</CardDescription>
                   </div>
-                  <Button onClick={() => exportToCSV(tutorRegistrations, 'tutor_registrations')}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Download CSV
-                  </Button>
+                  <div className="flex space-x-4">
+                    <StatusFilter 
+                      selectedStatus={tutorStatusFilter}
+                      onStatusChange={setTutorStatusFilter}
+                    />
+                    <Button onClick={() => exportToCSV(tutorRegistrations, 'tutor_registrations')}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download CSV
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <TutorTable 
-                  tutors={tutorRegistrations}
+                  tutors={filteredTutors}
                   onViewDetails={handleTutorViewDetails}
+                  onUpdateStatus={handleTutorStatusUpdate}
                   formatDate={formatDate}
                 />
               </CardContent>
@@ -231,19 +295,26 @@ const AdminDashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>Student Requests ({studentRegistrations.length})</CardTitle>
+                    <CardTitle>Student Requests ({filteredStudents.length})</CardTitle>
                     <CardDescription>All student tuition requests</CardDescription>
                   </div>
-                  <Button onClick={() => exportToCSV(studentRegistrations, 'student_requests')}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Download CSV
-                  </Button>
+                  <div className="flex space-x-4">
+                    <StatusFilter 
+                      selectedStatus={studentStatusFilter}
+                      onStatusChange={setStudentStatusFilter}
+                    />
+                    <Button onClick={() => exportToCSV(studentRegistrations, 'student_requests')}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download CSV
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <StudentTable 
-                  students={studentRegistrations}
+                  students={filteredStudents}
                   onViewDetails={handleStudentViewDetails}
+                  onUpdateStatus={handleStudentStatusUpdate}
                   formatDate={formatDate}
                 />
               </CardContent>
@@ -263,6 +334,15 @@ const AdminDashboard = () => {
           isOpen={isStudentDialogOpen}
           onClose={() => setIsStudentDialogOpen(false)}
           formatDate={formatDate}
+        />
+
+        <StatusUpdateDialog
+          isOpen={isStatusDialogOpen}
+          onClose={() => setIsStatusDialogOpen(false)}
+          type={statusUpdateType}
+          recordId={statusUpdateId}
+          currentStatus={currentStatus}
+          onStatusUpdated={handleStatusUpdated}
         />
       </div>
     </div>

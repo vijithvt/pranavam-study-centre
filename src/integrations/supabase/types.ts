@@ -32,6 +32,7 @@ export type Database = {
       }
       student_registrations: {
         Row: {
+          admin_comments: string | null
           class_grade: string
           created_at: string
           district: string
@@ -42,11 +43,14 @@ export type Database = {
           parent_name: string
           phone: string
           special_requests: string | null
+          status: string
           student_name: string
           subjects: string[]
           time_preference: string | null
+          updated_at: string | null
         }
         Insert: {
+          admin_comments?: string | null
           class_grade: string
           created_at?: string
           district: string
@@ -57,11 +61,14 @@ export type Database = {
           parent_name: string
           phone: string
           special_requests?: string | null
+          status?: string
           student_name: string
           subjects: string[]
           time_preference?: string | null
+          updated_at?: string | null
         }
         Update: {
+          admin_comments?: string | null
           class_grade?: string
           created_at?: string
           district?: string
@@ -72,14 +79,17 @@ export type Database = {
           parent_name?: string
           phone?: string
           special_requests?: string | null
+          status?: string
           student_name?: string
           subjects?: string[]
           time_preference?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
       tutor_registrations: {
         Row: {
+          admin_comments: string | null
           availability: string
           classes: string[]
           created_at: string
@@ -93,9 +103,12 @@ export type Database = {
           mode: string
           phone: string
           qualification: string
+          status: string
           subjects: string[]
+          updated_at: string | null
         }
         Insert: {
+          admin_comments?: string | null
           availability: string
           classes: string[]
           created_at?: string
@@ -109,9 +122,12 @@ export type Database = {
           mode: string
           phone: string
           qualification: string
+          status?: string
           subjects: string[]
+          updated_at?: string | null
         }
         Update: {
+          admin_comments?: string | null
           availability?: string
           classes?: string[]
           created_at?: string
@@ -125,7 +141,9 @@ export type Database = {
           mode?: string
           phone?: string
           qualification?: string
+          status?: string
           subjects?: string[]
+          updated_at?: string | null
         }
         Relationships: []
       }

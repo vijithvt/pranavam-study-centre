@@ -2,7 +2,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Eye } from 'lucide-react';
+import { Eye, Edit } from 'lucide-react';
+import StatusBadge from './StatusBadge';
 
 interface TutorRegistration {
   id: string;
@@ -18,16 +19,20 @@ interface TutorRegistration {
   availability: string;
   languages: string[];
   mode: string;
+  status: string;
+  admin_comments: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 
 interface TutorTableProps {
   tutors: TutorRegistration[];
   onViewDetails: (tutor: TutorRegistration) => void;
+  onUpdateStatus: (tutorId: string, currentStatus: string) => void;
   formatDate: (dateString: string) => string;
 }
 
-const TutorTable = ({ tutors, onViewDetails, formatDate }: TutorTableProps) => {
+const TutorTable = ({ tutors, onViewDetails, onUpdateStatus, formatDate }: TutorTableProps) => {
   return (
     <Table>
       <TableHeader>
@@ -38,6 +43,7 @@ const TutorTable = ({ tutors, onViewDetails, formatDate }: TutorTableProps) => {
           <TableHead>Location</TableHead>
           <TableHead>Subjects</TableHead>
           <TableHead>Experience</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>Date</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
@@ -51,11 +57,19 @@ const TutorTable = ({ tutors, onViewDetails, formatDate }: TutorTableProps) => {
             <TableCell>{tutor.location}, {tutor.district}</TableCell>
             <TableCell>{tutor.subjects.slice(0, 2).join(', ')}{tutor.subjects.length > 2 ? '...' : ''}</TableCell>
             <TableCell>{tutor.experience} years</TableCell>
+            <TableCell>
+              <StatusBadge status={tutor.status} />
+            </TableCell>
             <TableCell>{formatDate(tutor.created_at)}</TableCell>
             <TableCell>
-              <Button variant="outline" size="sm" onClick={() => onViewDetails(tutor)}>
-                <Eye className="h-4 w-4" />
-              </Button>
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" onClick={() => onViewDetails(tutor)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => onUpdateStatus(tutor.id, tutor.status)}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}
