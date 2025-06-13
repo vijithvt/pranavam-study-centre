@@ -31,7 +31,9 @@ const SubjectPreferencesSection = () => {
             'Statistics',
             'Music',
             'Dance',
-            'Drawing/Art'
+            'Drawing/Art',
+            'Violin (Classical)',
+            'Violin (Western)'
           ].map((subject) => (
             <div key={subject} className="flex items-center space-x-2">
               <Checkbox name="subjects" value={subject} id={subject} />

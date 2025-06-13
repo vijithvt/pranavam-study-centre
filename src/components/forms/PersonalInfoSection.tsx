@@ -50,6 +50,8 @@ const PersonalInfoSection = () => {
               <SelectItem value="music">Music</SelectItem>
               <SelectItem value="dance">Dance</SelectItem>
               <SelectItem value="art">Art/Drawing</SelectItem>
+              <SelectItem value="violin-classical">Violin (Classical)</SelectItem>
+              <SelectItem value="violin-western">Violin (Western)</SelectItem>
             </SelectContent>
           </Select>
         </div>

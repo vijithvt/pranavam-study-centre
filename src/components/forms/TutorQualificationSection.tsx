@@ -81,7 +81,8 @@ const TutorQualificationSection = () => {
             'B.Tech', 'B.Sc', 'B.A', 'B.Com', 'LLB',
             'M.Tech', 'M.Sc', 'M.A', 'M.Com',
             'NEET', 'JEE', 'UPSC', 'PSC', 'Banking',
-            'SSC', 'Railway', 'Music', 'Dance', 'Art/Drawing'
+            'SSC', 'Railway', 'Music', 'Dance', 'Art/Drawing',
+            'Violin (Classical)', 'Violin (Western)'
           ].map((grade) => (
             <div key={grade} className="flex items-center space-x-2">
               <Checkbox name="classes" value={grade} id={grade} />
