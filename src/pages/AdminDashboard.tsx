@@ -1,13 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { LogOut, Users, BookOpen, Phone, Mail, MapPin, Calendar } from 'lucide-react';
+import { LogOut, Users, BookOpen, Phone, Mail, MapPin, Calendar, Download, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface TutorRegistration {
   id: string;
@@ -116,6 +116,41 @@ const AdminDashboard = () => {
     });
   };
 
+  const exportToCSV = (data: any[], filename: string) => {
+    if (data.length === 0) {
+      toast({
+        title: "No data to export",
+        description: "There are no registrations to download.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const headers = Object.keys(data[0]).filter(key => key !== 'id');
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row => 
+        headers.map(header => {
+          const value = row[header];
+          if (Array.isArray(value)) {
+            return `"${value.join('; ')}"`;
+          }
+          return `"${value || ''}"`;
+        }).join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -181,109 +216,107 @@ const AdminDashboard = () => {
           </TabsList>
 
           <TabsContent value="tutors">
-            <div className="grid gap-6">
-              {tutorRegistrations.map((tutor) => (
-                <Card key={tutor.id}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-xl">{tutor.full_name}</CardTitle>
-                        <CardDescription>{tutor.qualification} - {tutor.experience}+ years experience</CardDescription>
-                      </div>
-                      <Badge variant="secondary">
-                        {formatDate(tutor.created_at)}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                      <div className="space-y-2">
-                        <div className="flex items-center">
-                          <Mail className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>{tutor.email}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>{tutor.phone}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>{tutor.location}, {tutor.district}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div>
-                          <strong>Subjects:</strong> {tutor.subjects.join(', ')}
-                        </div>
-                        <div>
-                          <strong>Classes:</strong> {tutor.classes.join(', ')}
-                        </div>
-                        <div>
-                          <strong>Mode:</strong> {tutor.mode}
-                        </div>
-                        <div>
-                          <strong>Languages:</strong> {tutor.languages.join(', ')}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Tutor Registrations ({tutorRegistrations.length})</CardTitle>
+                    <CardDescription>All registered tutors</CardDescription>
+                  </div>
+                  <Button onClick={() => exportToCSV(tutorRegistrations, 'tutor_registrations')}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download CSV
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Subjects</TableHead>
+                      <TableHead>Experience</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {tutorRegistrations.map((tutor) => (
+                      <TableRow key={tutor.id}>
+                        <TableCell className="font-medium">{tutor.full_name}</TableCell>
+                        <TableCell>{tutor.email}</TableCell>
+                        <TableCell>{tutor.phone}</TableCell>
+                        <TableCell>{tutor.location}, {tutor.district}</TableCell>
+                        <TableCell>{tutor.subjects.slice(0, 2).join(', ')}{tutor.subjects.length > 2 ? '...' : ''}</TableCell>
+                        <TableCell>{tutor.experience} years</TableCell>
+                        <TableCell>{formatDate(tutor.created_at)}</TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="students">
-            <div className="grid gap-6">
-              {studentRegistrations.map((student) => (
-                <Card key={student.id}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-xl">{student.student_name}</CardTitle>
-                        <CardDescription>Class {student.class_grade} - Parent: {student.parent_name}</CardDescription>
-                      </div>
-                      <Badge variant="secondary">
-                        {formatDate(student.created_at)}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                      <div className="space-y-2">
-                        <div className="flex items-center">
-                          <Mail className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>{student.email || 'Not provided'}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>{student.phone}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                          <span>{student.location}, {student.district}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div>
-                          <strong>Subjects:</strong> {student.subjects.join(', ')}
-                        </div>
-                        <div>
-                          <strong>Mode:</strong> {student.mode}
-                        </div>
-                        <div>
-                          <strong>Time:</strong> {student.time_preference}
-                        </div>
-                        {student.special_requests && (
-                          <div>
-                            <strong>Special Requests:</strong> {student.special_requests}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Student Requests ({studentRegistrations.length})</CardTitle>
+                    <CardDescription>All student tuition requests</CardDescription>
+                  </div>
+                  <Button onClick={() => exportToCSV(studentRegistrations, 'student_requests')}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download CSV
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student Name</TableHead>
+                      <TableHead>Parent Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Class</TableHead>
+                      <TableHead>Subjects</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {studentRegistrations.map((student) => (
+                      <TableRow key={student.id}>
+                        <TableCell className="font-medium">{student.student_name}</TableCell>
+                        <TableCell>{student.parent_name}</TableCell>
+                        <TableCell>{student.email}</TableCell>
+                        <TableCell>{student.phone}</TableCell>
+                        <TableCell>Class {student.class_grade}</TableCell>
+                        <TableCell>{student.subjects.slice(0, 2).join(', ')}{student.subjects.length > 2 ? '...' : ''}</TableCell>
+                        <TableCell>{student.location}, {student.district}</TableCell>
+                        <TableCell>{formatDate(student.created_at)}</TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

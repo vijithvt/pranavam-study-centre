@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -154,8 +153,8 @@ const StudentRegistration = () => {
               </div>
 
               <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input name="email" id="email" type="email" className="mt-1" />
+                <Label htmlFor="email">Email Address *</Label>
+                <Input name="email" id="email" type="email" required className="mt-1" />
               </div>
 
               {/* Location */}
