@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -86,49 +85,90 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
     e.preventDefault();
     setIsSubmitting(true);
 
-    const formData = new FormData(e.target as HTMLFormElement);
-    
-    // Get checkbox values
-    const subjects = Array.from(formData.getAll('subjects'));
-    
-    // Validate that at least one subject is selected
-    if (subjects.length === 0) {
-      toast({
-        title: "Validation Error",
-        description: "Please select at least one subject.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
-    const studentData = {
-      student_name: formData.get('studentName') as string,
-      parent_name: formData.get('parentName') as string,
-      email: formData.get('email') as string,
-      phone: formData.get('parentPhone') as string,
-      class_grade: formData.get('class') as string,
-      syllabus: formData.get('syllabus') as string,
-      subjects: subjects as string[],
-      mode: formData.get('mode') as string,
-      district: formData.get('district') as string,
-      location: formData.get('area') as string,
-      time_preference: formData.get('preferredTime') as string,
-      special_requests: formData.get('requirements') as string,
-      tutor_gender: formData.get('tutorGender') as string,
-      budget: formData.get('budget') as string,
-      urgency: formData.get('urgency') as string,
-      languages: formData.get('languages') as string
-    };
-
     try {
-      const { error } = await supabase
+      const formData = new FormData(e.target as HTMLFormElement);
+      
+      // Get subjects from checkboxes
+      const subjects = Array.from(formData.getAll('subjects')) as string[];
+      
+      // Validate that at least one subject is selected
+      if (subjects.length === 0) {
+        toast({
+          title: "Validation Error",
+          description: "Please select at least one subject.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Get required form fields
+      const studentName = formData.get('studentName') as string;
+      const parentName = formData.get('parentName') as string;
+      const email = formData.get('email') as string;
+      const phone = formData.get('parentPhone') as string;
+      const classGrade = formData.get('class') as string;
+      const syllabus = formData.get('syllabus') as string;
+      const mode = formData.get('mode') as string;
+      const district = formData.get('district') as string;
+      const location = formData.get('area') as string;
+
+      // Validate required fields
+      if (!studentName || !parentName || !email || !phone || !classGrade || !syllabus || !mode || !district || !location) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      console.log('Form data being submitted:', {
+        student_name: studentName,
+        parent_name: parentName,
+        email: email,
+        phone: phone,
+        class_grade: classGrade,
+        syllabus: syllabus,
+        subjects: subjects,
+        mode: mode,
+        district: district,
+        location: location,
+      });
+
+      const studentData = {
+        student_name: studentName,
+        parent_name: parentName,
+        email: email,
+        phone: phone,
+        class_grade: classGrade,
+        syllabus: syllabus,
+        subjects: subjects,
+        mode: mode,
+        district: district,
+        location: location,
+        time_preference: formData.get('preferredTime') as string || null,
+        special_requests: formData.get('requirements') as string || null,
+        tutor_gender: formData.get('tutorGender') as string || null,
+        budget: formData.get('budget') as string || null,
+        urgency: formData.get('urgency') as string || null,
+        languages: formData.get('languages') as string || null
+      };
+
+      console.log('Submitting to Supabase:', studentData);
+
+      const { data, error } = await supabase
         .from('student_registrations')
-        .insert(studentData);
+        .insert(studentData)
+        .select();
 
       if (error) {
+        console.error('Supabase error:', error);
         throw error;
       }
+
+      console.log('Successfully inserted:', data);
 
       setSubmittedData(studentData);
       toast({
@@ -140,7 +180,7 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
       console.error('Error submitting registration:', error);
       toast({
         title: "Submission Failed",
-        description: "There was an error submitting your request. Please try again.",
+        description: `There was an error submitting your request: ${error.message || 'Please try again.'}`,
         variant: "destructive"
       });
     } finally {
