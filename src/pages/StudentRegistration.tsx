@@ -44,6 +44,7 @@ const StudentRegistration = () => {
   const [monthlyFee, setMonthlyFee] = useState<number>(8000);
   const { toast } = useToast();
   const [classGrade, setClassGrade] = useState<string>("");
+  const [customSubjects, setCustomSubjects] = useState(""); // local state for higher ed text subjects
 
   const generateWhatsAppFormat = (data: any) => {
     const generateId = () => {
@@ -116,9 +117,9 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
       const isEntrance = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
 
       let subjects: string[] = [];
-      let customSubjects = '';
+      let customSubjectsValue = '';
       if (isHigherEd || isArts || isEntrance) {
-        // No subject needed, keep as empty array or null.
+        customSubjectsValue = formData.get('customSubjects') as string || '';
       } else {
         subjects = Array.from(formData.getAll('subjects')) as string[];
         const otherSubjects = formData.get('otherSubjects') as string;
@@ -145,6 +146,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         ? parseInt(formData.get('budget') as string)
         : monthlyFee;
       
+      // Remove hoursPerMonth and hourlyRate from DB insert (not in schema)
       const studentData = {
         student_name: formData.get('studentName') as string,
         parent_name: formData.get('parentName') as string,
@@ -153,7 +155,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         class_grade: classGrade,
         syllabus: (isHigherEd || isArts || isEntrance) ? null : (formData.get('syllabus') as string || null),
         subjects,
-        custom_subjects: null,
+        custom_subjects: (isHigherEd || isArts || isEntrance) ? customSubjectsValue : null,
         university: isHigherEd ? (formData.get('university') as string) : null,
         branch: isHigherEd ? (formData.get('branch') as string) : null,
         mode: formData.get('mode') as string,
@@ -165,8 +167,6 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         budget: monthlyFeeValue ? monthlyFeeValue.toString() : null,
         urgency: formData.get('urgency') as string || null,
         languages: formData.get('languages') as string || null,
-        hoursPerMonth: formData.get('hoursPerMonth') as string || null,
-        // hourlyRate: removed from DB insert
       };
 
       console.log('Form data being submitted:', {
@@ -292,7 +292,29 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
               <PersonalInfoSection />
               <LocationSection />
               <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} />
-              <SubjectPreferencesSection classGrade={classGrade} />
+
+              {(() => {
+                if (['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade)) {
+                  return (
+                    <div className="space-y-4">
+                      {/* Subjects as text input */}
+                      <div>
+                        <Label htmlFor="customSubjects">Subjects Needed *</Label>
+                        <input
+                          name="customSubjects"
+                          id="customSubjects"
+                          className="mt-1 border rounded w-full px-2 py-2"
+                          placeholder="Enter subject(s) required (e.g. Economics, Computer Science)"
+                          required
+                        />
+                      </div>
+                    </div>
+                  );
+                }
+                return (
+                  <SubjectPreferencesSection classGrade={classGrade} />
+                );
+              })()}
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>

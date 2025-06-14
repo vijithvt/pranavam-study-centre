@@ -12,7 +12,6 @@ const SubjectPreferencesSection = ({
 }: {
   classGrade?: string;
 }) => {
-  // logic for determining edu type
   const isHigherEd =
     !!classGrade &&
     ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
@@ -23,7 +22,7 @@ const SubjectPreferencesSection = ({
     'neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
 
   if (isHigherEd || isArtsOrEntrance) {
-    // Hide Subjects Needed for higher ed and arts/entrance. No subject input needed here.
+    // Hide this whole component if higher ed/arts/entrance (covered by text input)
     return null;
   }
 
