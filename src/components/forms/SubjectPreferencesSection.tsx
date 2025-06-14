@@ -67,9 +67,20 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
     <div className="space-y-4">
       <div>
         <Label>Select Subjects *</Label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 max-h-60 overflow-y-auto border rounded-md p-4">
+        <div
+          className="
+            grid grid-cols-2
+            xs:grid-cols-2
+            sm:grid-cols-3
+            md:grid-cols-3
+            lg:grid-cols-4
+            gap-3 mt-2
+            border rounded-md p-4
+            bg-muted/40
+          "
+        >
           {allSchoolSubjects.map((subject) => (
-            <div key={subject} className="flex items-center space-x-2">
+            <div key={subject} className="flex items-center space-x-2 min-w-0">
               <Checkbox
                 id={subject}
                 name="subjects"
@@ -77,9 +88,7 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
                 checked={selectedSubjects.includes(subject)}
                 onCheckedChange={(checked) => handleSubjectChange(subject, checked as boolean)}
               />
-              <Label htmlFor={subject} className="text-sm font-normal cursor-pointer">
-                {subject}
-              </Label>
+              <Label htmlFor={subject} className="text-sm font-normal cursor-pointer truncate">{subject}</Label>
             </div>
           ))}
         </div>
@@ -103,3 +112,4 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
 };
 
 export default SubjectPreferencesSection;
+
