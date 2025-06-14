@@ -254,11 +254,6 @@ const StudentRegistration = () => {
               <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6 shadow-lg mt-2">
                 {isSubmitting ? "Submitting..." : "Submit Request - Find My Tutor"}
               </Button>
-              <div className="text-center text-sm text-gray-500 space-y-1 mt-8">
-                <p>✓ Free service - No charges for connection</p>
-                <p>✓ We'll call you within 24 hours</p>
-                <p>✓ Qualified and verified tutors only</p>
-              </div>
             </form>
           </CardContent>
         </Card>

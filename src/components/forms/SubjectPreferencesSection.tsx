@@ -69,18 +69,18 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
         <Label>Select Subjects *</Label>
         <div
           className="
-            grid grid-cols-2
-            xs:grid-cols-2
-            sm:grid-cols-3
-            md:grid-cols-3
-            lg:grid-cols-4
-            gap-3 mt-2
-            border rounded-md p-4
+            w-full
+            grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+            gap-x-5 gap-y-3 mt-2
+            border rounded-xl p-4
             bg-muted/40
           "
         >
           {allSchoolSubjects.map((subject) => (
-            <div key={subject} className="flex items-center space-x-2 min-w-0">
+            <div
+              key={subject}
+              className="flex items-center space-x-2 min-w-0"
+            >
               <Checkbox
                 id={subject}
                 name="subjects"
@@ -88,7 +88,14 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
                 checked={selectedSubjects.includes(subject)}
                 onCheckedChange={(checked) => handleSubjectChange(subject, checked as boolean)}
               />
-              <Label htmlFor={subject} className="text-sm font-normal cursor-pointer truncate">{subject}</Label>
+              <Label
+                htmlFor={subject}
+                className="text-sm font-normal cursor-pointer truncate"
+                style={{ maxWidth: "160px" }}
+                title={subject}
+              >
+                {subject}
+              </Label>
             </div>
           ))}
         </div>
@@ -102,8 +109,8 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
         <Label htmlFor="otherSubjects">Other Subjects</Label>
         <Input 
           name="otherSubjects" 
-          id="otherSubjects" 
-          className="mt-1" 
+          id="otherSubjects"
+          className="mt-1"
           placeholder="If other subjects needed, specify here"
         />
       </div>
