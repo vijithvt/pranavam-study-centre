@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Eye, Edit, Download } from 'lucide-react';
 import WhatsAppCopyButton from './WhatsAppCopyButton';
 import StatusBadge from './StatusBadge';
+import { useNavigate } from "react-router-dom";
 
 interface StudentRegistration {
   id: string;
@@ -33,6 +33,7 @@ interface StudentTableProps {
 }
 
 const StudentTable = ({ students, onViewDetails, onUpdateStatus, formatDate }: StudentTableProps) => {
+  const navigate = useNavigate();
   const exportStudentPDF = (student: StudentRegistration) => {
     // Generate PDF content
     const content = `
@@ -85,8 +86,8 @@ Registration Date: ${formatDate(student.created_at)}
           return (
             <TableRow key={student.id}>
               <TableCell className="font-medium">
-                <button 
-                  onClick={() => onViewDetails(student)}
+                <button
+                  onClick={() => navigate(`/students/${student.id}`)}
                   className="text-blue-600 hover:text-blue-800 hover:underline"
                 >
                   {student.student_name}

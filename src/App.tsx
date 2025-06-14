@@ -15,6 +15,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import TutorAuth from "./pages/TutorAuth";
 import TutorDashboard from "./pages/TutorDashboard";
+import TutorTerms from "./pages/TutorTerms";
+import TutorDetailsPage from "./pages/TutorDetailsPage";
+import StudentDetailsPage from "./pages/StudentDetailsPage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,9 @@ const App = () => (
               <Route path="/tutor-auth" element={<TutorAuth />} />
               <Route path="/tutor/dashboard" element={<TutorDashboard />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/tutor-terms" element={<TutorTerms />} />
+              <Route path="/tutors/:id" element={<TutorDetailsPage />} />
+              <Route path="/students/:id" element={<StudentDetailsPage />} />
             </Routes>
           </main>
           <Footer />

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import TutorPersonalInfoSection from '@/components/forms/TutorPersonalInfoSection';
 import LocationSection from '@/components/forms/LocationSection';
 import TutorQualificationSection from '@/components/forms/TutorQualificationSection';
+import { Link } from 'react-router-dom';
 
 const TutorRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -329,7 +329,7 @@ const TutorRegistration = () => {
               <div className="flex items-start space-x-2">
                 <Checkbox id="terms" required />
                 <Label htmlFor="terms" className="text-sm leading-relaxed">
-                  I agree to the terms and conditions and confirm that all information provided is accurate. 
+                  I agree to the <Link to="/tutor-terms" target="_blank" className="underline text-blue-700">Terms and Conditions</Link> and confirm that all information provided is accurate.
                   I understand that Pranavam Study Centre may verify the information and contact me for interviews.
                 </Label>
               </div>

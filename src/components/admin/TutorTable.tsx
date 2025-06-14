@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Eye, Edit, Download } from 'lucide-react';
 import StatusBadge from './StatusBadge';
+import { useNavigate } from "react-router-dom";
 
 interface TutorRegistration {
   id: string;
@@ -33,6 +33,7 @@ interface TutorTableProps {
 }
 
 const TutorTable = ({ tutors, onViewDetails, onUpdateStatus, formatDate }: TutorTableProps) => {
+  const navigate = useNavigate();
   const exportTutorPDF = (tutor: TutorRegistration) => {
     // Generate PDF content
     const content = `
@@ -81,8 +82,8 @@ Registration Date: ${formatDate(tutor.created_at)}
         {tutors.map((tutor) => (
           <TableRow key={tutor.id}>
             <TableCell className="font-medium">
-              <button 
-                onClick={() => onViewDetails(tutor)}
+              <button
+                onClick={() => navigate(`/tutors/${tutor.id}`)}
                 className="text-blue-600 hover:text-blue-800 hover:underline"
               >
                 {tutor.full_name}
