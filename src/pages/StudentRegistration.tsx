@@ -12,6 +12,7 @@ import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
 import LocationSection from '@/components/forms/LocationSection';
 import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
 import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
+import FormSectionCard from '@/components/forms/FormSectionCard';
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -155,85 +156,105 @@ const StudentRegistration = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
+      <div className="max-w-3xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
           <div className="flex items-center justify-center mb-4">
             <BookOpen className="h-8 w-8 text-primary mr-3" />
-            <h1 className="text-3xl font-bold text-gray-900">Find Your Perfect Tutor</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+              Find Your Perfect Tutor
+            </h1>
           </div>
-          <p className="text-xl text-gray-600">
-            Tell us your requirements and we'll connect you with the best tutors in your area
+          <p className="text-lg sm:text-xl text-gray-600">
+            Tell us your requirements and we'll connect you with the best tutors in your area.
           </p>
         </div>
 
-        <Card>
+        <Card className="shadow-xl border-0 bg-white">
           <CardHeader>
-            <CardTitle>Student Tuition Request</CardTitle>
+            <CardTitle className="text-2xl">Student Tuition Request</CardTitle>
             <CardDescription>
-              Fill out this form and we'll find qualified tutors matching your needs
+              Please fill out all fields honestly. Our team will use this to match you with the most suitable tutors.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <PersonalInfoSection classGrade={classGrade} setClassGrade={setClassGrade} />
-              <SubjectPreferencesSection classGrade={classGrade} />
-              <LocationSection />
-              <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} classGrade={classGrade} />
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="tutorGender">Tutor Gender Preference *</Label>
-                  <Select name="tutorGender" required>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select preference" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="no-preference">No Preference</SelectItem>
-                    </SelectContent>
-                  </Select>
+            <form onSubmit={handleSubmit} className="space-y-0">
+              <FormSectionCard
+                title="Student & Parent Information"
+                description="Start by providing your basic contact and class details."
+              >
+                <PersonalInfoSection classGrade={classGrade} setClassGrade={setClassGrade} />
+              </FormSectionCard>
+              <FormSectionCard
+                title="Subject Preferences"
+                description="Which subjects do you need help with?"
+              >
+                <SubjectPreferencesSection classGrade={classGrade} />
+              </FormSectionCard>
+              <FormSectionCard
+                title="Location"
+                description="Where do you want the tuition sessions conducted?"
+              >
+                <LocationSection />
+              </FormSectionCard>
+              <FormSectionCard
+                title="Budget & Scheduling"
+                description="Mention your preferred budget as well as schedule or timing."
+              >
+                <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} classGrade={classGrade} />
+              </FormSectionCard>
+              <FormSectionCard
+                title="Preferences & Comments"
+                description="Any special preferences or needs? Let us know!"
+              >
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <Label htmlFor="tutorGender">Tutor Gender Preference *</Label>
+                    <Select name="tutorGender" required>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Select preference" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="no-preference">No Preference</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="urgency">When do you want to start? *</Label>
+                    <Select name="urgency" required>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Select start time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="immediately">Immediately</SelectItem>
+                        <SelectItem value="within-week">Within this week</SelectItem>
+                        <SelectItem value="within-month">Within this month</SelectItem>
+                        <SelectItem value="flexible">Flexible</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="requirements">Special Requirements or Comments</Label>
-                <Textarea 
-                  name="requirements"
-                  id="requirements" 
-                  className="mt-1" 
-                  placeholder="Any specific requirements, learning difficulties, exam preparations, etc."
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="urgency">When do you want to start? *</Label>
-                <Select name="urgency" required>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Select start time" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="immediately">Immediately</SelectItem>
-                    <SelectItem value="within-week">Within this week</SelectItem>
-                    <SelectItem value="within-month">Within this month</SelectItem>
-                    <SelectItem value="flexible">Flexible</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-start space-x-2">
+                <div className="mb-4">
+                  <Label htmlFor="requirements">Special Requirements or Comments</Label>
+                  <Textarea 
+                    name="requirements"
+                    id="requirements" 
+                    className="mt-1" 
+                    placeholder="Any specific requirements, learning difficulties, exam preparations, etc."
+                  />
+                </div>
+              </FormSectionCard>
+              <div className="mb-6 flex items-start space-x-2 rounded-lg bg-muted/60 border p-4">
                 <Checkbox id="consent" required />
                 <Label htmlFor="consent" className="text-sm leading-relaxed">
-                  I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors. 
-                  I understand this is a free service and there are no charges for connecting with tutors.
+                  I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors. I understand this is a free service and there are no charges for connecting with tutors.
                 </Label>
               </div>
-
-              <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6">
+              <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6 shadow-lg mt-2">
                 {isSubmitting ? "Submitting..." : "Submit Request - Find My Tutor"}
               </Button>
-
-              <div className="text-center text-sm text-gray-500 space-y-1">
+              <div className="text-center text-sm text-gray-500 space-y-1 mt-8">
                 <p>✓ Free service - No charges for connection</p>
                 <p>✓ We'll call you within 24 hours</p>
                 <p>✓ Qualified and verified tutors only</p>

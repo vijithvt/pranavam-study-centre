@@ -12,6 +12,7 @@ import TutorPersonalInfoSection from '@/components/forms/TutorPersonalInfoSectio
 import LocationSection from '@/components/forms/LocationSection';
 import TutorQualificationSection from '@/components/forms/TutorQualificationSection';
 import { Link } from 'react-router-dom';
+import FormSectionCard from "@/components/forms/FormSectionCard";
 
 // All class/course names capitalized as specified
 const allClasses = [
@@ -336,149 +337,160 @@ const TutorRegistration = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
+      <div className="max-w-4xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
           <div className="flex items-center justify-center mb-4">
             <UserPlus className="h-8 w-8 text-primary mr-3" />
-            <h1 className="text-3xl font-bold text-gray-900">Become a Tutor</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Become a Tutor</h1>
           </div>
-          <p className="text-xl text-gray-600">
-            Join our network of qualified educators and make a difference in students' lives
+          <p className="text-lg sm:text-xl text-gray-600">
+            Join our network of qualified educators and make a difference in students' lives.
           </p>
         </div>
 
-        <Card>
+        <Card className="shadow-xl border-0 bg-white">
           <CardHeader>
-            <CardTitle>Tutor Registration Form</CardTitle>
+            <CardTitle className="text-2xl">Tutor Registration Form</CardTitle>
             <CardDescription>
-              Please fill out all required information to join our tutor network
+              Please fill out all required information to join our tutor network.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-0">
 
-              <TutorPersonalInfoSection />
-              <LocationSection />
-              <TutorQualificationSection />
+              <FormSectionCard
+                title="Personal Information"
+                description="Tell us about yourself. We'll use this to contact you."
+              >
+                <TutorPersonalInfoSection />
+              </FormSectionCard>
 
-              {/* Subjects Section */}
-              <div className="space-y-4">
-                <div>
-                  <Label>Subjects You Can Teach *</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 max-h-60 overflow-y-auto border rounded-md p-4">
-                    {allSubjects.map((subject) => (
-                      <div key={subject} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`subject-${subject}`}
-                          checked={selectedSubjects.includes(subject)}
-                          onCheckedChange={(checked) => setSelectedSubjects(checked
-                            ? [...selectedSubjects, subject]
-                            : selectedSubjects.filter(s => s !== subject)
-                          )}
-                        />
-                        <Label htmlFor={`subject-${subject}`} className="text-sm font-normal cursor-pointer">
-                          {subject}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
+              <FormSectionCard
+                title="Location"
+                description="Where are you located?"
+              >
+                <LocationSection />
+              </FormSectionCard>
+
+              <FormSectionCard
+                title="Qualifications & Experience"
+                description="Share your academic background and subject expertise."
+              >
+                <TutorQualificationSection />
+              </FormSectionCard>
+
+              <FormSectionCard
+                title="Subjects You Can Teach"
+                description="Select all relevant subjects. You may also specify others below."
+              >
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 max-h-60 overflow-y-auto border rounded-md p-4 bg-muted/40">
+                  {allSubjects.map((subject) => (
+                    <div key={subject} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`subject-${subject}`}
+                        checked={selectedSubjects.includes(subject)}
+                        onCheckedChange={(checked) => setSelectedSubjects(checked
+                          ? [...selectedSubjects, subject]
+                          : selectedSubjects.filter(s => s !== subject)
+                        )}
+                      />
+                      <Label htmlFor={`subject-${subject}`} className="text-sm font-normal cursor-pointer">
+                        {subject}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
-                <div>
+                <div className="mt-4">
                   <Label htmlFor="customSubjects">Other Subjects</Label>
                   <Input 
                     name="customSubjects" 
                     id="customSubjects" 
-                    className="mt-1" 
+                    className="mt-1"
                     placeholder="If other subjects, specify here (e.g., Advanced Mathematics, Organic Chemistry)"
                   />
                 </div>
-              </div>
+              </FormSectionCard>
 
-              {/* Classes/Grades Section */}
-              <div className="space-y-4">
-                <div>
-                  <Label>Classes/Grades You Can Teach *</Label>
-                  <div className="grid grid-cols-4 md:grid-cols-6 gap-3 mt-2 border rounded-md p-4">
-                    {allClasses.map((classItem) => (
-                      <div key={classItem} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`class-${classItem}`}
-                          checked={selectedClasses.includes(classItem)}
-                          onCheckedChange={(checked) => setSelectedClasses(checked
-                            ? [...selectedClasses, classItem]
-                            : selectedClasses.filter(c => c !== classItem)
-                          )}
-                        />
-                        <Label htmlFor={`class-${classItem}`} className="text-sm font-normal cursor-pointer">
-                          {classItem}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
+              <FormSectionCard
+                title="Classes/Grades"
+                description="Select all grades/classes you are comfortable teaching."
+              >
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-2 border rounded-md p-4 bg-muted/40">
+                  {allClasses.map((classItem) => (
+                    <div key={classItem} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`class-${classItem}`}
+                        checked={selectedClasses.includes(classItem)}
+                        onCheckedChange={(checked) => setSelectedClasses(checked
+                          ? [...selectedClasses, classItem]
+                          : selectedClasses.filter(c => c !== classItem)
+                        )}
+                      />
+                      <Label htmlFor={`class-${classItem}`} className="text-sm font-normal cursor-pointer">
+                        {classItem}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              </FormSectionCard>
 
-              {/* Languages Section */}
-              <div className="space-y-4">
-                <div>
-                  <Label>Languages You Can Teach In *</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2 border rounded-md p-4">
-                    {allLanguages.map((language) => (
-                      <div key={language} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`language-${language}`}
-                          checked={selectedLanguages.includes(language)}
-                          onCheckedChange={(checked) => setSelectedLanguages(checked
-                            ? [...selectedLanguages, language]
-                            : selectedLanguages.filter(l => l !== language)
-                          )}
-                        />
-                        <Label htmlFor={`language-${language}`} className="text-sm font-normal cursor-pointer">
-                          {language}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
+              <FormSectionCard
+                title="Languages"
+                description="Select all languages you are comfortable teaching in."
+              >
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2 border rounded-md p-4 bg-muted/40">
+                  {allLanguages.map((language) => (
+                    <div key={language} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`language-${language}`}
+                        checked={selectedLanguages.includes(language)}
+                        onCheckedChange={(checked) => setSelectedLanguages(checked
+                          ? [...selectedLanguages, language]
+                          : selectedLanguages.filter(l => l !== language)
+                        )}
+                      />
+                      <Label htmlFor={`language-${language}`} className="text-sm font-normal cursor-pointer">
+                        {language}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              </FormSectionCard>
 
-              {/* Teaching Mode */}
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="teachingMode">Preferred Teaching Mode *</Label>
-                  <select name="teachingMode" id="teachingMode" required className="w-full mt-1 p-2 border rounded-md">
-                    <option value="">Select teaching mode</option>
-                    <option value="home">Home Tuition</option>
-                    <option value="online">Online</option>
-                    <option value="both">Both</option>
-                  </select>
+              <FormSectionCard
+                title="Preferred Teaching Mode"
+                description="Are you open to home tuitions, online, or both?"
+              >
+                <select name="teachingMode" id="teachingMode" required className="w-full mt-1 p-2 border rounded-md bg-muted/30">
+                  <option value="">Select teaching mode</option>
+                  <option value="home">Home Tuition</option>
+                  <option value="online">Online</option>
+                  <option value="both">Both</option>
+                </select>
+              </FormSectionCard>
+
+              <FormSectionCard
+                title="Resume/CV"
+                description="Optional but helps us know your profile even better (PDF, DOC)."
+              >
+                <div className="mt-1 flex items-center space-x-2">
+                  <Input id="resume" type="file" accept=".pdf,.doc,.docx" />
+                  <Upload className="h-5 w-5 text-gray-400" />
                 </div>
-              </div>
+              </FormSectionCard>
 
-              {/* CV Upload Only */}
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="resume">Upload Resume/CV *</Label>
-                  <div className="mt-1 flex items-center space-x-2">
-                    <Input id="resume" type="file" accept=".pdf,.doc,.docx" required />
-                    <Upload className="h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional Information */}
-              <div>
-                <Label htmlFor="bio">Tell us about yourself</Label>
+              <FormSectionCard
+                title="About You"
+                description="Share your teaching philosophy, achievements, or anything else."
+              >
                 <Textarea 
                   id="bio" 
                   className="mt-1" 
                   placeholder="Share your teaching philosophy, achievements, or any additional information..."
                 />
-              </div>
+              </FormSectionCard>
 
-              {/* -- Terms & Conditions section is removed as per user request -- */}
-
-              <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6 mt-2">
+              <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6 shadow-lg mt-4">
                 {isSubmitting ? "Submitting..." : "Submit Registration"}
               </Button>
             </form>
