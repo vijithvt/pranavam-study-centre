@@ -204,24 +204,24 @@ const TutorRegistration = () => {
     setIsSubmitting(true);
 
     // Validate all terms
-    if (!termsChecked.every(Boolean)) {
-      toast({
-        title: "Please Accept All Sections",
-        description: "Please agree to each Terms & Conditions section before submitting.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
-    if (!finalAgree) {
-      toast({
-        title: "Final Agreement Required",
-        description: "You must confirm that you will abide by all the rules and regulations.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
+    // if (!termsChecked.every(Boolean)) {
+    //   toast({
+    //     title: "Please Accept All Sections",
+    //     description: "Please agree to each Terms & Conditions section before submitting.",
+    //     variant: "destructive"
+    //   });
+    //   setIsSubmitting(false);
+    //   return;
+    // }
+    // if (!finalAgree) {
+    //   toast({
+    //     title: "Final Agreement Required",
+    //     description: "You must confirm that you will abide by all the rules and regulations.",
+    //     variant: "destructive"
+    //   });
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
     const formData = new FormData(e.target as HTMLFormElement);
 
@@ -476,39 +476,7 @@ const TutorRegistration = () => {
                 />
               </div>
 
-              {/* Terms & Conditions */}
-              <div className="space-y-6 border-[1.5px] border-gray-200 rounded-lg p-4 bg-gray-50 mt-2">
-                <h2 className="text-lg font-semibold mb-3 text-primary">Terms & Conditions (You must read and agree to each section)</h2>
-                {termsSections.map((section, idx) => (
-                  <Card key={section.title} className="mb-4 border border-gray-200 rounded-lg p-3 bg-white shadow">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold text-base">{section.title}</span>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`terms-section-${idx}`}
-                          checked={termsChecked[idx]}
-                          onCheckedChange={(checked) => handleTermsCheck(idx, checked as boolean)}
-                          required
-                        />
-                        <Label htmlFor={`terms-section-${idx}`} className="text-xs">I Agree</Label>
-                      </div>
-                    </div>
-                    <div className="text-gray-700 text-sm whitespace-pre-line leading-relaxed">{section.text}</div>
-                  </Card>
-                ))}
-                {/* Final confirmation */}
-                <div className="flex items-center mt-2 space-x-3">
-                  <Checkbox
-                    id="final-confirmation"
-                    checked={finalAgree}
-                    onCheckedChange={setFinalAgree}
-                    required
-                  />
-                  <Label htmlFor="final-confirmation" className="text-sm">
-                    {finalConfirmationText}
-                  </Label>
-                </div>
-              </div>
+              {/* -- Terms & Conditions section is removed as per user request -- */}
 
               <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6 mt-2">
                 {isSubmitting ? "Submitting..." : "Submit Registration"}
