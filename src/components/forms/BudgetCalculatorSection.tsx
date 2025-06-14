@@ -1,23 +1,22 @@
-
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Info } from 'lucide-react';
 
-const BudgetCalculatorSection = () => {
+const BudgetCalculatorSection = ({ setMonthlyFee }: { setMonthlyFee?: (fee: number) => void }) => {
   const [hoursPerMonth, setHoursPerMonth] = useState([20]);
   const [hourlyRate, setHourlyRate] = useState([400]);
-  const [monthlyFee, setMonthlyFee] = useState(8000);
+  const [monthlyFee, updateMonthlyFee] = useState(8000);
 
   useEffect(() => {
     const calculatedFee = hoursPerMonth[0] * hourlyRate[0];
-    setMonthlyFee(calculatedFee);
-  }, [hoursPerMonth, hourlyRate]);
+    updateMonthlyFee(calculatedFee);
+    if (setMonthlyFee) setMonthlyFee(calculatedFee);
+  }, [hoursPerMonth, hourlyRate, setMonthlyFee]);
 
   return (
     <div className="space-y-6 p-4 border rounded-lg bg-gray-50">
-      {/* Removed "Budget Calculator" header */}
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center gap-2">
@@ -49,7 +48,7 @@ const BudgetCalculatorSection = () => {
         </div>
         <div>
           <Label htmlFor="hoursPerMonth">
-            Choose required no. of hours in month: {hoursPerMonth[0]} hrs
+            Probable no. of hours in month: {hoursPerMonth[0]} hrs
           </Label>
           <Slider
             value={hoursPerMonth}
@@ -66,15 +65,8 @@ const BudgetCalculatorSection = () => {
           </div>
         </div>
       </div>
-      <div className="p-4 bg-white rounded-lg border-2 border-blue-200">
-        <Label className="text-lg font-semibold text-blue-700">
-          Monthly Fee: ₹{monthlyFee.toLocaleString()}
-        </Label>
-        <p className="text-sm text-gray-600 mt-1">
-          Calculated as {hoursPerMonth[0]} hours × ₹{hourlyRate[0]} per hour
-        </p>
-        <input type="hidden" name="budget" value={`${monthlyFee}`} />
-      </div>
+      {/* Monthly Fee only in state, not visible here */}
+      <input type="hidden" name="budget" value={monthlyFee} />
     </div>
   );
 };

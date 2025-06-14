@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -41,7 +41,9 @@ const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<any>(null);
+  const [monthlyFee, setMonthlyFee] = useState<number>(8000);
   const { toast } = useToast();
+  const [classGrade, setClassGrade] = useState<string>("");
 
   const generateWhatsAppFormat = (data: any) => {
     const generateId = () => {
@@ -108,7 +110,6 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
     setIsSubmitting(true);
     try {
       const formData = new FormData(e.target as HTMLFormElement);
-
       const classGrade = formData.get('class') as string;
       const isHigherEd = ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
       const isArts = ['music','dance','art','violin-classical','violin-western'].includes(classGrade);
@@ -117,10 +118,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
       let subjects: string[] = [];
       let customSubjects = '';
       if (isHigherEd || isArts || isEntrance) {
-        customSubjects = formData.get('customSubjects') as string;
-        if (customSubjects) {
-          subjects = customSubjects.split(',').map((s: string) => s.trim()).filter(Boolean);
-        }
+        // No subject needed, keep as empty array or null.
       } else {
         subjects = Array.from(formData.getAll('subjects')) as string[];
         const otherSubjects = formData.get('otherSubjects') as string;
@@ -129,7 +127,10 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         }
       }
 
-      if (!subjects || subjects.length === 0) {
+      if (
+        !(isHigherEd || isArts || isEntrance) &&
+        (!subjects || subjects.length === 0)
+      ) {
         toast({
           title: "Validation Error",
           description: "Please select or enter at least one subject.",
@@ -139,6 +140,11 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         return;
       }
 
+      // Calculate the Monthly Fee from hidden input, fallback to state if not present
+      const monthlyFeeValue = formData.get('budget')
+        ? parseInt(formData.get('budget') as string)
+        : monthlyFee;
+      
       const studentData = {
         student_name: formData.get('studentName') as string,
         parent_name: formData.get('parentName') as string,
@@ -147,7 +153,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         class_grade: classGrade,
         syllabus: (isHigherEd || isArts || isEntrance) ? null : (formData.get('syllabus') as string || null),
         subjects,
-        custom_subjects: customSubjects || null,
+        custom_subjects: null,
         university: isHigherEd ? (formData.get('university') as string) : null,
         branch: isHigherEd ? (formData.get('branch') as string) : null,
         mode: formData.get('mode') as string,
@@ -156,11 +162,11 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         time_preference: formData.get('preferredTime') as string || null,
         special_requests: formData.get('requirements') as string || null,
         tutor_gender: formData.get('tutorGender') as string || null,
-        budget: formData.get('budget') as string || null,
+        budget: monthlyFeeValue ? monthlyFeeValue.toString() : null,
         urgency: formData.get('urgency') as string || null,
         languages: formData.get('languages') as string || null,
         hoursPerMonth: formData.get('hoursPerMonth') as string || null,
-        hourlyRate: formData.get('hourlyRate') as string || null
+        // hourlyRate: removed from DB insert
       };
 
       console.log('Form data being submitted:', {
@@ -204,12 +210,13 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
 
       console.log('Successfully inserted:', data);
 
-      setSubmittedData(studentData);
+      setSubmittedData({ ...studentData, monthlyFee: monthlyFeeValue });
       toast({
         title: "Request Submitted!",
         description: "We'll find suitable tutors and contact you within 24 hours.",
       });
       setIsSubmitted(true);
+
     } catch (error) {
       console.error('Error submitting registration:', error);
       toast({
@@ -239,6 +246,11 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
               <p>👨‍🏫 We'll share tutor profiles</p>
               <p>📅 Schedule trial classes</p>
             </div>
+            <div className="mb-4">
+              <Label className="font-semibold text-blue-700 text-lg">
+                Monthly Fee: ₹{submittedData?.monthlyFee?.toLocaleString()}
+              </Label>
+            </div>
             <div className="space-y-3">
               <Button onClick={copyToClipboard} variant="outline" className="w-full">
                 <Copy className="h-4 w-4 mr-2" />
@@ -254,6 +266,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
     );
   }
 
+  // Main Form rendering
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -278,8 +291,8 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
             <form onSubmit={handleSubmit} className="space-y-6">
               <PersonalInfoSection />
               <LocationSection />
-              <SubjectPreferencesSection />
-              <BudgetCalculatorSection />
+              <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} />
+              <SubjectPreferencesSection classGrade={classGrade} />
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -95,36 +94,27 @@ const PersonalInfoSection = () => {
 
       {showUniversityFields && (
         <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
-          {/* No heading as per request */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="university">University/Institution</Label>
+              <Label htmlFor="university">University/Institution *</Label>
               <Input 
                 name="university" 
-                id="university" 
+                id="university"
+                required
                 className="mt-1" 
                 placeholder="Enter university name"
               />
             </div>
             <div>
-              <Label htmlFor="branch">Branch/Specialization</Label>
+              <Label htmlFor="branch">Branch/Specialization *</Label>
               <Input 
                 name="branch" 
-                id="branch" 
+                id="branch"
+                required
                 className="mt-1" 
                 placeholder="e.g., Computer Science, Commerce"
               />
             </div>
-          </div>
-          {/* Subjects input for higher education */}
-          <div>
-            <Label htmlFor="customSubjects">Subjects Needed</Label>
-            <Input 
-              name="customSubjects" 
-              id="customSubjects" 
-              className="mt-1" 
-              placeholder="Enter specific subjects (comma separated)"
-            />
           </div>
         </div>
       )}
