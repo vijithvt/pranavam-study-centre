@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
 import LocationSection from '@/components/forms/LocationSection';
 import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
+import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -47,28 +48,20 @@ const StudentRegistration = () => {
       return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade}-grade student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
     };
 
-    const budgetMap = {
-      '1000-2000': { rate: '200', hours: '12' },
-      '2000-3000': { rate: '250', hours: '12' },
-      '3000-5000': { rate: '350', hours: '12' },
-      '5000-8000': { rate: '400', hours: '16' },
-      '8000-12000': { rate: '500', hours: '16' },
-      '12000+': { rate: '600', hours: '20' }
-    };
-
-    const budget = budgetMap[data.budget] || { rate: '400', hours: '12' };
+    const hoursPerMonth = data.hoursPerMonth || '20';
+    const hourlyRate = data.hourlyRate || '400';
 
     return `ID-${generateId()}
 Subject - ${data.subjects.join(', ')}
 Grade - ${data.class_grade}
-Syllabus - ${data.syllabus}
+Syllabus - ${data.syllabus || 'N/A'}
 Location - ${data.mode === 'online' ? 'Online' : data.location}
 Tutor Gender required - ${data.tutor_gender || 'No Preference'}
 Medium of Teaching - ${data.languages || 'English/Malayalam'}
-Probable hrs in month - ${budget.hours} hrs
-Hour Rate - ${budget.rate}
+Probable hrs in month - ${hoursPerMonth} hrs
+Hour Rate - ${hourlyRate}
 Contact 9496315903
-Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_grade)}`;
+Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', data.class_grade)}`;
   };
 
   const copyToClipboard = () => {
@@ -90,7 +83,18 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
       const formData = new FormData(e.target as HTMLFormElement);
       
       // Get subjects from checkboxes
-      const subjects = Array.from(formData.getAll('subjects')) as string[];
+      let subjects = Array.from(formData.getAll('subjects')) as string[];
+      
+      // Add other subjects if specified
+      const otherSubjects = formData.get('otherSubjects') as string;
+      const customSubjects = formData.get('customSubjects') as string;
+      
+      if (otherSubjects) {
+        subjects.push(otherSubjects);
+      }
+      if (customSubjects) {
+        subjects = subjects.concat(customSubjects.split(',').map(s => s.trim()));
+      }
       
       // Validate that at least one subject is selected
       if (subjects.length === 0) {
@@ -109,13 +113,13 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
       const email = formData.get('email') as string;
       const phone = formData.get('parentPhone') as string;
       const classGrade = formData.get('class') as string;
-      const syllabus = formData.get('syllabus') as string;
+      const syllabus = formData.get('syllabus') as string || null;
       const mode = formData.get('mode') as string;
       const district = formData.get('district') as string;
       const location = formData.get('area') as string;
 
       // Validate required fields
-      if (!studentName || !parentName || !email || !phone || !classGrade || !syllabus || !mode || !district || !location) {
+      if (!studentName || !parentName || !email || !phone || !classGrade || !mode || !district || !location) {
         toast({
           title: "Validation Error",
           description: "Please fill in all required fields.",
@@ -154,7 +158,11 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
         tutor_gender: formData.get('tutorGender') as string || null,
         budget: formData.get('budget') as string || null,
         urgency: formData.get('urgency') as string || null,
-        languages: formData.get('languages') as string || null
+        languages: formData.get('languages') as string || null,
+        university: formData.get('university') as string || null,
+        branch: formData.get('branch') as string || null,
+        hoursPerMonth: formData.get('hoursPerMonth') as string || null,
+        hourlyRate: formData.get('hourlyRate') as string || null
       };
 
       console.log('Submitting to Supabase:', studentData);
@@ -265,6 +273,7 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
               <PersonalInfoSection />
               <LocationSection />
               <SubjectPreferencesSection />
+              <BudgetCalculatorSection />
 
               {/* Additional Preferences */}
               <div className="grid md:grid-cols-2 gap-6">
@@ -278,23 +287,6 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus, data.class_gr
                       <SelectItem value="male">Male</SelectItem>
                       <SelectItem value="female">Female</SelectItem>
                       <SelectItem value="no-preference">No Preference</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="budget">Budget Range (per month) *</Label>
-                  <p className="text-sm text-gray-500 mb-1">Choose maximum budget for experienced teachers</p>
-                  <Select name="budget" required>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select budget range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1000-2000">₹1,000 - ₹2,000</SelectItem>
-                      <SelectItem value="2000-3000">₹2,000 - ₹3,000</SelectItem>
-                      <SelectItem value="3000-5000">₹3,000 - ₹5,000</SelectItem>
-                      <SelectItem value="5000-8000">₹5,000 - ₹8,000</SelectItem>
-                      <SelectItem value="8000-12000">₹8,000 - ₹12,000</SelectItem>
-                      <SelectItem value="12000+">₹12,000+</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

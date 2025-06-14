@@ -1,47 +1,108 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const SubjectPreferencesSection = () => {
+  const [selectedClass, setSelectedClass] = useState('');
+  const [showRegularSubjects, setShowRegularSubjects] = useState(true);
+
+  useEffect(() => {
+    // Listen for class changes from the form
+    const handleClassChange = () => {
+      const classSelect = document.querySelector('select[name="class"]') as HTMLSelectElement;
+      if (classSelect) {
+        const value = classSelect.value;
+        setSelectedClass(value);
+        
+        const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
+        const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
+        const higherEducationClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
+        
+        setShowRegularSubjects(!artsClasses.includes(value) && !entranceClasses.includes(value) && !higherEducationClasses.includes(value));
+      }
+    };
+
+    // Initial check
+    handleClassChange();
+
+    // Set up observer for form changes
+    const observer = new MutationObserver(handleClassChange);
+    const form = document.querySelector('form');
+    if (form) {
+      observer.observe(form, { childList: true, subtree: true });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const regularSubjects = [
+    'Mathematics', 
+    'Physics', 
+    'Chemistry', 
+    'Biology', 
+    'English', 
+    'Malayalam', 
+    'Hindi', 
+    'Social Science', 
+    'Computer Science', 
+    'Accountancy',
+    'Economics',
+    'Business Studies',
+    'Political Science',
+    'History',
+    'Geography',
+    'Psychology',
+    'Sociology',
+    'Statistics'
+  ];
+
+  const artsSubjects = [
+    'Music',
+    'Dance',
+    'Drawing/Art',
+    'Violin (Classical)',
+    'Violin (Western)',
+    'Keyboard',
+    'Guitar',
+    'Vocal Music'
+  ];
+
   return (
     <div className="space-y-6">
       <div>
         <Label htmlFor="subjects">Subjects Needed *</Label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-          {[
-            'Mathematics', 
-            'Physics', 
-            'Chemistry', 
-            'Biology', 
-            'English', 
-            'Malayalam', 
-            'Hindi', 
-            'Social Science', 
-            'Computer Science', 
-            'Accountancy',
-            'Economics',
-            'Business Studies',
-            'Political Science',
-            'History',
-            'Geography',
-            'Psychology',
-            'Sociology',
-            'Statistics',
-            'Music',
-            'Dance',
-            'Drawing/Art',
-            'Violin (Classical)',
-            'Violin (Western)'
-          ].map((subject) => (
-            <div key={subject} className="flex items-center space-x-2">
-              <Checkbox name="subjects" value={subject} id={subject} />
-              <Label htmlFor={subject} className="text-sm">{subject}</Label>
-            </div>
-          ))}
+          {showRegularSubjects ? (
+            regularSubjects.map((subject) => (
+              <div key={subject} className="flex items-center space-x-2">
+                <Checkbox name="subjects" value={subject} id={subject} />
+                <Label htmlFor={subject} className="text-sm">{subject}</Label>
+              </div>
+            ))
+          ) : (
+            artsSubjects.map((subject) => (
+              <div key={subject} className="flex items-center space-x-2">
+                <Checkbox name="subjects" value={subject} id={subject} />
+                <Label htmlFor={subject} className="text-sm">{subject}</Label>
+              </div>
+            ))
+          )}
         </div>
+        {!showRegularSubjects && (
+          <div className="mt-4">
+            <Label htmlFor="otherSubjects">Other Subjects/Skills</Label>
+            <input 
+              type="text" 
+              name="otherSubjects" 
+              id="otherSubjects" 
+              className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Enter specific subjects or skills needed"
+            />
+          </div>
+        )}
       </div>
 
       <div>

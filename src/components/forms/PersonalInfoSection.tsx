@@ -1,10 +1,24 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const PersonalInfoSection = () => {
+  const [selectedClass, setSelectedClass] = useState('');
+  const [showUniversityFields, setShowUniversityFields] = useState(false);
+  const [showSyllabusField, setShowSyllabusField] = useState(false);
+
+  useEffect(() => {
+    // Check if class requires university fields
+    const higherEducationClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
+    const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
+    const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
+    
+    setShowUniversityFields(higherEducationClasses.includes(selectedClass));
+    setShowSyllabusField(!artsClasses.includes(selectedClass) && !entranceClasses.includes(selectedClass));
+  }, [selectedClass]);
+
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
@@ -14,7 +28,7 @@ const PersonalInfoSection = () => {
         </div>
         <div>
           <Label htmlFor="class">Class/Grade *</Label>
-          <Select name="class" required>
+          <Select name="class" required onValueChange={setSelectedClass}>
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select class" />
             </SelectTrigger>
@@ -57,24 +71,61 @@ const PersonalInfoSection = () => {
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="syllabus">Syllabus *</Label>
-        <Select name="syllabus" required>
-          <SelectTrigger className="mt-1">
-            <SelectValue placeholder="Select syllabus" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="CBSE">CBSE</SelectItem>
-            <SelectItem value="ICSE">ICSE</SelectItem>
-            <SelectItem value="IGCSE">IGCSE</SelectItem>
-            <SelectItem value="STATE">State Board</SelectItem>
-            <SelectItem value="IB">International Baccalaureate (IB)</SelectItem>
-            <SelectItem value="CAMBRIDGE">Cambridge</SelectItem>
-            <SelectItem value="NIOS">NIOS</SelectItem>
-            <SelectItem value="OTHER">Other</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {showSyllabusField && (
+        <div>
+          <Label htmlFor="syllabus">Syllabus *</Label>
+          <Select name="syllabus" required={showSyllabusField}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select syllabus" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="CBSE">CBSE</SelectItem>
+              <SelectItem value="ICSE">ICSE</SelectItem>
+              <SelectItem value="IGCSE">IGCSE</SelectItem>
+              <SelectItem value="STATE">State Board</SelectItem>
+              <SelectItem value="IB">International Baccalaureate (IB)</SelectItem>
+              <SelectItem value="CAMBRIDGE">Cambridge</SelectItem>
+              <SelectItem value="NIOS">NIOS</SelectItem>
+              <SelectItem value="OTHER">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {showUniversityFields && (
+        <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
+          <h3 className="font-medium text-gray-900">Higher Education Details</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="university">University/Institution</Label>
+              <Input 
+                name="university" 
+                id="university" 
+                className="mt-1" 
+                placeholder="Enter university name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="branch">Branch/Specialization</Label>
+              <Input 
+                name="branch" 
+                id="branch" 
+                className="mt-1" 
+                placeholder="e.g., Computer Science, Commerce"
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="customSubjects">Additional Subjects</Label>
+            <Input 
+              name="customSubjects" 
+              id="customSubjects" 
+              className="mt-1" 
+              placeholder="Enter specific subjects needed (comma separated)"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
