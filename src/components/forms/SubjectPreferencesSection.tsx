@@ -1,82 +1,102 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface SubjectPreferencesSectionProps {
   classGrade?: string;
 }
 
-const SubjectPreferencesSection = ({
-  classGrade
-}: {
-  classGrade?: string;
-}) => {
-  const isHigherEd =
-    !!classGrade &&
-    ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
+const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProps) => {
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
 
-  const isArtsOrEntrance =
-    !!classGrade &&
-    ['music','dance','art','violin-classical','violin-western',
-    'neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
+  const isHigherEd = !!classGrade && ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
+  const isArtsOrEntrance = !!classGrade && ['music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
+
+  const allSchoolSubjects = [
+    'Mathematics',
+    'Physics',
+    'Chemistry',
+    'Biology',
+    'English',
+    'Hindi',
+    'Malayalam',
+    'Social Science',
+    'History',
+    'Geography',
+    'Political Science',
+    'Economics',
+    'Computer Science',
+    'Accountancy',
+    'Business Studies',
+    'Psychology',
+    'Sociology',
+    'Philosophy',
+    'Physical Education',
+    'Environmental Science'
+  ];
+
+  const handleSubjectChange = (subject: string, checked: boolean) => {
+    if (checked) {
+      setSelectedSubjects([...selectedSubjects, subject]);
+    } else {
+      setSelectedSubjects(selectedSubjects.filter(s => s !== subject));
+    }
+  };
 
   if (isHigherEd || isArtsOrEntrance) {
-    // Hide this whole component if higher ed/arts/entrance (covered by text input)
-    return null;
-  }
-
-  // Regular subject selection (as before):
-  return (
-    <div className="space-y-4">
-      <div className="grid md:grid-cols-2 gap-6">
+    return (
+      <div className="space-y-4">
         <div>
-          <Label>Select Subjects *</Label>
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="physics" name="subjects" value="Physics" className="h-4 w-4" />
-              <Label htmlFor="physics">Physics</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="chemistry" name="subjects" value="Chemistry" className="h-4 w-4" />
-              <Label htmlFor="chemistry">Chemistry</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="maths" name="subjects" value="Maths" className="h-4 w-4" />
-              <Label htmlFor="maths">Maths</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="biology" name="subjects" value="Biology" className="h-4 w-4" />
-              <Label htmlFor="biology">Biology</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="english" name="subjects" value="English" className="h-4 w-4" />
-              <Label htmlFor="english">English</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="hindi" name="subjects" value="Hindi" className="h-4 w-4" />
-              <Label htmlFor="hindi">Hindi</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="social-science" name="subjects" value="Social Science" className="h-4 w-4" />
-              <Label htmlFor="social-science">Social Science</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="computer-science" name="subjects" value="Computer Science" className="h-4 w-4" />
-              <Label htmlFor="computer-science">Computer Science</Label>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <Label htmlFor="otherSubjects">Other Subjects</Label>
-          <Input 
-            name="otherSubjects" 
-            id="otherSubjects" 
-            className="mt-1" 
-            placeholder="If other, specify here"
+          <Label htmlFor="customSubjects">Subjects *</Label>
+          <Input
+            name="customSubjects"
+            id="customSubjects"
+            className="mt-1"
+            placeholder="Enter subject(s) required (e.g. Data Structures, Algorithms, Economics)"
+            required
           />
         </div>
+      </div>
+    );
+  }
+
+  // Regular school subjects with multi-selection
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label>Select Subjects *</Label>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 max-h-60 overflow-y-auto border rounded-md p-4">
+          {allSchoolSubjects.map((subject) => (
+            <div key={subject} className="flex items-center space-x-2">
+              <Checkbox
+                id={subject}
+                name="subjects"
+                value={subject}
+                checked={selectedSubjects.includes(subject)}
+                onCheckedChange={(checked) => handleSubjectChange(subject, checked as boolean)}
+              />
+              <Label htmlFor={subject} className="text-sm font-normal cursor-pointer">
+                {subject}
+              </Label>
+            </div>
+          ))}
+        </div>
+        {/* Hidden inputs for form submission */}
+        {selectedSubjects.map((subject) => (
+          <input key={subject} type="hidden" name="subjects" value={subject} />
+        ))}
+      </div>
+
+      <div>
+        <Label htmlFor="otherSubjects">Other Subjects</Label>
+        <Input 
+          name="otherSubjects" 
+          id="otherSubjects" 
+          className="mt-1" 
+          placeholder="If other subjects needed, specify here"
+        />
       </div>
     </div>
   );

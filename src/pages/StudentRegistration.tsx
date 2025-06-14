@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -13,30 +14,6 @@ import LocationSection from '@/components/forms/LocationSection';
 import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
 import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
 
-interface StudentRegistration {
-  student_name: string;
-  parent_name: string;
-  email: string;
-  phone: string;
-  class_grade: string;
-  syllabus?: string | null;
-  subjects: string[];
-  custom_subjects?: string | null;
-  university?: string | null;
-  branch?: string | null;
-  mode: string;
-  district: string;
-  location: string;
-  time_preference: string;
-  special_requests: string;
-  tutor_gender?: string;
-  budget?: string;
-  urgency?: string;
-  languages?: string;
-  hoursPerMonth?: string;
-  hourlyRate?: string;
-}
-
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +21,6 @@ const StudentRegistration = () => {
   const [monthlyFee, setMonthlyFee] = useState<number>(8000);
   const { toast } = useToast();
   const [classGrade, setClassGrade] = useState<string>("");
-  const [customSubjects, setCustomSubjects] = useState(""); // local state for higher ed text subjects
 
   const generateWhatsAppFormat = (data: any) => {
     const generateId = () => {
@@ -83,7 +59,7 @@ const StudentRegistration = () => {
     const hoursPerMonth = data.hoursPerMonth || '20';
 
     return `ID-${generateId()}
-Subject - ${data.subjects.join ? data.subjects.join(', ') : data.customSubjects || ''}
+Subject - ${data.subjects?.join ? data.subjects.join(', ') : data.customSubjects || ''}
 Grade - ${data.class_grade}
 Syllabus - ${data.syllabus || 'N/A'}
 Location - ${data.mode === 'online' ? 'Online' : data.location}
@@ -141,12 +117,6 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         return;
       }
 
-      // Calculate the Monthly Fee from hidden input, fallback to state if not present
-      const monthlyFeeValue = formData.get('budget')
-        ? parseInt(formData.get('budget') as string)
-        : monthlyFee;
-      
-      // Remove hoursPerMonth and hourlyRate from DB insert (not in schema)
       const studentData = {
         student_name: formData.get('studentName') as string,
         parent_name: formData.get('parentName') as string,
@@ -164,23 +134,10 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
         time_preference: formData.get('preferredTime') as string || null,
         special_requests: formData.get('requirements') as string || null,
         tutor_gender: formData.get('tutorGender') as string || null,
-        budget: monthlyFeeValue ? monthlyFeeValue.toString() : null,
+        budget: monthlyFee ? monthlyFee.toString() : null,
         urgency: formData.get('urgency') as string || null,
         languages: formData.get('languages') as string || null,
       };
-
-      console.log('Form data being submitted:', {
-        student_name: studentData.student_name,
-        parent_name: studentData.parent_name,
-        email: studentData.email,
-        phone: studentData.phone,
-        class_grade: studentData.class_grade,
-        syllabus: studentData.syllabus,
-        subjects: studentData.subjects,
-        mode: studentData.mode,
-        district: studentData.district,
-        location: studentData.location,
-      });
 
       console.log('Submitting to Supabase:', studentData);
 
@@ -200,7 +157,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
             description: "Your request has been noted. We'll contact you directly via the phone number provided.",
           });
           
-          setSubmittedData(studentData);
+          setSubmittedData({ ...studentData, monthlyFee });
           setIsSubmitted(true);
           return;
         }
@@ -210,7 +167,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
 
       console.log('Successfully inserted:', data);
 
-      setSubmittedData({ ...studentData, monthlyFee: monthlyFeeValue });
+      setSubmittedData({ ...studentData, monthlyFee });
       toast({
         title: "Request Submitted!",
         description: "We'll find suitable tutors and contact you within 24 hours.",
@@ -266,7 +223,6 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
     );
   }
 
-  // Main Form rendering
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -289,32 +245,10 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <PersonalInfoSection />
+              <PersonalInfoSection classGrade={classGrade} setClassGrade={setClassGrade} />
               <LocationSection />
               <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} />
-
-              {(() => {
-                if (['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade)) {
-                  return (
-                    <div className="space-y-4">
-                      {/* Subjects as text input */}
-                      <div>
-                        <Label htmlFor="customSubjects">Subjects Needed *</Label>
-                        <input
-                          name="customSubjects"
-                          id="customSubjects"
-                          className="mt-1 border rounded w-full px-2 py-2"
-                          placeholder="Enter subject(s) required (e.g. Economics, Computer Science)"
-                          required
-                        />
-                      </div>
-                    </div>
-                  );
-                }
-                return (
-                  <SubjectPreferencesSection classGrade={classGrade} />
-                );
-              })()}
+              <SubjectPreferencesSection classGrade={classGrade} />
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>

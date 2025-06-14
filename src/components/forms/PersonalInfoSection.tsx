@@ -1,24 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
+
+import React from 'react';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const higherEdClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
-const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
-const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
+interface PersonalInfoSectionProps {
+  classGrade: string;
+  setClassGrade: (grade: string) => void;
+}
 
-const PersonalInfoSection = () => {
-  const [selectedClass, setSelectedClass] = useState('');
-  const [showUniversityFields, setShowUniversityFields] = useState(false);
-  const [showSyllabusField, setShowSyllabusField] = useState(false);
-  const [showSubjectInput, setShowSubjectInput] = useState(false);
-
-  useEffect(() => {
-    setShowUniversityFields(higherEdClasses.includes(selectedClass));
-    setShowSyllabusField(!(higherEdClasses.includes(selectedClass) || artsClasses.includes(selectedClass) || entranceClasses.includes(selectedClass)));
-    setShowSubjectInput(higherEdClasses.includes(selectedClass));
-  }, [selectedClass]);
-
+const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionProps) => {
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
@@ -27,8 +18,26 @@ const PersonalInfoSection = () => {
           <Input name="studentName" id="studentName" required className="mt-1" />
         </div>
         <div>
+          <Label htmlFor="parentName">Parent/Guardian Name *</Label>
+          <Input name="parentName" id="parentName" required className="mt-1" />
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <Label htmlFor="email">Email *</Label>
+          <Input name="email" id="email" type="email" required className="mt-1" />
+        </div>
+        <div>
+          <Label htmlFor="parentPhone">Parent Phone Number *</Label>
+          <Input name="parentPhone" id="parentPhone" type="tel" required className="mt-1" />
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
           <Label htmlFor="class">Class/Grade *</Label>
-          <Select name="class" required onValueChange={setSelectedClass}>
+          <Select name="class" value={classGrade} onValueChange={setClassGrade} required>
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select class" />
             </SelectTrigger>
@@ -54,92 +63,88 @@ const PersonalInfoSection = () => {
               <SelectItem value="msc">M.Sc</SelectItem>
               <SelectItem value="ma">M.A</SelectItem>
               <SelectItem value="mcom">M.Com</SelectItem>
-              <SelectItem value="neet">NEET</SelectItem>
-              <SelectItem value="jee">JEE</SelectItem>
-              <SelectItem value="upsc">UPSC</SelectItem>
-              <SelectItem value="psc">PSC</SelectItem>
-              <SelectItem value="banking">Banking Exams</SelectItem>
-              <SelectItem value="ssc">SSC</SelectItem>
-              <SelectItem value="railway">Railway Exams</SelectItem>
               <SelectItem value="music">Music</SelectItem>
               <SelectItem value="dance">Dance</SelectItem>
               <SelectItem value="art">Art/Drawing</SelectItem>
               <SelectItem value="violin-classical">Violin (Classical)</SelectItem>
               <SelectItem value="violin-western">Violin (Western)</SelectItem>
+              <SelectItem value="neet">NEET</SelectItem>
+              <SelectItem value="jee">JEE</SelectItem>
+              <SelectItem value="upsc">UPSC</SelectItem>
+              <SelectItem value="psc">PSC</SelectItem>
+              <SelectItem value="banking">Banking</SelectItem>
+              <SelectItem value="ssc">SSC</SelectItem>
+              <SelectItem value="railway">Railway</SelectItem>
             </SelectContent>
           </Select>
         </div>
+        {!['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade) && (
+          <div>
+            <Label htmlFor="syllabus">Syllabus *</Label>
+            <Select name="syllabus" required>
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select syllabus" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="CBSE">CBSE</SelectItem>
+                <SelectItem value="ICSE">ICSE</SelectItem>
+                <SelectItem value="State Board">State Board</SelectItem>
+                <SelectItem value="IB">IB</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
-      {showSyllabusField && (
-        <div>
-          <Label htmlFor="syllabus">Syllabus *</Label>
-          <Select name="syllabus" required>
-            <SelectTrigger className="mt-1">
-              <SelectValue placeholder="Select syllabus" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="CBSE">CBSE</SelectItem>
-              <SelectItem value="ICSE">ICSE</SelectItem>
-              <SelectItem value="IGCSE">IGCSE</SelectItem>
-              <SelectItem value="STATE">State Board</SelectItem>
-              <SelectItem value="IB">International Baccalaureate (IB)</SelectItem>
-              <SelectItem value="CAMBRIDGE">Cambridge</SelectItem>
-              <SelectItem value="NIOS">NIOS</SelectItem>
-              <SelectItem value="OTHER">Other</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-
-      {showUniversityFields && (
-        <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="university">University/Institution *</Label>
-              <Input 
-                name="university" 
-                id="university"
-                required
-                className="mt-1" 
-                placeholder="Enter university name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="branch">Branch/Specialization *</Label>
-              <Input 
-                name="branch" 
-                id="branch"
-                required
-                className="mt-1" 
-                placeholder="e.g., Computer Science, Commerce"
-              />
-            </div>
+      {/* Higher education fields */}
+      {['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade) && (
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="university">University/Institution *</Label>
+            <Input name="university" id="university" required className="mt-1" placeholder="Enter university name" />
+          </div>
+          <div>
+            <Label htmlFor="branch">Branch/Specialization *</Label>
+            <Input name="branch" id="branch" required className="mt-1" placeholder="Enter branch/specialization" />
           </div>
         </div>
       )}
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <Label htmlFor="parentName">Parent/Guardian Name *</Label>
-          <Input name="parentName" id="parentName" required className="mt-1" />
+          <Label htmlFor="mode">Tutoring Mode *</Label>
+          <Select name="mode" required>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="home">Home Tuition</SelectItem>
+              <SelectItem value="online">Online Tuition</SelectItem>
+              <SelectItem value="both">Both Home & Online</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
-          <Label htmlFor="parentPhone">Contact Number *</Label>
-          <Input name="parentPhone" id="parentPhone" type="tel" required className="mt-1" />
+          <Label htmlFor="preferredTime">Preferred Time</Label>
+          <Select name="preferredTime">
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select time preference" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="morning">Morning (6 AM - 12 PM)</SelectItem>
+              <SelectItem value="afternoon">Afternoon (12 PM - 6 PM)</SelectItem>
+              <SelectItem value="evening">Evening (6 PM - 10 PM)</SelectItem>
+              <SelectItem value="flexible">Flexible</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div>
-        <Label htmlFor="email">Email Address *</Label>
-        <Input name="email" id="email" type="email" required className="mt-1" />
-      </div>
-
-      <div>
-        <Label htmlFor="languages">Medium of Teaching *</Label>
-        <Select name="languages" required>
+        <Label htmlFor="languages">Preferred Teaching Language</Label>
+        <Select name="languages">
           <SelectTrigger className="mt-1">
-            <SelectValue placeholder="Select medium of teaching" />
+            <SelectValue placeholder="Select language preference" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="English">English</SelectItem>
