@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,8 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import TutorAuth from "./pages/TutorAuth";
+import TutorDashboard from "./pages/TutorDashboard";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,8 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/tutor-auth" element={<TutorAuth />} />
+              <Route path="/tutor/dashboard" element={<TutorDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
