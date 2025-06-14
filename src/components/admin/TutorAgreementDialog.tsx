@@ -83,7 +83,7 @@ Alternate Number: ${formData.alternateNumber}
 Permanent Address: ${formData.permanentAddress}
 Present Address: ${formData.presentAddress}
 
-Congratulations and welcome to Pranavam Study Centre 1to1 home tutors a sister concern of "The Isec School of Engineering & Consultancies"
+Congratulations and welcome to Pranavam Study Centre
 
 You must take the time to read and understand it before registering as a tutor or rendering services through Pranavam Study Centre, you accept that you are entering into a contract with us based on these Terms and Conditions.
 
