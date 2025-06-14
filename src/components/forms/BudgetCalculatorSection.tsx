@@ -41,7 +41,6 @@ const BudgetCalculatorSection = ({ setMonthlyFee }: { setMonthlyFee?: (fee: numb
             step={100}
             className="mt-2"
           />
-          <input type="hidden" name="hourlyRate" value={hourlyRate[0]} />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>₹300</span>
             <span>₹3000</span>
@@ -55,19 +54,17 @@ const BudgetCalculatorSection = ({ setMonthlyFee }: { setMonthlyFee?: (fee: numb
             value={hoursPerMonth}
             onValueChange={setHoursPerMonth}
             max={60}
-            min={12}
+            min={8}
             step={2}
             className="mt-2"
           />
-          <input type="hidden" name="hoursPerMonth" value={hoursPerMonth[0]} />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>12 hrs</span>
+            <span>8 hrs</span>
             <span>60 hrs</span>
           </div>
         </div>
       </div>
       {/* Monthly Fee only in state, not visible here */}
-      <input type="hidden" name="budget" value={monthlyFee} />
     </div>
   );
 };

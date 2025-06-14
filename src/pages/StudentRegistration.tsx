@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, CheckCircle, Copy } from 'lucide-react';
+import { BookOpen, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
@@ -21,66 +21,6 @@ const StudentRegistration = () => {
   const [monthlyFee, setMonthlyFee] = useState<number>(8000);
   const { toast } = useToast();
   const [classGrade, setClassGrade] = useState<string>("");
-
-  const generateWhatsAppFormat = (data: any) => {
-    const generateId = () => {
-      const date = new Date();
-      const year = date.getFullYear().toString().slice(-2);
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
-      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-      return `EN${year}${month}${day}${random}`;
-    };
-
-    const generateNote = (location: string, subjects: string[], syllabus: string, grade: string) => {
-      const nearbyAreas = {
-        'pongumoodu': 'Pongumoodu, Chavadimukk, Kallampally, Sreekaryam, Cheruvakkal, Parottukonam, Ulloor, Keshavadhasapuram, Kottamugal',
-        'trivandrum': 'Trivandrum city, Palayam, Statue, East Fort, Central Station, Medical College, Kowdiar',
-        'kollam': 'Kollam city, Chinnakada, Sakthikulangara, Eravipuram, Kadappakada',
-        'vattiyoorkavu': 'Peroorkada, Peyad, Poojappura, Kowdiar, Palayam, Nandavanam, Karamana, Thampanoor',
-        'keshavadhasapuram': 'Keshavadhasapuram, Ulloor, Pattom, Mangulam, Muttada, Murinjapalam, Parottukonam',
-        'parottukonam': 'Parottukonam, Ulloor, Kochulloor, Muttada, Nalanchira, Paruthippara, Keshavadhasapuram, Murinjapalam, Pattom',
-        'anayara': 'Anayara, Balaramapuram, Neyyattinkara, Pothencode, Venjaramoodu',
-        'default': location
-      };
-
-      const area = nearbyAreas[location.toLowerCase()] || nearbyAreas['default'];
-      const subjectText = subjects.join(', ');
-      
-      return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade}-grade student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
-    };
-
-    let hourRate = parseInt(data.hourlyRate || '0');
-    if (!isNaN(hourRate)) {
-      hourRate = Math.max(hourRate - 100, 0);
-    } else {
-      hourRate = 0;
-    }
-    const hoursPerMonth = data.hoursPerMonth || '20';
-
-    return `ID-${generateId()}
-Subject - ${data.subjects?.join ? data.subjects.join(', ') : data.customSubjects || ''}
-Grade - ${data.class_grade}
-Syllabus - ${data.syllabus || 'N/A'}
-Location - ${data.mode === 'online' ? 'Online' : data.location}
-Tutor Gender required - ${data.tutor_gender || 'No Preference'}
-Medium of Teaching - ${data.languages || 'English/Malayalam'}
-Probable hrs in month - ${hoursPerMonth} hrs
-Hour Rate - ${hourRate}
-Contact 9496315903
-Note - ${generateNote(data.location, data.subjects || [data.customSubjects], data.syllabus || 'CBSE', data.class_grade)}`;
-  };
-
-  const copyToClipboard = () => {
-    if (submittedData) {
-      const whatsappText = generateWhatsAppFormat(submittedData);
-      navigator.clipboard.writeText(whatsappText);
-      toast({
-        title: "Copied to clipboard!",
-        description: "WhatsApp format copied successfully.",
-      });
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,16 +143,7 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
               <p>👨‍🏫 We'll share tutor profiles</p>
               <p>📅 Schedule trial classes</p>
             </div>
-            <div className="mb-4">
-              <Label className="font-semibold text-blue-700 text-lg">
-                Monthly Fee: ₹{submittedData?.monthlyFee?.toLocaleString()}
-              </Label>
-            </div>
             <div className="space-y-3">
-              <Button onClick={copyToClipboard} variant="outline" className="w-full">
-                <Copy className="h-4 w-4 mr-2" />
-                Copy WhatsApp Format
-              </Button>
               <Button onClick={() => setIsSubmitted(false)} className="w-full">
                 Submit Another Request
               </Button>
@@ -246,9 +177,9 @@ Note - ${generateNote(data.location, data.subjects || [data.customSubjects], dat
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <PersonalInfoSection classGrade={classGrade} setClassGrade={setClassGrade} />
+              <SubjectPreferencesSection classGrade={classGrade} />
               <LocationSection />
               <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} />
-              <SubjectPreferencesSection classGrade={classGrade} />
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>

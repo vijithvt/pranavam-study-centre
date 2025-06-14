@@ -27,6 +27,10 @@ const TutorRegistration = () => {
     const classes = Array.from(formData.getAll('classes'));
     const languages = Array.from(formData.getAll('languages'));
     
+    // Get subjects - could be text field or checkboxes
+    const subjectsText = formData.get('subjects') as string;
+    const subjects = subjectsText ? [subjectsText] : Array.from(formData.getAll('subjectsList'));
+    
     try {
       const { error } = await supabase
         .from('tutor_registrations')
@@ -37,7 +41,7 @@ const TutorRegistration = () => {
           whatsapp: formData.get('whatsapp') as string,
           district: formData.get('district') as string,
           location: formData.get('area') as string,
-          subjects: [formData.get('subjects') as string], // expecting string array
+          subjects: subjects as string[],
           classes: classes as string[],
           qualification: formData.get('qualification') as string,
           specialization: formData.get('specialization') as string,
