@@ -141,33 +141,100 @@ const About = () => {
 
       {/* Story Section */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
               Our Story
             </h2>
           </div>
-          
-          <div className="prose prose-lg mx-auto text-gray-600">
-            <p>
-              Pranavam Study Centre was born out of a heartfelt realization: even in a state like Kerala—celebrated for its high literacy and strong academic foundations—many students in rural and semi-urban areas still lacked access to personalized guidance that could unlock their full potential.
-            </p>
-            
-            <p>
-              Established in 2016 in Vilappilsala, Thiruvananthapuram, Pranavam began as a humble effort to bridge this gap. What started with just a few passionate tutors helping local students has grown into a trusted educational hub that continues to serve the academic needs of our community with dedication and care.
-            </p>
-            
-            <p>
-              Rooted deeply in Kerala's rich educational values, our approach blends traditional mentorship with modern teaching techniques. We believe that every child learns differently—with their own pace, strengths, and dreams. That's why we thoughtfully pair students with tutors who are not just subject matter experts but also patient mentors, committed to nurturing curiosity and confidence.
-            </p>
-            
-            <p>
-              Over the years, we've become part of countless student journeys—from those who overcame their fear of science and math, to those who found their voice in English communication, and many who simply rediscovered the joy of learning.
-            </p>
-
-            <p>
-              Today, Pranavam Study Centre stands as a symbol of hope and excellence in Vilappilsala—committed to helping every learner thrive.
-            </p>
+          {/* Story Content */}
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Timeline / Steps */}
+            <div className="relative w-full md:w-2/3">
+              {/* Step 1 */}
+              <div className="flex md:items-start items-center gap-4 mb-8">
+                <div className="flex-shrink-0 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shadow-lg ring-4 ring-primary/20">
+                  1
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">
+                    The Realization
+                  </div>
+                  <p className="text-gray-600">
+                    Pranavam Study Centre was born out of a heartfelt realization: even in a state like Kerala—celebrated for its high literacy and strong academic foundations—many students in rural and semi-urban areas still lacked access to personalized guidance that could unlock their full potential.
+                  </p>
+                </div>
+              </div>
+              {/* Step 2 */}
+              <div className="flex md:items-start items-center gap-4 mb-8">
+                <div className="flex-shrink-0 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shadow-lg ring-4 ring-primary/20">
+                  2
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">
+                    Humble Beginnings
+                  </div>
+                  <p className="text-gray-600">
+                    Established in 2016 in Vilappilsala, Thiruvananthapuram, Pranavam began as a humble effort to bridge this gap. What started with just a few passionate tutors helping local students has grown into a trusted educational hub that continues to serve the academic needs of our community with dedication and care.
+                  </p>
+                </div>
+              </div>
+              {/* Step 3 */}
+              <div className="flex md:items-start items-center gap-4 mb-8">
+                <div className="flex-shrink-0 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shadow-lg ring-4 ring-primary/20">
+                  3
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">
+                    Our Approach
+                  </div>
+                  <p className="text-gray-600">
+                    Rooted deeply in Kerala's rich educational values, our approach blends traditional mentorship with modern teaching techniques. We believe that every child learns differently—with their own pace, strengths, and dreams. That's why we thoughtfully pair students with tutors who are not just subject matter experts but also patient mentors, committed to nurturing curiosity and confidence.
+                  </p>
+                </div>
+              </div>
+              {/* Step 4 */}
+              <div className="flex md:items-start items-center gap-4 mb-8">
+                <div className="flex-shrink-0 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shadow-lg ring-4 ring-primary/20">
+                  4
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">
+                    Milestones & Impact
+                  </div>
+                  <p className="text-gray-600">
+                    Over the years, we've become part of countless student journeys—from those who overcame their fear of science and math, to those who found their voice in English communication, and many who simply rediscovered the joy of learning.
+                  </p>
+                </div>
+              </div>
+              {/* Step 5 */}
+              <div className="flex md:items-start items-center gap-4">
+                <div className="flex-shrink-0 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shadow-lg ring-4 ring-primary/20">
+                  5
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">
+                    Today and Beyond
+                  </div>
+                  <p className="text-gray-600">
+                    Today, Pranavam Study Centre stands as a symbol of hope and excellence in Vilappilsala—committed to helping every learner thrive.
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Side Image & Quote */}
+            <div className="w-full md:w-1/3 flex flex-col items-center">
+              <img
+                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=600&q=80"
+                alt="Learning journey"
+                className="rounded-xl shadow-lg mb-8 w-full max-w-xs md:max-w-none"
+              />
+              <blockquote className="border-l-4 border-primary bg-white p-6 rounded-lg shadow-inner">
+                <span className="italic text-gray-700">
+                  “Empowering students by connecting them with mentors who truly care is not just our mission – it’s our passion.”
+                </span>
+              </blockquote>
+            </div>
           </div>
         </div>
       </section>
