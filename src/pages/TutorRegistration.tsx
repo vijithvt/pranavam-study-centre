@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,66 @@ import TutorQualificationSection from '@/components/forms/TutorQualificationSect
 const TutorRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const { toast } = useToast();
+
+  const allSubjects = [
+    'Mathematics',
+    'Physics',
+    'Chemistry',
+    'Biology',
+    'English',
+    'Hindi',
+    'Malayalam',
+    'Social Science',
+    'History',
+    'Geography',
+    'Political Science',
+    'Economics',
+    'Computer Science',
+    'Accountancy',
+    'Business Studies',
+    'Psychology',
+    'Sociology',
+    'Philosophy',
+    'Physical Education',
+    'Environmental Science'
+  ];
+
+  const allClasses = [
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+    'btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom',
+    'music', 'dance', 'art', 'violin-classical', 'violin-western',
+    'neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'
+  ];
+
+  const allLanguages = ['English', 'Malayalam', 'Hindi', 'Tamil'];
+
+  const handleSubjectChange = (subject: string, checked: boolean) => {
+    if (checked) {
+      setSelectedSubjects([...selectedSubjects, subject]);
+    } else {
+      setSelectedSubjects(selectedSubjects.filter(s => s !== subject));
+    }
+  };
+
+  const handleClassChange = (classItem: string, checked: boolean) => {
+    if (checked) {
+      setSelectedClasses([...selectedClasses, classItem]);
+    } else {
+      setSelectedClasses(selectedClasses.filter(c => c !== classItem));
+    }
+  };
+
+  const handleLanguageChange = (language: string, checked: boolean) => {
+    if (checked) {
+      setSelectedLanguages([...selectedLanguages, language]);
+    } else {
+      setSelectedLanguages(selectedLanguages.filter(l => l !== language));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,31 +83,51 @@ const TutorRegistration = () => {
 
     const formData = new FormData(e.target as HTMLFormElement);
     
-    // Get checkbox values
-    const classes = Array.from(formData.getAll('classes'));
-    const languages = Array.from(formData.getAll('languages'));
-    
-    // Get subjects - handle both text field and checkboxes properly
-    const subjectsText = formData.get('subjects') as string;
-    let subjects: string[] = [];
-    
-    if (subjectsText && subjectsText.trim()) {
-      // If there's text in subjects field, use it
-      subjects = [subjectsText.trim()];
-    } else {
-      // Otherwise get from checkboxes
-      subjects = Array.from(formData.getAll('subjectsList')) as string[];
+    // Validate subjects
+    if (selectedSubjects.length === 0) {
+      const customSubjects = formData.get('customSubjects') as string;
+      if (!customSubjects || customSubjects.trim() === '') {
+        toast({
+          title: "Validation Error",
+          description: "Please select or enter at least one subject.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
     }
-    
-    // Ensure we have at least one subject
-    if (subjects.length === 0) {
+
+    // Validate classes
+    if (selectedClasses.length === 0) {
       toast({
         title: "Validation Error",
-        description: "Please enter or select at least one subject.",
+        description: "Please select at least one class/grade.",
         variant: "destructive"
       });
       setIsSubmitting(false);
       return;
+    }
+
+    // Validate languages
+    if (selectedLanguages.length === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please select at least one language.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Prepare subjects array
+    let subjects: string[] = [];
+    if (selectedSubjects.length > 0) {
+      subjects = selectedSubjects;
+    } else {
+      const customSubjects = formData.get('customSubjects') as string;
+      if (customSubjects && customSubjects.trim()) {
+        subjects = [customSubjects.trim()];
+      }
     }
     
     try {
@@ -61,12 +141,12 @@ const TutorRegistration = () => {
           district: formData.get('district') as string,
           location: formData.get('area') as string,
           subjects: subjects,
-          classes: classes as string[],
+          classes: selectedClasses,
           qualification: formData.get('qualification') as string,
           specialization: formData.get('specialization') as string,
           experience: parseInt(formData.get('experience') as string) || 0,
           availability: formData.get('teachingMode') as string,
-          languages: languages as string[],
+          languages: selectedLanguages,
           mode: formData.get('teachingMode') as string
         });
 
@@ -137,6 +217,92 @@ const TutorRegistration = () => {
               <TutorPersonalInfoSection />
               <LocationSection />
               <TutorQualificationSection />
+
+              {/* Subjects Section */}
+              <div className="space-y-4">
+                <div>
+                  <Label>Subjects You Can Teach *</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 max-h-60 overflow-y-auto border rounded-md p-4">
+                    {allSubjects.map((subject) => (
+                      <div key={subject} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`subject-${subject}`}
+                          checked={selectedSubjects.includes(subject)}
+                          onCheckedChange={(checked) => handleSubjectChange(subject, checked as boolean)}
+                        />
+                        <Label htmlFor={`subject-${subject}`} className="text-sm font-normal cursor-pointer">
+                          {subject}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="customSubjects">Other Subjects</Label>
+                  <Input 
+                    name="customSubjects" 
+                    id="customSubjects" 
+                    className="mt-1" 
+                    placeholder="If other subjects, specify here (e.g., Advanced Mathematics, Organic Chemistry)"
+                  />
+                </div>
+              </div>
+
+              {/* Classes Section */}
+              <div className="space-y-4">
+                <div>
+                  <Label>Classes/Grades You Can Teach *</Label>
+                  <div className="grid grid-cols-4 md:grid-cols-6 gap-3 mt-2 border rounded-md p-4">
+                    {allClasses.map((classItem) => (
+                      <div key={classItem} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`class-${classItem}`}
+                          checked={selectedClasses.includes(classItem)}
+                          onCheckedChange={(checked) => handleClassChange(classItem, checked as boolean)}
+                        />
+                        <Label htmlFor={`class-${classItem}`} className="text-sm font-normal cursor-pointer">
+                          {classItem}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Languages Section */}
+              <div className="space-y-4">
+                <div>
+                  <Label>Languages You Can Teach In *</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2 border rounded-md p-4">
+                    {allLanguages.map((language) => (
+                      <div key={language} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`language-${language}`}
+                          checked={selectedLanguages.includes(language)}
+                          onCheckedChange={(checked) => handleLanguageChange(language, checked as boolean)}
+                        />
+                        <Label htmlFor={`language-${language}`} className="text-sm font-normal cursor-pointer">
+                          {language}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Teaching Mode */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="teachingMode">Preferred Teaching Mode *</Label>
+                  <select name="teachingMode" id="teachingMode" required className="w-full mt-1 p-2 border rounded-md">
+                    <option value="">Select teaching mode</option>
+                    <option value="home">Home Tuition</option>
+                    <option value="online">Online</option>
+                    <option value="both">Both</option>
+                  </select>
+                </div>
+              </div>
 
               {/* CV Upload Only */}
               <div className="space-y-4">

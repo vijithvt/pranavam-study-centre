@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Download } from 'lucide-react';
+import { LogOut, Download, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ import TutorDetailsDialog from '@/components/admin/TutorDetailsDialog';
 import StudentDetailsDialog from '@/components/admin/StudentDetailsDialog';
 import StatusFilter from '@/components/admin/StatusFilter';
 import StatusUpdateDialog from '@/components/admin/StatusUpdateDialog';
+import TutorAgreementDialog from '@/components/admin/TutorAgreementDialog';
 
 interface TutorRegistration {
   id: string;
@@ -71,6 +72,7 @@ const AdminDashboard = () => {
   const [studentStatusFilter, setStudentStatusFilter] = useState('all');
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isTutorAgreementOpen, setIsTutorAgreementOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -242,10 +244,20 @@ const AdminDashboard = () => {
             <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-600">Manage tutor and student registrations</p>
           </div>
-          <Button onClick={handleSignOut} variant="outline">
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
+          <div className="flex space-x-4">
+            <Button 
+              onClick={() => setIsTutorAgreementOpen(true)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <FileText className="h-4 w-4" />
+              Tutor Agreement
+            </Button>
+            <Button onClick={handleSignOut} variant="outline">
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
         </div>
 
         <StatsCards 
@@ -343,6 +355,11 @@ const AdminDashboard = () => {
           recordId={statusUpdateId}
           currentStatus={currentStatus}
           onStatusUpdated={handleStatusUpdated}
+        />
+
+        <TutorAgreementDialog
+          isOpen={isTutorAgreementOpen}
+          onClose={() => setIsTutorAgreementOpen(false)}
         />
       </div>
     </div>
