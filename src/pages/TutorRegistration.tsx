@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,45 +14,157 @@ import LocationSection from '@/components/forms/LocationSection';
 import TutorQualificationSection from '@/components/forms/TutorQualificationSection';
 import { Link } from 'react-router-dom';
 
+// Terms data: array of { title: string, text: string } objects for each section
+const termsSections = [
+  {
+    title: "General Terms & Agreements",
+    text: `
+1. It is agreed that Pranavam Study Centre is hiring you to provide educational services to our client on a contract basis as and when necessary for a period of 12 months.
+
+2. You understand and agree that all students, parents and Guardians are clients of only Pranavam Study Centre. ... Tutors should not under any circumstance collect fees. Tutors should not under any circumstance change the schedule or take sessions outside the schedule without prior permission from Pranavam Study Centre.
+
+3. It is agreed that the Tutor shall always perform the services to the highest standard.
+
+4. In particular, but not limited to the below points, the Tutor shall make every effort to:
+a) be punctual
+b) not use mobile phones or gadgets during the session.
+c) be presentable and dressed appropriately and respectably at all times
+d) be polite, diligent and helpful. Never use profanity in front of a client or student, or make derogatory remarks about a student. Any tutor who does this will be removed from our team immediately.
+e) do all the necessary preparations for each tutoring session
+f) not cancel lessons unless absolutely necessary.
+
+5. It should be noted that tutors who repeatedly cancel sessions ... may be removed.
+
+6. You understand and agree ... Contract for services. It is not a contract of employment.
+
+7. You understand and agree that you won't get involved in any kind of interaction with parents, regarding payment ... unless arranged by Pranavam Study Centre management.
+
+8. You understand that regular assessments, assignments, exercises or homework are integral to tutoring and you should follow such work timeously.
+
+9. The Tutor must keep the client and Pranavam Study Centre informed of any issues or problems with each student taught, as and when they develop
+
+10. The tutor shall report to Pranavam Study Centre any misbehaviour or disrespect by students, parents or any other persons immediately ...
+    `.trim()
+  },
+  {
+    title: 'Demo Session',
+    text: `
+1. A demo class will be arranged only after getting your willingness to handle the Subject/ Student for an entire academic year, fixing hourly Payment and checking location accessibility.
+
+2. Once demo class timing is fixed ... the session shall not be rescheduled ... you may not be considered ...
+
+3. You understand that the demo session will be of 1 hour ... no payment for this session.
+
+4. Selected Tutors should not share their selected tuition details with their friends/colleagues ...
+
+5. Academic support team will be your sole point of contact for communicating with Parents. ... If found communicating with parents without keeping Pranavam Study Centre in the loop, the tutor will not be considered ...
+
+6. You understand that the final decision ... is yours and yours alone. ...
+
+7. During the demo class you should analyse students' calibre ...
+
+8. After the demo class tutor can recommend the number of classes and hours per session needed.
+
+9. A fixed number of classes, a minimum of 12-hour sessions should be there.
+    `.trim()
+  },
+  {
+    title: 'Leave and Rescheduling',
+    text: `
+1. If you cannot attend the tuition as per the schedule, a prior notice of 12 hours before the session starts must be given ...
+
+2. The tutor will wait for a maximum of 20 minutes ... for the student's arrival ...
+
+3. Session will be considered payable if the tutor arrives but the student is unavailable ...
+
+4. Rescheduled classes have to be adjusted with another time slot ...
+
+5. If a parent requests to cancel ... inform them to contact the academic support team ...
+
+6. If you are leaving any tuition, you must intimate before one month.
+
+7. If the tutor discontinues the classes in the middle ... no further payment will be made ...
+    `.trim()
+  },
+  {
+    title: 'Payment and Assessment Process',
+    text: `
+1. Tuition charges with transportation will be fixed at an hourly fee agreed upon ...
+
+2. Pranavam Study Centre will ensure that the Tutor gets paid for sessions reported ...
+
+3. Payment process ... within 3 to 5 working days ...
+
+4. After completing each session, details ... should be properly updated ...
+
+5. If there is no academic improvement for the students ...
+
+6. In exceptional circumstances ... If the tutor fails to accommodate, the lesson will be chargeable ... no further charges or payments due Tutor.
+
+7. If the tutor discontinues the classes without 3 weeks prior notice, the payment will be released only after providing a replacement tutor.
+
+8. Individual classes will be 1-hour 2-hour sessions/classes depending ...
+    `.trim()
+  },
+  {
+    title: 'Termination of Agreement',
+    text: `
+1. Both parties appreciate the importance of a good understanding and trust between the tutor and the student ...
+
+2. If the Tutor, in her/his reasonable opinion, is unhappy with the Client ... may terminate the tutor's session ...
+
+3. The Tutor hereby agrees that the Company may terminate this Agreement with immediate effect and deny payment of due:
+a) if the Tutor commits a serious or material breach of any of his or her obligations
+b) if the Tutor repeatedly commits minor breaches of obligations under this Agreement
+c) if the Tutor acts in such a way as to discredit the Company
+d) if the Tutor shall have been found guilty of any criminal offence
+e) Any complaints from the parent side such as not keeping time, usage of mobile phones ... which affect the session assessment.
+f) If the tutor misbehaves the student in any manner ...
+    `.trim()
+  },
+];
+
+// Capitalized version of class names
+const allClasses = [
+  '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+  'BTech', 'BSc', 'BA', 'BCom', 'LLB', 'MTech', 'MSc', 'MA', 'MCom',
+  'Music', 'Dance', 'Art', 'Violin-Classical', 'Violin-Western',
+  'NEET', 'JEE', 'UPSC', 'PSC', 'Banking', 'SSC', 'Railway'
+];
+
+const allSubjects = [
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'English',
+  'Hindi',
+  'Malayalam',
+  'Social Science',
+  'History',
+  'Geography',
+  'Political Science',
+  'Economics',
+  'Computer Science',
+  'Accountancy',
+  'Business Studies',
+  'Psychology',
+  'Sociology',
+  'Philosophy',
+  'Physical Education',
+  'Environmental Science'
+];
+
+const allLanguages = ['English', 'Malayalam', 'Hindi', 'Tamil'];
+
 const TutorRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [termsChecked, setTermsChecked] = useState<boolean[]>(Array(termsSections.length).fill(false));
   const { toast } = useToast();
-
-  const allSubjects = [
-    'Mathematics',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'English',
-    'Hindi',
-    'Malayalam',
-    'Social Science',
-    'History',
-    'Geography',
-    'Political Science',
-    'Economics',
-    'Computer Science',
-    'Accountancy',
-    'Business Studies',
-    'Psychology',
-    'Sociology',
-    'Philosophy',
-    'Physical Education',
-    'Environmental Science'
-  ];
-
-  const allClasses = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
-    'btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom',
-    'music', 'dance', 'art', 'violin-classical', 'violin-western',
-    'neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'
-  ];
-
-  const allLanguages = ['English', 'Malayalam', 'Hindi', 'Tamil'];
 
   const handleSubjectChange = (subject: string, checked: boolean) => {
     if (checked) {
@@ -77,12 +190,30 @@ const TutorRegistration = () => {
     }
   };
 
+  // Handler for ticking terms sections
+  const handleTermsCheck = (idx: number, checked: boolean) => {
+    const updated = [...termsChecked];
+    updated[idx] = checked;
+    setTermsChecked(updated);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Validate that all terms are checked
+    if (!termsChecked.every(Boolean)) {
+      toast({
+        title: "Please Accept All Terms",
+        description: "Please read and accept each terms & conditions section before submitting.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     const formData = new FormData(e.target as HTMLFormElement);
-    
+
     // Validate subjects
     if (selectedSubjects.length === 0) {
       const customSubjects = formData.get('customSubjects') as string;
@@ -129,7 +260,7 @@ const TutorRegistration = () => {
         subjects = [customSubjects.trim()];
       }
     }
-    
+
     try {
       const { error } = await supabase
         .from('tutor_registrations')
@@ -147,7 +278,7 @@ const TutorRegistration = () => {
           experience: parseInt(formData.get('experience') as string) || 0,
           availability: formData.get('teachingMode') as string,
           languages: selectedLanguages,
-          mode: formData.get('teachingMode') as string
+          mode: formData.get('teachingMode') as string,
         });
 
       if (error) {
@@ -214,6 +345,7 @@ const TutorRegistration = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+
               <TutorPersonalInfoSection />
               <LocationSection />
               <TutorQualificationSection />
@@ -249,7 +381,7 @@ const TutorRegistration = () => {
                 </div>
               </div>
 
-              {/* Classes Section */}
+              {/* Classes/Grades Section */}
               <div className="space-y-4">
                 <div>
                   <Label>Classes/Grades You Can Teach *</Label>
@@ -325,14 +457,29 @@ const TutorRegistration = () => {
                 />
               </div>
 
-              {/* Terms and Conditions */}
-              <div className="flex items-start space-x-2">
-                <Checkbox id="terms" required />
-                <Label htmlFor="terms" className="text-sm leading-relaxed">
-                  I agree to the <Link to="/tutor-terms" target="_blank" className="underline text-blue-700">Terms and Conditions</Link> and confirm that all information provided is accurate.
-                  I understand that Pranavam Study Centre may verify the information and contact me for interviews.
-                </Label>
+              {/* Terms & Conditions - with checkboxes for each section */}
+              <div className="space-y-6 border-[1.5px] border-gray-200 rounded-lg p-4 bg-gray-50 mt-2">
+                <h2 className="text-lg font-semibold mb-3">Terms & Conditions (Read and tick each section)</h2>
+                {termsSections.map((section, idx) => (
+                  <div key={section.title} className="mb-4 border border-gray-200 rounded-lg p-3 bg-white">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold">{section.title}</span>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`terms-section-${idx}`}
+                          checked={termsChecked[idx]}
+                          onCheckedChange={(checked) => handleTermsCheck(idx, checked as boolean)}
+                          required
+                        />
+                        <Label htmlFor={`terms-section-${idx}`} className="text-xs">I have read this section</Label>
+                      </div>
+                    </div>
+                    <div className="text-gray-700 text-sm whitespace-pre-line">{section.text}</div>
+                  </div>
+                ))}
               </div>
+
+              {/* Old single terms checkbox replaced with above checkboxes */}
 
               <Button type="submit" disabled={isSubmitting} className="w-full btn-primary text-lg py-6">
                 {isSubmitting ? "Submitting..." : "Submit Registration"}
