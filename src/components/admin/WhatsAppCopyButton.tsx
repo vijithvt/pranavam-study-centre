@@ -22,6 +22,7 @@ interface StudentRegistration {
   tutor_gender?: string;
   languages?: string;
   budget?: string;
+  probable_hours?: number;
   created_at: string;
 }
 
@@ -73,7 +74,7 @@ const WhatsAppCopyButton = ({ student }: WhatsAppCopyButtonProps) => {
       const area = nearbyAreas[location.toLowerCase()] || nearbyAreas['default'];
       const subjectText = subjects.length > 0 ? subjects.join(', ') : 'the specified subjects';
       
-      return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade} student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
+      return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a Class ${grade} student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
     };
 
     // Get minimum hourly rate based on class/grade for calculation
@@ -93,7 +94,7 @@ const WhatsAppCopyButton = ({ student }: WhatsAppCopyButtonProps) => {
       if (gradeNum >= 11 && gradeNum <= 12) return 300;
       
       // Higher education and special categories: minimum 400, show 350
-      if (['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(grade)) {
+      if (['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(grade.toLowerCase())) {
         return 350;
       }
       
@@ -123,6 +124,9 @@ const WhatsAppCopyButton = ({ student }: WhatsAppCopyButtonProps) => {
       data.tutor_gender.charAt(0).toUpperCase() + data.tutor_gender.slice(1).toLowerCase() : 
       'No Preference';
 
+    // Get probable hours from data or default to 20
+    const probableHours = data.probable_hours || 20;
+
     const generatedId = await generateId();
 
     return `ID-${generatedId}
@@ -132,10 +136,10 @@ Syllabus - ${syllabusDisplay}
 Location - ${data.mode === 'online' ? 'Online' : data.location}
 Tutor Gender required - ${tutorGender}
 Medium of Teaching - ${data.languages || 'English/Malayalam'}
-Probable hrs in month - 20 hrs
+Probable hrs in month - ${probableHours} hrs
 Hour Rate - ${hourRate}
 Contact 9496315903
-Note - ${generateNote(data.location, data.subjects || [data.custom_subjects || ''], syllabusDisplay, gradeDisplay)}`;
+Note - ${generateNote(data.location, [...new Set(data.subjects || [data.custom_subjects || ''])], syllabusDisplay, gradeDisplay)}`;
   };
 
   const copyToClipboard = async () => {

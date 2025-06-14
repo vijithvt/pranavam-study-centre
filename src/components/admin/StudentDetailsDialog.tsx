@@ -30,6 +30,9 @@ interface StudentDetailsDialogProps {
 const StudentDetailsDialog = ({ student, isOpen, onClose, formatDate }: StudentDetailsDialogProps) => {
   if (!student) return null;
 
+  // Remove duplicates from subjects array
+  const uniqueSubjects = [...new Set(student.subjects)];
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -95,7 +98,7 @@ const StudentDetailsDialog = ({ student, isOpen, onClose, formatDate }: StudentD
               Subjects Needed
             </h3>
             <div className="flex flex-wrap gap-2">
-              {student.subjects.map((subject, index) => (
+              {uniqueSubjects.map((subject, index) => (
                 <Badge key={index} variant="secondary">{subject}</Badge>
               ))}
             </div>
