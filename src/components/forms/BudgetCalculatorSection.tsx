@@ -1,14 +1,49 @@
-
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Info } from 'lucide-react';
 
-const BudgetCalculatorSection = ({ setMonthlyFee }: { setMonthlyFee?: (fee: number) => void }) => {
+const BudgetCalculatorSection = ({ setMonthlyFee, classGrade }: { setMonthlyFee?: (fee: number) => void; classGrade?: string }) => {
   const [hoursPerMonth, setHoursPerMonth] = useState([20]);
-  const [hourlyRate, setHourlyRate] = useState([400]);
-  const [monthlyFee, updateMonthlyFee] = useState(8000);
+  
+  // Function to get minimum hourly rate based on class/grade
+  const getMinHourlyRate = (grade: string) => {
+    if (!grade) return 250;
+    
+    const gradeNum = parseInt(grade);
+    
+    // Classes 1-4: minimum 250
+    if (gradeNum >= 1 && gradeNum <= 4) return 250;
+    
+    // Classes 5-6: minimum 250 (keeping same as 1-4)
+    if (gradeNum >= 5 && gradeNum <= 6) return 250;
+    
+    // Classes 7-10: minimum 300
+    if (gradeNum >= 7 && gradeNum <= 10) return 300;
+    
+    // Classes 11-12: minimum 350
+    if (gradeNum >= 11 && gradeNum <= 12) return 350;
+    
+    // Higher education and special categories: minimum 400
+    if (['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(grade)) {
+      return 400;
+    }
+    
+    return 250; // Default
+  };
+
+  const minRate = getMinHourlyRate(classGrade || '');
+  const [hourlyRate, setHourlyRate] = useState([minRate]);
+  const [monthlyFee, updateMonthlyFee] = useState(hoursPerMonth[0] * minRate);
+
+  // Update hourly rate when class grade changes
+  useEffect(() => {
+    const newMinRate = getMinHourlyRate(classGrade || '');
+    if (hourlyRate[0] < newMinRate) {
+      setHourlyRate([newMinRate]);
+    }
+  }, [classGrade]);
 
   useEffect(() => {
     const calculatedFee = hoursPerMonth[0] * hourlyRate[0];
@@ -37,12 +72,12 @@ const BudgetCalculatorSection = ({ setMonthlyFee }: { setMonthlyFee?: (fee: numb
             value={hourlyRate}
             onValueChange={setHourlyRate}
             max={3000}
-            min={300}
-            step={100}
+            min={minRate}
+            step={50}
             className="mt-2"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>₹300</span>
+            <span>₹{minRate}</span>
             <span>₹3000</span>
           </div>
         </div>

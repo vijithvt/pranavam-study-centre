@@ -14,12 +14,12 @@ const Hero = () => {
             <div className="space-y-4">
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Quality 
-                <span className="text-primary"> Home Tuition</span>
+                <span className="text-primary"> 1-to-1 Home Tuition</span>
                 <br />
                 Across Kerala
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Connect with experienced, qualified tutors for personalized learning at home. 
+                Connect with experienced, qualified tutors for personalized 1-to-1 learning at home. 
                 Excellence in education, delivered to your doorstep since 2016.
               </p>
             </div>

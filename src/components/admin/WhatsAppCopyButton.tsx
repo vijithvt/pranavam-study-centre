@@ -76,24 +76,52 @@ const WhatsAppCopyButton = ({ student }: WhatsAppCopyButtonProps) => {
       return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade} student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
     };
 
-    // Calculate hour rate (budget / 20 hours) - 100, min 0
-    let hourRate = 0;
-    if (data.budget) {
-      const monthlyBudget = parseInt(data.budget);
-      if (!isNaN(monthlyBudget)) {
-        const calculatedHourlyRate = Math.floor(monthlyBudget / 20);
-        hourRate = Math.max(calculatedHourlyRate - 100, 0);
+    // Get minimum hourly rate based on class/grade for calculation
+    const getMinHourlyRate = (grade: string) => {
+      const gradeNum = parseInt(grade);
+      
+      // Classes 1-4: minimum 250, show 200
+      if (gradeNum >= 1 && gradeNum <= 4) return 200;
+      
+      // Classes 5-6: minimum 250, show 200
+      if (gradeNum >= 5 && gradeNum <= 6) return 200;
+      
+      // Classes 7-10: minimum 300, show 250
+      if (gradeNum >= 7 && gradeNum <= 10) return 250;
+      
+      // Classes 11-12: minimum 350, show 300
+      if (gradeNum >= 11 && gradeNum <= 12) return 300;
+      
+      // Higher education and special categories: minimum 400, show 350
+      if (['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(grade)) {
+        return 350;
       }
-    }
+      
+      return 200; // Default
+    };
 
-    // Get subjects - either from subjects array or custom_subjects
-    const subjectDisplay = data.subjects?.length > 0 ? data.subjects.join(', ') : (data.custom_subjects || '');
+    const hourRate = getMinHourlyRate(data.class_grade);
+
+    // Get subjects - either from subjects array or custom_subjects, remove duplicates
+    let subjectDisplay = '';
+    if (data.subjects?.length > 0) {
+      // Remove duplicates from subjects array
+      const uniqueSubjects = [...new Set(data.subjects)];
+      subjectDisplay = uniqueSubjects.join(', ');
+    } else if (data.custom_subjects) {
+      subjectDisplay = data.custom_subjects;
+    }
     
     // Format syllabus
     const syllabusDisplay = data.syllabus || 'N/A';
     
     // Generate proper grade display
     const gradeDisplay = data.class_grade;
+
+    // Capitalize tutor gender
+    const tutorGender = data.tutor_gender ? 
+      data.tutor_gender.charAt(0).toUpperCase() + data.tutor_gender.slice(1).toLowerCase() : 
+      'No Preference';
 
     const generatedId = await generateId();
 
@@ -102,7 +130,7 @@ Subject - ${subjectDisplay}
 Grade - ${gradeDisplay}
 Syllabus - ${syllabusDisplay}
 Location - ${data.mode === 'online' ? 'Online' : data.location}
-Tutor Gender required - ${data.tutor_gender || 'No Preference'}
+Tutor Gender required - ${tutorGender}
 Medium of Teaching - ${data.languages || 'English/Malayalam'}
 Probable hrs in month - 20 hrs
 Hour Rate - ${hourRate}

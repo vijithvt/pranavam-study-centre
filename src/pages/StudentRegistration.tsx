@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -179,7 +178,7 @@ const StudentRegistration = () => {
               <PersonalInfoSection classGrade={classGrade} setClassGrade={setClassGrade} />
               <SubjectPreferencesSection classGrade={classGrade} />
               <LocationSection />
-              <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} />
+              <BudgetCalculatorSection setMonthlyFee={setMonthlyFee} classGrade={classGrade} />
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
