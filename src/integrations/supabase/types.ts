@@ -33,9 +33,11 @@ export type Database = {
       student_registrations: {
         Row: {
           admin_comments: string | null
+          branch: string | null
           budget: string | null
           class_grade: string
           created_at: string
+          custom_subjects: string | null
           district: string
           email: string
           id: string
@@ -51,14 +53,17 @@ export type Database = {
           syllabus: string | null
           time_preference: string | null
           tutor_gender: string | null
+          university: string | null
           updated_at: string | null
           urgency: string | null
         }
         Insert: {
           admin_comments?: string | null
+          branch?: string | null
           budget?: string | null
           class_grade: string
           created_at?: string
+          custom_subjects?: string | null
           district: string
           email: string
           id?: string
@@ -74,14 +79,17 @@ export type Database = {
           syllabus?: string | null
           time_preference?: string | null
           tutor_gender?: string | null
+          university?: string | null
           updated_at?: string | null
           urgency?: string | null
         }
         Update: {
           admin_comments?: string | null
+          branch?: string | null
           budget?: string | null
           class_grade?: string
           created_at?: string
+          custom_subjects?: string | null
           district?: string
           email?: string
           id?: string
@@ -97,6 +105,7 @@ export type Database = {
           syllabus?: string | null
           time_preference?: string | null
           tutor_gender?: string | null
+          university?: string | null
           updated_at?: string | null
           urgency?: string | null
         }
@@ -118,9 +127,11 @@ export type Database = {
           mode: string
           phone: string
           qualification: string
+          specialization: string | null
           status: string
           subjects: string[]
           updated_at: string | null
+          whatsapp: string | null
         }
         Insert: {
           admin_comments?: string | null
@@ -137,9 +148,11 @@ export type Database = {
           mode: string
           phone: string
           qualification: string
+          specialization?: string | null
           status?: string
           subjects: string[]
           updated_at?: string | null
+          whatsapp?: string | null
         }
         Update: {
           admin_comments?: string | null
@@ -156,9 +169,11 @@ export type Database = {
           mode?: string
           phone?: string
           qualification?: string
+          specialization?: string | null
           status?: string
           subjects?: string[]
           updated_at?: string | null
+          whatsapp?: string | null
         }
         Relationships: []
       }

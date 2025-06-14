@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Copy } from 'lucide-react';
@@ -22,6 +21,8 @@ interface StudentRegistration {
   languages?: string;
   budget?: string;
   created_at: string;
+  hoursPerMonth?: string;
+  hourlyRate?: string;
 }
 
 interface WhatsAppCopyButtonProps {
@@ -59,26 +60,25 @@ const WhatsAppCopyButton = ({ student }: WhatsAppCopyButtonProps) => {
       return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade}-grade student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
     };
 
-    const budgetMap = {
-      '1000-2000': { rate: '200', hours: '12' },
-      '2000-3000': { rate: '250', hours: '12' },
-      '3000-5000': { rate: '350', hours: '12' },
-      '5000-8000': { rate: '400', hours: '16' },
-      '8000-12000': { rate: '500', hours: '16' },
-      '12000+': { rate: '600', hours: '20' }
-    };
-
-    const budget = budgetMap[data.budget] || { rate: '400', hours: '12' };
+    // Hour rate = (submitted hourlyRate - 100), min 0.
+    let hourRate = 0;
+    if (data.hourlyRate) {
+      const submitted = parseInt(data.hourlyRate);
+      if (!isNaN(submitted)) {
+        hourRate = Math.max(submitted - 100, 0);
+      }
+    }
+    const hoursPerMonth = data.hoursPerMonth || '20';
 
     return `ID-${generateId()}
-Subject - ${data.subjects.join(', ')}
+Subject - ${Array.isArray(data.subjects) ? data.subjects.join(', ') : data.subjects}
 Grade - ${data.class_grade}
 Syllabus - ${data.syllabus || 'CBSE'}
 Location - ${data.mode === 'online' ? 'Online' : data.location}
 Tutor Gender required - ${data.tutor_gender || 'No Preference'}
 Medium of Teaching - ${data.languages || 'English/Malayalam'}
-Probable hrs in month - ${budget.hours} hrs
-Hour Rate - ${budget.rate}
+Probable hrs in month - ${hoursPerMonth} hrs
+Hour Rate - ${hourRate}
 Contact 9496315903
 Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', data.class_grade)}`;
   };

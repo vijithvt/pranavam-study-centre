@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Info } from 'lucide-react';
 
 const BudgetCalculatorSection = () => {
   const [hoursPerMonth, setHoursPerMonth] = useState([20]);
@@ -15,11 +17,40 @@ const BudgetCalculatorSection = () => {
 
   return (
     <div className="space-y-6 p-4 border rounded-lg bg-gray-50">
-      <h3 className="font-medium text-gray-900">Budget Calculator</h3>
-      
+      {/* Removed "Budget Calculator" header */}
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <Label htmlFor="hoursPerMonth">Probable Hours in Month: {hoursPerMonth[0]} hrs</Label>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="hourlyRate">
+              Hourly Rate: ₹{hourlyRate[0]}
+            </Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <span tabIndex={0}><Info size={16} className="text-gray-500 cursor-pointer" /></span>
+              </PopoverTrigger>
+              <PopoverContent side="top" className="text-xs max-w-xs">
+                Choose maximum budget for experienced tutors
+              </PopoverContent>
+            </Popover>
+          </div>
+          <Slider
+            value={hourlyRate}
+            onValueChange={setHourlyRate}
+            max={3000}
+            min={300}
+            step={100}
+            className="mt-2"
+          />
+          <input type="hidden" name="hourlyRate" value={hourlyRate[0]} />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>₹300</span>
+            <span>₹3000</span>
+          </div>
+        </div>
+        <div>
+          <Label htmlFor="hoursPerMonth">
+            Choose required no. of hours in month: {hoursPerMonth[0]} hrs
+          </Label>
           <Slider
             value={hoursPerMonth}
             onValueChange={setHoursPerMonth}
@@ -34,29 +65,7 @@ const BudgetCalculatorSection = () => {
             <span>60 hrs</span>
           </div>
         </div>
-
-        <div>
-          <Label htmlFor="hourlyRate">
-            Hourly Rate: ₹{hourlyRate[0]}
-            <br />
-            <span className="text-xs text-gray-500 font-normal">Choose maximum budget for more experienced teachers</span>
-          </Label>
-          <Slider
-            value={hourlyRate}
-            onValueChange={setHourlyRate}
-            max={2000}
-            min={250}
-            step={50}
-            className="mt-2"
-          />
-          <input type="hidden" name="hourlyRate" value={hourlyRate[0]} />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>₹250</span>
-            <span>₹2000</span>
-          </div>
-        </div>
       </div>
-
       <div className="p-4 bg-white rounded-lg border-2 border-blue-200">
         <Label className="text-lg font-semibold text-blue-700">
           Monthly Fee: ₹{monthlyFee.toLocaleString()}

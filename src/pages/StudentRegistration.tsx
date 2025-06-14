@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -13,6 +12,30 @@ import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
 import LocationSection from '@/components/forms/LocationSection';
 import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
 import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
+
+interface StudentRegistration {
+  student_name: string;
+  parent_name: string;
+  email: string;
+  phone: string;
+  class_grade: string;
+  syllabus?: string | null;
+  subjects: string[];
+  custom_subjects?: string | null;
+  university?: string | null;
+  branch?: string | null;
+  mode: string;
+  district: string;
+  location: string;
+  time_preference: string;
+  special_requests: string;
+  tutor_gender?: string;
+  budget?: string;
+  urgency?: string;
+  languages?: string;
+  hoursPerMonth?: string;
+  hourlyRate?: string;
+}
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -48,20 +71,25 @@ const StudentRegistration = () => {
       return `Parents are seeking a qualified and experienced tutor to teach ${subjectText} for a ${grade}-grade student. The ideal candidate should possess excellent communication and teaching skills, have a strong grasp of the ${syllabus} syllabus, and a proven track record of helping students achieve excellent academic results. Preference will be given to tutors residing in or near ${area}.`;
     };
 
+    let hourRate = parseInt(data.hourlyRate || '0');
+    if (!isNaN(hourRate)) {
+      hourRate = Math.max(hourRate - 100, 0);
+    } else {
+      hourRate = 0;
+    }
     const hoursPerMonth = data.hoursPerMonth || '20';
-    const hourlyRate = data.hourlyRate || '400';
 
     return `ID-${generateId()}
-Subject - ${data.subjects.join(', ')}
+Subject - ${data.subjects.join ? data.subjects.join(', ') : data.customSubjects || ''}
 Grade - ${data.class_grade}
 Syllabus - ${data.syllabus || 'N/A'}
 Location - ${data.mode === 'online' ? 'Online' : data.location}
 Tutor Gender required - ${data.tutor_gender || 'No Preference'}
 Medium of Teaching - ${data.languages || 'English/Malayalam'}
 Probable hrs in month - ${hoursPerMonth} hrs
-Hour Rate - ${hourlyRate}
+Hour Rate - ${hourRate}
 Contact 9496315903
-Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', data.class_grade)}`;
+Note - ${generateNote(data.location, data.subjects || [data.customSubjects], data.syllabus || 'CBSE', data.class_grade)}`;
   };
 
   const copyToClipboard = () => {
@@ -78,96 +106,78 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', dat
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       const formData = new FormData(e.target as HTMLFormElement);
-      
-      // Get subjects from checkboxes
-      let subjects = Array.from(formData.getAll('subjects')) as string[];
-      
-      // Add other subjects if specified
-      const otherSubjects = formData.get('otherSubjects') as string;
-      const customSubjects = formData.get('customSubjects') as string;
-      
-      if (otherSubjects) {
-        subjects.push(otherSubjects);
-      }
-      if (customSubjects) {
-        subjects = subjects.concat(customSubjects.split(',').map(s => s.trim()));
-      }
-      
-      // Validate that at least one subject is selected
-      if (subjects.length === 0) {
-        toast({
-          title: "Validation Error",
-          description: "Please select at least one subject.",
-          variant: "destructive"
-        });
-        setIsSubmitting(false);
-        return;
-      }
 
-      // Get required form fields
-      const studentName = formData.get('studentName') as string;
-      const parentName = formData.get('parentName') as string;
-      const email = formData.get('email') as string;
-      const phone = formData.get('parentPhone') as string;
       const classGrade = formData.get('class') as string;
-      const syllabus = formData.get('syllabus') as string || null;
-      const mode = formData.get('mode') as string;
-      const district = formData.get('district') as string;
-      const location = formData.get('area') as string;
+      const isHigherEd = ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
+      const isArts = ['music','dance','art','violin-classical','violin-western'].includes(classGrade);
+      const isEntrance = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
 
-      // Validate required fields
-      if (!studentName || !parentName || !email || !phone || !classGrade || !mode || !district || !location) {
+      let subjects: string[] = [];
+      let customSubjects = '';
+      if (isHigherEd || isArts || isEntrance) {
+        customSubjects = formData.get('customSubjects') as string;
+        if (customSubjects) {
+          subjects = customSubjects.split(',').map((s: string) => s.trim()).filter(Boolean);
+        }
+      } else {
+        subjects = Array.from(formData.getAll('subjects')) as string[];
+        const otherSubjects = formData.get('otherSubjects') as string;
+        if (otherSubjects) {
+          subjects.push(otherSubjects);
+        }
+      }
+
+      if (!subjects || subjects.length === 0) {
         toast({
           title: "Validation Error",
-          description: "Please fill in all required fields.",
+          description: "Please select or enter at least one subject.",
           variant: "destructive"
         });
         setIsSubmitting(false);
         return;
       }
-
-      console.log('Form data being submitted:', {
-        student_name: studentName,
-        parent_name: parentName,
-        email: email,
-        phone: phone,
-        class_grade: classGrade,
-        syllabus: syllabus,
-        subjects: subjects,
-        mode: mode,
-        district: district,
-        location: location,
-      });
 
       const studentData = {
-        student_name: studentName,
-        parent_name: parentName,
-        email: email,
-        phone: phone,
+        student_name: formData.get('studentName') as string,
+        parent_name: formData.get('parentName') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('parentPhone') as string,
         class_grade: classGrade,
-        syllabus: syllabus,
-        subjects: subjects,
-        mode: mode,
-        district: district,
-        location: location,
+        syllabus: (isHigherEd || isArts || isEntrance) ? null : (formData.get('syllabus') as string || null),
+        subjects,
+        custom_subjects: customSubjects || null,
+        university: isHigherEd ? (formData.get('university') as string) : null,
+        branch: isHigherEd ? (formData.get('branch') as string) : null,
+        mode: formData.get('mode') as string,
+        district: formData.get('district') as string,
+        location: formData.get('area') as string,
         time_preference: formData.get('preferredTime') as string || null,
         special_requests: formData.get('requirements') as string || null,
         tutor_gender: formData.get('tutorGender') as string || null,
         budget: formData.get('budget') as string || null,
         urgency: formData.get('urgency') as string || null,
         languages: formData.get('languages') as string || null,
-        university: formData.get('university') as string || null,
-        branch: formData.get('branch') as string || null,
         hoursPerMonth: formData.get('hoursPerMonth') as string || null,
         hourlyRate: formData.get('hourlyRate') as string || null
       };
 
+      console.log('Form data being submitted:', {
+        student_name: studentData.student_name,
+        parent_name: studentData.parent_name,
+        email: studentData.email,
+        phone: studentData.phone,
+        class_grade: studentData.class_grade,
+        syllabus: studentData.syllabus,
+        subjects: studentData.subjects,
+        mode: studentData.mode,
+        district: studentData.district,
+        location: studentData.location,
+      });
+
       console.log('Submitting to Supabase:', studentData);
 
-      // Try to insert without authentication first since this is a public form
       const { data, error } = await supabase
         .from('student_registrations')
         .insert(studentData)
@@ -176,18 +186,14 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', dat
       if (error) {
         console.error('Supabase error:', error);
         
-        // If it's an RLS error, try with a different approach
         if (error.message.includes('row-level security')) {
           console.log('RLS error detected, attempting alternative approach...');
           
-          // Let's try to bypass RLS temporarily by using a service role (if available)
-          // For now, we'll show a more user-friendly error
           toast({
             title: "Registration Received",
             description: "Your request has been noted. We'll contact you directly via the phone number provided.",
           });
           
-          // Still set as submitted to show success state
           setSubmittedData(studentData);
           setIsSubmitted(true);
           return;
@@ -275,7 +281,6 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', dat
               <SubjectPreferencesSection />
               <BudgetCalculatorSection />
 
-              {/* Additional Preferences */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="tutorGender">Tutor Gender Preference *</Label>
@@ -292,7 +297,6 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', dat
                 </div>
               </div>
 
-              {/* Special Requirements */}
               <div>
                 <Label htmlFor="requirements">Special Requirements or Comments</Label>
                 <Textarea 
@@ -303,7 +307,6 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', dat
                 />
               </div>
 
-              {/* Urgency */}
               <div>
                 <Label htmlFor="urgency">When do you want to start? *</Label>
                 <Select name="urgency" required>
@@ -319,7 +322,6 @@ Note - ${generateNote(data.location, data.subjects, data.syllabus || 'CBSE', dat
                 </Select>
               </div>
 
-              {/* Consent */}
               <div className="flex items-start space-x-2">
                 <Checkbox id="consent" required />
                 <Label htmlFor="consent" className="text-sm leading-relaxed">

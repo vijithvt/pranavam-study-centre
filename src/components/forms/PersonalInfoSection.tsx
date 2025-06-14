@@ -4,19 +4,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+const higherEdClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
+const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
+const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
+
 const PersonalInfoSection = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [showUniversityFields, setShowUniversityFields] = useState(false);
   const [showSyllabusField, setShowSyllabusField] = useState(false);
+  const [showSubjectInput, setShowSubjectInput] = useState(false);
 
   useEffect(() => {
-    // Check if class requires university fields
-    const higherEducationClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
-    const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
-    const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
-    
-    setShowUniversityFields(higherEducationClasses.includes(selectedClass));
-    setShowSyllabusField(!artsClasses.includes(selectedClass) && !entranceClasses.includes(selectedClass));
+    setShowUniversityFields(higherEdClasses.includes(selectedClass));
+    setShowSyllabusField(!(higherEdClasses.includes(selectedClass) || artsClasses.includes(selectedClass) || entranceClasses.includes(selectedClass)));
+    setShowSubjectInput(higherEdClasses.includes(selectedClass));
   }, [selectedClass]);
 
   return (
@@ -74,7 +75,7 @@ const PersonalInfoSection = () => {
       {showSyllabusField && (
         <div>
           <Label htmlFor="syllabus">Syllabus *</Label>
-          <Select name="syllabus" required={showSyllabusField}>
+          <Select name="syllabus" required>
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select syllabus" />
             </SelectTrigger>
@@ -94,7 +95,7 @@ const PersonalInfoSection = () => {
 
       {showUniversityFields && (
         <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
-          <h3 className="font-medium text-gray-900">Higher Education Details</h3>
+          {/* No heading as per request */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="university">University/Institution</Label>
@@ -115,13 +116,14 @@ const PersonalInfoSection = () => {
               />
             </div>
           </div>
+          {/* Subjects input for higher education */}
           <div>
-            <Label htmlFor="customSubjects">Additional Subjects</Label>
+            <Label htmlFor="customSubjects">Subjects Needed</Label>
             <Input 
               name="customSubjects" 
               id="customSubjects" 
               className="mt-1" 
-              placeholder="Enter specific subjects needed (comma separated)"
+              placeholder="Enter specific subjects (comma separated)"
             />
           </div>
         </div>

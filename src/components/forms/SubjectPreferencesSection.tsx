@@ -4,25 +4,34 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Input } from '@/components/ui/input';
+
+const higherEdClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
+const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
+const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
 
 const SubjectPreferencesSection = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [showRegularSubjects, setShowRegularSubjects] = useState(true);
+  const [showCustomSubjectInput, setShowCustomSubjectInput] = useState(false);
 
   useEffect(() => {
     // Listen for class changes from the form
     const handleClassChange = () => {
       const classSelect = document.querySelector('select[name="class"]') as HTMLSelectElement;
+      let value = selectedClass;
+
       if (classSelect) {
-        const value = classSelect.value;
+        value = classSelect.value;
         setSelectedClass(value);
-        
-        const artsClasses = ['music', 'dance', 'art', 'violin-classical', 'violin-western'];
-        const entranceClasses = ['neet', 'jee', 'upsc', 'psc', 'banking', 'ssc', 'railway'];
-        const higherEducationClasses = ['btech', 'bsc', 'ba', 'bcom', 'llb', 'mtech', 'msc', 'ma', 'mcom'];
-        
-        setShowRegularSubjects(!artsClasses.includes(value) && !entranceClasses.includes(value) && !higherEducationClasses.includes(value));
       }
+
+      const isArts = artsClasses.includes(value);
+      const isEntrance = entranceClasses.includes(value);
+      const isHigherEd = higherEdClasses.includes(value);
+
+      setShowRegularSubjects(!(isArts || isEntrance || isHigherEd));
+      setShowCustomSubjectInput(isArts || isEntrance || isHigherEd);
     };
 
     // Initial check
@@ -36,6 +45,7 @@ const SubjectPreferencesSection = () => {
     }
 
     return () => observer.disconnect();
+    // eslint-disable-next-line
   }, []);
 
   const regularSubjects = [
@@ -59,52 +69,31 @@ const SubjectPreferencesSection = () => {
     'Statistics'
   ];
 
-  const artsSubjects = [
-    'Music',
-    'Dance',
-    'Drawing/Art',
-    'Violin (Classical)',
-    'Violin (Western)',
-    'Keyboard',
-    'Guitar',
-    'Vocal Music'
-  ];
-
   return (
     <div className="space-y-6">
       <div>
         <Label htmlFor="subjects">Subjects Needed *</Label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-          {showRegularSubjects ? (
-            regularSubjects.map((subject) => (
+        {showRegularSubjects ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+            {regularSubjects.map((subject) => (
               <div key={subject} className="flex items-center space-x-2">
                 <Checkbox name="subjects" value={subject} id={subject} />
                 <Label htmlFor={subject} className="text-sm">{subject}</Label>
               </div>
-            ))
-          ) : (
-            artsSubjects.map((subject) => (
-              <div key={subject} className="flex items-center space-x-2">
-                <Checkbox name="subjects" value={subject} id={subject} />
-                <Label htmlFor={subject} className="text-sm">{subject}</Label>
-              </div>
-            ))
-          )}
-        </div>
-        {!showRegularSubjects && (
-          <div className="mt-4">
-            <Label htmlFor="otherSubjects">Other Subjects/Skills</Label>
-            <input 
-              type="text" 
-              name="otherSubjects" 
-              id="otherSubjects" 
-              className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              placeholder="Enter specific subjects or skills needed"
+            ))}
+          </div>
+        ) : (
+          <div className="mt-2">
+            <Input
+              type="text"
+              name="customSubjects"
+              id="customSubjects"
+              placeholder="Enter Subjects/Skills needed (comma separated)"
+              required
             />
           </div>
         )}
       </div>
-
       <div>
         <Label>Preferred Mode *</Label>
         <RadioGroup name="mode" className="flex space-x-6 mt-2" required>
@@ -122,7 +111,6 @@ const SubjectPreferencesSection = () => {
           </div>
         </RadioGroup>
       </div>
-
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="preferredTime">Preferred Time *</Label>

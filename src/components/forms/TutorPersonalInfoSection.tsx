@@ -23,8 +23,8 @@ const TutorPersonalInfoSection = () => {
           <Input name="phone" id="phone" type="tel" required className="mt-1" />
         </div>
         <div>
-          <Label htmlFor="whatsapp">WhatsApp Number</Label>
-          <Input name="whatsapp" id="whatsapp" type="tel" className="mt-1" />
+          <Label htmlFor="whatsapp">WhatsApp Number *</Label>
+          <Input name="whatsapp" id="whatsapp" type="tel" required className="mt-1" />
         </div>
       </div>
     </div>
