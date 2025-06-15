@@ -6,13 +6,36 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 interface SubjectPreferencesSectionProps {
   classGrade?: string;
+  onSubjectsChange?: (subs: string[]) => void;
+  onOtherSubjectChange?: (other: string) => void;
+  selectedSubjects?: string[];
+  defaultOtherSubject?: string;
 }
 
-const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProps) => {
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+const SubjectPreferencesSection = ({
+  classGrade,
+  onSubjectsChange,
+  onOtherSubjectChange,
+  selectedSubjects = [],
+  defaultOtherSubject = "",
+}: SubjectPreferencesSectionProps) => {
+  const [internalSelected, setInternalSelected] = useState<string[]>(selectedSubjects);
+  const [otherValue, setOtherValue] = useState(defaultOtherSubject);
 
-  const isHigherEd = !!classGrade && ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
-  const isArtsOrEntrance = !!classGrade && ['music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
+  useEffect(() => {
+    setInternalSelected(selectedSubjects);
+  }, [selectedSubjects]);
+
+  useEffect(() => {
+    setOtherValue(defaultOtherSubject || "");
+  }, [defaultOtherSubject]);
+
+  const isHigherEd = !!classGrade && [
+    'btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'
+  ].includes(classGrade);
+  const isArtsOrEntrance = !!classGrade && [
+    'music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'
+  ].includes(classGrade);
 
   const allSchoolSubjects = [
     'Mathematics',
@@ -38,11 +61,16 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
   ];
 
   const handleSubjectChange = (subject: string, checked: boolean) => {
-    if (checked) {
-      setSelectedSubjects([...selectedSubjects, subject]);
-    } else {
-      setSelectedSubjects(selectedSubjects.filter(s => s !== subject));
-    }
+    let next = checked
+      ? [...internalSelected, subject]
+      : internalSelected.filter(s => s !== subject);
+    setInternalSelected(next);
+    onSubjectsChange?.(next);
+  };
+
+  const handleOtherChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setOtherValue(evt.target.value);
+    onOtherSubjectChange?.(evt.target.value);
   };
 
   if (isHigherEd || isArtsOrEntrance) {
@@ -79,14 +107,14 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
           {allSchoolSubjects.map((subject) => (
             <div
               key={subject}
-              className="flex items-center min-w-0 mb-2"
+              className="flex items-start min-w-0 mb-2 max-w-full"
               style={{ alignItems: 'flex-start' }}
             >
               <Checkbox
                 id={subject}
                 name="subjects"
                 value={subject}
-                checked={selectedSubjects.includes(subject)}
+                checked={internalSelected.includes(subject)}
                 onCheckedChange={(checked) => handleSubjectChange(subject, checked as boolean)}
               />
               <Label
@@ -94,13 +122,13 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
                 className="ml-2 text-sm font-normal cursor-pointer whitespace-normal break-words"
                 style={{ maxWidth: "100%", wordBreak: "break-word" }}
               >
-                {subject}
+                <span className="block max-w-[90vw] sm:max-w-[220px] break-words">{subject}</span>
               </Label>
             </div>
           ))}
         </div>
         {/* Hidden inputs for form submission */}
-        {selectedSubjects.map((subject) => (
+        {internalSelected.map((subject) => (
           <input key={subject} type="hidden" name="subjects" value={subject} />
         ))}
       </div>
@@ -108,10 +136,12 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
       <div>
         <Label htmlFor="otherSubjects">Other Subjects</Label>
         <Input 
-          name="otherSubjects" 
+          name="otherSubjects"
           id="otherSubjects"
           className="mt-1"
           placeholder="If other subjects needed, specify here"
+          value={otherValue}
+          onChange={handleOtherChange}
         />
       </div>
     </div>
@@ -119,4 +149,3 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
 };
 
 export default SubjectPreferencesSection;
-
