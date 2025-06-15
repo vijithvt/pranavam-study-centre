@@ -146,6 +146,40 @@ const StudentRegistration = () => {
     }
   }, [subjectParam, classParam, setValue]);
 
+  // Helper to determine which required fields to validate in Student & Parent Info
+  function getInfoRequiredFields(values: any) {
+    const schoolGrades = [
+      "1","2","3","4","5","6","7","8","9","10","11","12"
+    ];
+    const higherEdGrades = [
+      "btech","bsc","ba","bcom","llb",
+      "mtech","msc","ma","mcom"
+    ];
+    const artMusicGrades = [
+      "music", "dance", "art", "violin-classical", "violin-western"
+    ];
+    const required = [
+      "studentName",
+      "parentName",
+      "email",
+      "parentPhone",
+      "class",
+      "mode",
+      "district",
+      "area"
+    ];
+    const classGrade = values.class;
+
+    if (schoolGrades.includes(classGrade)) {
+      required.push("syllabus");
+    } else if (higherEdGrades.includes(classGrade)) {
+      required.push("university", "branch");
+      // no "syllabus"
+    }
+    // for artMusic: no syllabus/uni/branch required (do not add)
+    return required;
+  }
+
   // Step configs
   const steps = [
     {
@@ -190,17 +224,9 @@ const StudentRegistration = () => {
         </FormSectionCard>
       ),
       validate: async () => {
-        const valid = await trigger([
-          "studentName",
-          "parentName",
-          "email",
-          "parentPhone",
-          "class",
-          "mode",
-          "district",
-          "area",
-          "syllabus",
-        ]);
+        const values = methods.getValues();
+        const requiredFields = getInfoRequiredFields(values);
+        const valid = await trigger(requiredFields);
         setStepError(valid ? "" : "Please correct highlighted fields.");
         return valid;
       },
@@ -341,7 +367,17 @@ const StudentRegistration = () => {
               showBack={step > 0}
               canNext={
                 step === 0 ||
-                (step === 1 && isValid) ||
+                (step === 1
+                  ? (() => {
+                      const values = methods.getValues();
+                      const requiredFields = getInfoRequiredFields(values);
+                      return requiredFields.every(
+                        (field) =>
+                          // cover react-hook-form default behavior for booleans (for consent) and string fields
+                          typeof values[field] === "boolean" ? values[field] : !!values[field]
+                      ) && isValid;
+                    })()
+                  : isValid) ||
                 (step === 2 && isValid) ||
                 (step === 3 && isValid)
               }
