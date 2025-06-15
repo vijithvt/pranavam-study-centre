@@ -12,6 +12,7 @@ import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSect
 import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
 import FormSectionCard from '@/components/forms/FormSectionCard';
 import { useToast } from '@/hooks/use-toast';
+import LearnSearchBox from "@/components/LearnSearchBox";
 
 const subjectSchema = z.object({
   subjects: z
@@ -333,6 +334,10 @@ const StudentRegistration = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-10">
+      {/* Search box at the top */}
+      <div className="w-full flex flex-col items-center mb-10">
+        <LearnSearchBox />
+      </div>
       <div className="w-full max-w-2xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
         <FormProvider {...methods}>
           <form

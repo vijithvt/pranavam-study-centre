@@ -9,7 +9,18 @@ interface PersonalInfoSectionProps {
   setClassGrade: (grade: string) => void;
 }
 
+const schoolGrades = Array.from({length: 12}, (_, i) => (i+1).toString());
+const higherEdGrades = ["btech","bsc","ba","bcom","llb","mtech","msc","ma","mcom"];
+const artMusicGrades = [
+  "music", "dance", "art", "violin-classical", "violin-western"
+];
+
 const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionProps) => {
+  // Helper logic: figure out user type based on classGrade
+  const isSchoolGrade = schoolGrades.includes(classGrade);
+  const isHigherEd = higherEdGrades.includes(classGrade);
+  const isArtMusic = artMusicGrades.includes(classGrade);
+
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
@@ -34,51 +45,26 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="class">Class/Grade *</Label>
-          <Select name="class" value={classGrade} onValueChange={setClassGrade} required>
-            <SelectTrigger className="mt-1">
-              <SelectValue placeholder="Select class" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1">Class 1</SelectItem>
-              <SelectItem value="2">Class 2</SelectItem>
-              <SelectItem value="3">Class 3</SelectItem>
-              <SelectItem value="4">Class 4</SelectItem>
-              <SelectItem value="5">Class 5</SelectItem>
-              <SelectItem value="6">Class 6</SelectItem>
-              <SelectItem value="7">Class 7</SelectItem>
-              <SelectItem value="8">Class 8</SelectItem>
-              <SelectItem value="9">Class 9</SelectItem>
-              <SelectItem value="10">Class 10</SelectItem>
-              <SelectItem value="11">Class 11</SelectItem>
-              <SelectItem value="12">Class 12</SelectItem>
-              <SelectItem value="btech">B.Tech</SelectItem>
-              <SelectItem value="bsc">B.Sc</SelectItem>
-              <SelectItem value="ba">B.A</SelectItem>
-              <SelectItem value="bcom">B.Com</SelectItem>
-              <SelectItem value="llb">LLB</SelectItem>
-              <SelectItem value="mtech">M.Tech</SelectItem>
-              <SelectItem value="msc">M.Sc</SelectItem>
-              <SelectItem value="ma">M.A</SelectItem>
-              <SelectItem value="mcom">M.Com</SelectItem>
-              <SelectItem value="music">Music</SelectItem>
-              <SelectItem value="dance">Dance</SelectItem>
-              <SelectItem value="art">Art/Drawing</SelectItem>
-              <SelectItem value="violin-classical">Violin (Classical)</SelectItem>
-              <SelectItem value="violin-western">Violin (Western)</SelectItem>
-              <SelectItem value="neet">NEET</SelectItem>
-              <SelectItem value="jee">JEE</SelectItem>
-              <SelectItem value="upsc">UPSC</SelectItem>
-              <SelectItem value="psc">PSC</SelectItem>
-              <SelectItem value="banking">Banking</SelectItem>
-              <SelectItem value="ssc">SSC</SelectItem>
-              <SelectItem value="railway">Railway</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        {!['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom','music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade) && (
+      {/* Show class/grade only for school students (Class 1 to 12) */}
+      {isSchoolGrade && (
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="class">Class/Grade *</Label>
+            <Select name="class" value={classGrade} onValueChange={setClassGrade} required>
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select class" />
+              </SelectTrigger>
+              <SelectContent>
+                {schoolGrades.map((grade) => (
+                  <SelectItem key={grade} value={grade}>{`Class ${grade}`}</SelectItem>
+                ))}
+                {/* Retain hidden higherEd/art/music option to allow changes */}
+                {higherEdGrades.concat(artMusicGrades).map(option => (
+                  <SelectItem key={option} value={option} style={{display:"none"}}>{option}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div>
             <Label htmlFor="syllabus">Syllabus *</Label>
             <Select name="syllabus" required>
@@ -93,11 +79,11 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
               </SelectContent>
             </Select>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Higher education fields */}
-      {['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade) && (
+      {/* Show subject text box only for higher education (not school or music/dance/art/violin) */}
+      {isHigherEd && (
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <Label htmlFor="university">University/Institution *</Label>
@@ -109,6 +95,21 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
           </div>
         </div>
       )}
+
+      {isHigherEd && (
+        <div>
+          <Label htmlFor="customSubjects">Subjects *</Label>
+          <Input
+            name="customSubjects"
+            id="customSubjects"
+            className="mt-1"
+            placeholder="Enter subject(s) required (e.g. Data Structures, Algorithms, Economics)"
+            required
+          />
+        </div>
+      )}
+
+      {/* For dance/music/art/violin do NOT show class/grade, syllabus, or customSubjects! */}
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
