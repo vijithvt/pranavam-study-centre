@@ -31,10 +31,10 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
   };
 
   return (
-    <div className="space-y-8 px-2 sm:px-4 md:px-6">
+    <div className="space-y-8 px-2 sm:px-4 md:px-8 lg:px-16 w-full max-w-3xl mx-auto">
       {/* Student & Parent Names */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full">
+      <div className="flex flex-col md:flex-row md:gap-8 gap-4">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="studentName">Student Name *</Label>
           <Input
             id="studentName"
@@ -47,7 +47,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
             <span className="text-xs text-red-500">{errors.studentName.message as string}</span>
           )}
         </div>
-        <div className="w-full">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="parentName">Parent/Guardian Name *</Label>
           <Input
             id="parentName"
@@ -63,8 +63,8 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
       </div>
 
       {/* Contact Info */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full">
+      <div className="flex flex-col md:flex-row md:gap-8 gap-4">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="email">Email *</Label>
           <Input
             id="email"
@@ -78,7 +78,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
             <span className="text-xs text-red-500">{errors.email.message as string}</span>
           )}
         </div>
-        <div className="w-full">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="parentPhone">Parent Phone Number *</Label>
           <Input
             id="parentPhone"
@@ -96,8 +96,8 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
 
       {/* Class/Grade & Syllabus (School Students) */}
       {isSchoolGrade && (
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="w-full">
+        <div className="flex flex-col md:flex-row md:gap-8 gap-4">
+          <div className="w-full md:w-1/2">
             <Label htmlFor="class">Class/Grade *</Label>
             <Select value={classGrade} onValueChange={handleClassChange}>
               <SelectTrigger className="mt-1">
@@ -107,7 +107,6 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
                 {schoolGrades.map((grade) => (
                   <SelectItem key={grade} value={grade}>{`Class ${grade}`}</SelectItem>
                 ))}
-                {/* Hidden higherEd/art/music options to allow changes */}
                 {higherEdGrades.concat(artMusicGrades).map(option => (
                   <SelectItem key={option} value={option} style={{display:"none"}}>{option}</SelectItem>
                 ))}
@@ -118,7 +117,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
               <span className="text-xs text-red-500">Required</span>
             )}
           </div>
-          <div className="w-full">
+          <div className="w-full md:w-1/2">
             <Label htmlFor="syllabus">Syllabus *</Label>
             <Select 
               value={watch('syllabus') || ""}
@@ -145,8 +144,8 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
       {/* Higher Ed: University/Branch/Subjects */}
       {isHigherEd && (
         <>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="w-full">
+          <div className="flex flex-col md:flex-row md:gap-8 gap-4">
+            <div className="w-full md:w-1/2">
               <Label htmlFor="university">University/Institution *</Label>
               <Input
                 id="university"
@@ -159,7 +158,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
                 <span className="text-xs text-red-500">{errors.university.message as string}</span>
               )}
             </div>
-            <div className="w-full">
+            <div className="w-full md:w-1/2">
               <Label htmlFor="branch">Branch/Specialization *</Label>
               <Input
                 id="branch"
@@ -174,7 +173,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-4">
             <Label htmlFor="customSubjects">Subjects *</Label>
             <Input
               id="customSubjects"
@@ -193,8 +192,8 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
       {/* For dance/music/art/violin: show nothing extra */}
 
       {/* Mode & Time Preference */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full">
+      <div className="flex flex-col md:flex-row md:gap-8 gap-4">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="mode">Tutoring Mode *</Label>
           <Select
             value={watch('mode') || ""}
@@ -214,7 +213,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
             <span className="text-xs text-red-500">Required</span>
           )}
         </div>
-        <div className="w-full">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="preferredTime">Preferred Time</Label>
           <Select
             value={watch('preferredTime') || ""}
@@ -235,8 +234,8 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
       </div>
 
       {/* Preferred Language */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+        <div className="w-full md:w-1/2">
           <Label htmlFor="languages">Preferred Teaching Language</Label>
           <Select
             value={watch('languages') || ""}
@@ -261,3 +260,4 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
 };
 
 export default PersonalInfoSection;
+
