@@ -31,30 +31,38 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white p-4 xs:p-6 sm:p-8 rounded-lg shadow-md space-y-6">
-      {/* Student & Parent Names */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section className="w-full max-w-2xl mx-auto bg-white px-4 py-6 xs:px-4 xs:py-7 sm:p-8 rounded-lg shadow-md flex flex-col gap-8">
+      {/* 1. Heading */}
+      <div>
+        <h2 className="text-lg xs:text-xl font-bold text-gray-900 mb-2">Student & Parent Information</h2>
+        <p className="text-gray-500 text-sm xs:text-base">Let’s get to know you better to match with the best tutors.</p>
+      </div>
+
+      {/* 2. Student/Parent Names */}
+      <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <Label htmlFor="studentName">Student Name *</Label>
+          <Label htmlFor="studentName" className="mb-1 font-medium block text-gray-800">Student Name <span className="text-red-500">*</span></Label>
           <Input
             id="studentName"
             {...register("studentName", { required: "Student name is required" })}
             required
             autoComplete="off"
-            className="mt-1"
+            className="input mt-1"
+            placeholder="Enter student name"
           />
           {errors.studentName && (
             <span className="text-xs text-red-500">{errors.studentName.message as string}</span>
           )}
         </div>
         <div>
-          <Label htmlFor="parentName">Parent/Guardian Name *</Label>
+          <Label htmlFor="parentName" className="mb-1 font-medium block text-gray-800">Parent/Guardian Name <span className="text-red-500">*</span></Label>
           <Input
             id="parentName"
             {...register("parentName", { required: "Parent/Guardian name is required" })}
             required
             autoComplete="off"
-            className="mt-1"
+            className="input mt-1"
+            placeholder="Enter parent/guardian name"
           />
           {errors.parentName && (
             <span className="text-xs text-red-500">{errors.parentName.message as string}</span>
@@ -62,31 +70,33 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         </div>
       </div>
 
-      {/* Contact Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 3. Contact Information */}
+      <div className="p-4 rounded-lg bg-slate-50 sm:bg-transparent grid gap-4 md:grid-cols-2">
         <div>
-          <Label htmlFor="email">Email *</Label>
+          <Label htmlFor="email" className="mb-1 font-medium block text-gray-800">Email <span className="text-red-500">*</span></Label>
           <Input
             id="email"
             type="email"
             {...register("email", { required: "Email is required" })}
             required
             autoComplete="off"
-            className="mt-1"
+            className="input mt-1"
+            placeholder="Enter email"
           />
           {errors.email && (
             <span className="text-xs text-red-500">{errors.email.message as string}</span>
           )}
         </div>
         <div>
-          <Label htmlFor="parentPhone">Parent Phone Number *</Label>
+          <Label htmlFor="parentPhone" className="mb-1 font-medium block text-gray-800">Parent Phone Number <span className="text-red-500">*</span></Label>
           <Input
             id="parentPhone"
             type="tel"
             {...register("parentPhone", { required: "Parent phone is required" })}
             required
             autoComplete="off"
-            className="mt-1"
+            className="input mt-1"
+            placeholder="e.g. +91XXXXXXXXXX"
           />
           {errors.parentPhone && (
             <span className="text-xs text-red-500">{errors.parentPhone.message as string}</span>
@@ -94,106 +104,104 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         </div>
       </div>
 
-      {/* Class/Grade & Syllabus (School Students) */}
-      {isSchoolGrade && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="class">Class/Grade *</Label>
-            <Select value={classGrade} onValueChange={handleClassChange}>
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select class" />
-              </SelectTrigger>
-              <SelectContent>
-                {schoolGrades.map((grade) => (
-                  <SelectItem key={grade} value={grade}>{`Class ${grade}`}</SelectItem>
-                ))}
-                {higherEdGrades.concat(artMusicGrades).map(option => (
-                  <SelectItem key={option} value={option} style={{display:"none"}}>{option}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <input type="hidden" {...register("class", { required: true })} value={classGrade || ""} />
-            {errors.class && (
-              <span className="text-xs text-red-500">Required</span>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="syllabus">Syllabus *</Label>
-            <Select 
-              value={watch('syllabus') || ""}
-              onValueChange={val => setValue('syllabus', val, { shouldValidate: true, shouldDirty: true })}
-            >
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select syllabus" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="CBSE">CBSE</SelectItem>
-                <SelectItem value="ICSE">ICSE</SelectItem>
-                <SelectItem value="State Board">State Board</SelectItem>
-                <SelectItem value="IB">IB</SelectItem>
-              </SelectContent>
-            </Select>
-            <input type="hidden" {...register("syllabus", { required: isSchoolGrade })} value={watch("syllabus") || ""} />
-            {errors.syllabus && (
-              <span className="text-xs text-red-500">Required</span>
-            )}
-          </div>
+      {/* 4. Class & Syllabus (School) or HigherEd */}
+      {(isSchoolGrade || isHigherEd) && (
+        <div className="bg-slate-50 rounded-lg px-4 py-5">
+          {isSchoolGrade && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <Label htmlFor="class" className="mb-1 font-medium block text-gray-800">Class/Grade <span className="text-red-500">*</span></Label>
+                <Select value={classGrade} onValueChange={handleClassChange}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {schoolGrades.map((grade) => (
+                      <SelectItem key={grade} value={grade}>{`Class ${grade}`}</SelectItem>
+                    ))}
+                    {higherEdGrades.concat(artMusicGrades).map(option => (
+                      <SelectItem key={option} value={option} style={{display:"none"}}>{option}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <input type="hidden" {...register("class", { required: true })} value={classGrade || ""} />
+                {errors.class && (
+                  <span className="text-xs text-red-500">Required</span>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="syllabus" className="mb-1 font-medium block text-gray-800">Syllabus <span className="text-red-500">*</span></Label>
+                <Select 
+                  value={watch('syllabus') || ""}
+                  onValueChange={val => setValue('syllabus', val, { shouldValidate: true, shouldDirty: true })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select syllabus" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="CBSE">CBSE</SelectItem>
+                    <SelectItem value="ICSE">ICSE</SelectItem>
+                    <SelectItem value="State Board">State Board</SelectItem>
+                    <SelectItem value="IB">IB</SelectItem>
+                  </SelectContent>
+                </Select>
+                <input type="hidden" {...register("syllabus", { required: isSchoolGrade })} value={watch("syllabus") || ""} />
+                {errors.syllabus && (
+                  <span className="text-xs text-red-500">Required</span>
+                )}
+              </div>
+            </div>
+          )}
+          {isHigherEd && (
+            <div className="grid gap-4 md:grid-cols-2 mt-1">
+              <div>
+                <Label htmlFor="university" className="mb-1 font-medium block text-gray-800">University/Institution <span className="text-red-500">*</span></Label>
+                <Input
+                  id="university"
+                  placeholder="Enter university name"
+                  {...register("university", { required: "University is required" })}
+                  required
+                  className="input mt-1"
+                />
+                {errors.university && (
+                  <span className="text-xs text-red-500">{errors.university.message as string}</span>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="branch" className="mb-1 font-medium block text-gray-800">Branch/Specialization <span className="text-red-500">*</span></Label>
+                <Input
+                  id="branch"
+                  placeholder="Enter branch/specialization"
+                  {...register("branch", { required: "Branch/Specialization is required" })}
+                  required
+                  className="input mt-1"
+                />
+                {errors.branch && (
+                  <span className="text-xs text-red-500">{errors.branch.message as string}</span>
+                )}
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="customSubjects" className="mb-1 font-medium block text-gray-800">Subjects <span className="text-red-500">*</span></Label>
+                <Input
+                  id="customSubjects"
+                  placeholder="e.g. Data Structures, Economics"
+                  {...register("customSubjects", { required: "Subjects required" })}
+                  className="input mt-1"
+                  required
+                />
+                {errors.customSubjects && (
+                  <span className="text-xs text-red-500">{errors.customSubjects.message as string}</span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Higher Ed: University/Branch/Subjects */}
-      {isHigherEd && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label htmlFor="university">University/Institution *</Label>
-              <Input
-                id="university"
-                placeholder="Enter university name"
-                {...register("university", { required: "University is required" })}
-                required
-                className="mt-1"
-              />
-              {errors.university && (
-                <span className="text-xs text-red-500">{errors.university.message as string}</span>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="branch">Branch/Specialization *</Label>
-              <Input
-                id="branch"
-                placeholder="Enter branch/specialization"
-                {...register("branch", { required: "Branch/Specialization is required" })}
-                required
-                className="mt-1"
-              />
-              {errors.branch && (
-                <span className="text-xs text-red-500">{errors.branch.message as string}</span>
-              )}
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="customSubjects">Subjects *</Label>
-            <Input
-              id="customSubjects"
-              placeholder="Enter subject(s) required (e.g. Data Structures, Algorithms, Economics)"
-              {...register("customSubjects", { required: "Subjects required" })}
-              className="mt-1"
-              required
-            />
-            {errors.customSubjects && (
-              <span className="text-xs text-red-500">{errors.customSubjects.message as string}</span>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* For dance/music/art/violin: show nothing extra */}
-
-      {/* Mode & Time Preference */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 5. Mode & Time Preference */}
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6">
         <div>
-          <Label htmlFor="mode">Tutoring Mode *</Label>
+          <Label htmlFor="mode" className="mb-1 font-medium block text-gray-800">Tutoring Mode <span className="text-red-500">*</span></Label>
           <Select
             value={watch('mode') || ""}
             onValueChange={val => setValue('mode', val, { shouldValidate: true, shouldDirty: true })}
@@ -213,7 +221,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
           )}
         </div>
         <div>
-          <Label htmlFor="preferredTime">Preferred Time</Label>
+          <Label htmlFor="preferredTime" className="mb-1 font-medium block text-gray-800">Preferred Time</Label>
           <Select
             value={watch('preferredTime') || ""}
             onValueChange={val => setValue('preferredTime', val)}
@@ -232,29 +240,27 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         </div>
       </div>
 
-      {/* Preferred Language */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="languages">Preferred Teaching Language</Label>
-          <Select
-            value={watch('languages') || ""}
-            onValueChange={val => setValue('languages', val)}
-          >
-            <SelectTrigger className="mt-1">
-              <SelectValue placeholder="Select language preference" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="English">English</SelectItem>
-              <SelectItem value="Malayalam">Malayalam</SelectItem>
-              <SelectItem value="English/Malayalam">English/Malayalam</SelectItem>
-              <SelectItem value="Hindi">Hindi</SelectItem>
-              <SelectItem value="Tamil">Tamil</SelectItem>
-            </SelectContent>
-          </Select>
-          <input type="hidden" {...register("languages")} value={watch("languages") || ""} />
-        </div>
+      {/* 6. Preferred Language */}
+      <div>
+        <Label htmlFor="languages" className="mb-1 font-medium block text-gray-800">Preferred Teaching Language</Label>
+        <Select
+          value={watch('languages') || ""}
+          onValueChange={val => setValue('languages', val)}
+        >
+          <SelectTrigger className="mt-1">
+            <SelectValue placeholder="Select language preference" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="English">English</SelectItem>
+            <SelectItem value="Malayalam">Malayalam</SelectItem>
+            <SelectItem value="English/Malayalam">English/Malayalam</SelectItem>
+            <SelectItem value="Hindi">Hindi</SelectItem>
+            <SelectItem value="Tamil">Tamil</SelectItem>
+          </SelectContent>
+        </Select>
+        <input type="hidden" {...register("languages")} value={watch("languages") || ""} />
       </div>
-    </div>
+    </section>
   );
 };
 
