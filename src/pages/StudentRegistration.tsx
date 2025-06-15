@@ -12,7 +12,6 @@ import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSect
 import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
 import FormSectionCard from '@/components/forms/FormSectionCard';
 import { useToast } from '@/hooks/use-toast';
-import LearnSearchBox from "@/components/LearnSearchBox";
 
 const subjectSchema = z.object({
   subjects: z
@@ -103,6 +102,7 @@ const StudentRegistration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const subjectParam = useQueryParam("subject");
+  const classParam = useQueryParam("class");
 
   const methods = useForm({
     mode: "onChange",
@@ -117,42 +117,34 @@ const StudentRegistration = () => {
     formState: { isValid },
   } = methods;
 
-  // Prefill subjects from search param
+  // Prefill subjects and/or class from search param
   useEffect(() => {
-    if (subjectParam && step === 0) {
-      // try to smart match
-      if (
-        [
-          "B.Tech",
-          "B.Sc",
-          "B.A",
-          "B.Com",
-          "LLB",
-          "M.Tech",
-          "M.Sc",
-          "M.A",
-          "M.Com",
-          "Music",
-          "Dance",
-          "Art/Drawing",
-          "Violin (Classical)",
-          "Violin (Western)",
-          "NEET",
-          "JEE",
-          "UPSC",
-          "PSC",
-          "Banking",
-          "SSC",
-          "Railway",
-        ].map((s) => s.toLowerCase()).includes(subjectParam.toLowerCase())
-      ) {
-        setValue("class", subjectParam.toLowerCase());
-      } else {
-        setValue("otherSubjects", subjectParam);
+    if (subjectParam) {
+      // from homepage search we want to skip subject step and also possibly class
+      // Try to match to school class or not
+      const schoolSubjects = [
+        "mathematics", "physics", "chemistry", "biology", "english", "hindi", "malayalam",
+        "social science", "history", "geography", "political science", "economics", "computer science",
+        "accountancy", "business studies", "psychology", "sociology", "philosophy", "physical education", "environmental science"
+      ];
+      if (classParam) {
+        // School + class provided: prefill and skip subject step
+        setValue("class", classParam);
         setValue("subjects", [subjectParam]);
+        setStep(1); // skip to info
+      } else if (
+        schoolSubjects.includes(subjectParam.toLowerCase())
+      ) {
+        // If it's a school subject but no class, stay on step 0 – prompt for class (already handled in homepage)
+        // Should never hit this due to homepage picker
+        setValue("subjects", [subjectParam]);
+      } else {
+        // Not a school subject; higher ed/art
+        setValue("class", subjectParam.toLowerCase());
+        setStep(1); // skip to info
       }
     }
-  }, [subjectParam, step, setValue]);
+  }, [subjectParam, classParam, setValue]);
 
   // Step configs
   const steps = [
@@ -334,10 +326,6 @@ const StudentRegistration = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-10">
-      {/* Search box at the top */}
-      <div className="w-full flex flex-col items-center mb-10">
-        <LearnSearchBox />
-      </div>
       <div className="w-full max-w-2xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
         <FormProvider {...methods}>
           <form
