@@ -27,37 +27,77 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
   // If user selects a new class, update parent
   const handleClassChange = (val: string) => {
     setClassGrade(val);
-    setValue('class', val);
+    setValue('class', val, { shouldValidate: true, shouldDirty: true });
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
+    <div className="space-y-8 px-2 sm:px-4 md:px-6">
+      {/* Student & Parent Names */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-full">
           <Label htmlFor="studentName">Student Name *</Label>
-          <Input id="studentName" {...register("studentName", { required: true })} required className="mt-1" />
+          <Input
+            id="studentName"
+            {...register("studentName", { required: "Student name is required" })}
+            required
+            autoComplete="off"
+            className="mt-1"
+          />
+          {errors.studentName && (
+            <span className="text-xs text-red-500">{errors.studentName.message as string}</span>
+          )}
         </div>
-        <div>
+        <div className="w-full">
           <Label htmlFor="parentName">Parent/Guardian Name *</Label>
-          <Input id="parentName" {...register("parentName", { required: true })} required className="mt-1" />
+          <Input
+            id="parentName"
+            {...register("parentName", { required: "Parent/Guardian name is required" })}
+            required
+            autoComplete="off"
+            className="mt-1"
+          />
+          {errors.parentName && (
+            <span className="text-xs text-red-500">{errors.parentName.message as string}</span>
+          )}
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
+      {/* Contact Info */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-full">
           <Label htmlFor="email">Email *</Label>
-          <Input id="email" type="email" {...register("email", { required: true })} required className="mt-1" />
+          <Input
+            id="email"
+            type="email"
+            {...register("email", { required: "Email is required" })}
+            required
+            autoComplete="off"
+            className="mt-1"
+          />
+          {errors.email && (
+            <span className="text-xs text-red-500">{errors.email.message as string}</span>
+          )}
         </div>
-        <div>
+        <div className="w-full">
           <Label htmlFor="parentPhone">Parent Phone Number *</Label>
-          <Input id="parentPhone" type="tel" {...register("parentPhone", { required: true })} required className="mt-1" />
+          <Input
+            id="parentPhone"
+            type="tel"
+            {...register("parentPhone", { required: "Parent phone is required" })}
+            required
+            autoComplete="off"
+            className="mt-1"
+          />
+          {errors.parentPhone && (
+            <span className="text-xs text-red-500">{errors.parentPhone.message as string}</span>
+          )}
         </div>
       </div>
 
-      {/* Show class/grade only for school students (Class 1 to 12) */}
+      {/* Class/Grade & Syllabus (School Students) */}
       {isSchoolGrade && (
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="w-full">
             <Label htmlFor="class">Class/Grade *</Label>
             <Select value={classGrade} onValueChange={handleClassChange}>
               <SelectTrigger className="mt-1">
@@ -67,20 +107,22 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
                 {schoolGrades.map((grade) => (
                   <SelectItem key={grade} value={grade}>{`Class ${grade}`}</SelectItem>
                 ))}
-                {/* Retain hidden higherEd/art/music option to allow changes */}
+                {/* Hidden higherEd/art/music options to allow changes */}
                 {higherEdGrades.concat(artMusicGrades).map(option => (
                   <SelectItem key={option} value={option} style={{display:"none"}}>{option}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {/* Still ensure value is in react-hook-form's state */}
             <input type="hidden" {...register("class", { required: true })} value={classGrade || ""} />
+            {errors.class && (
+              <span className="text-xs text-red-500">Required</span>
+            )}
           </div>
-          <div>
+          <div className="w-full">
             <Label htmlFor="syllabus">Syllabus *</Label>
             <Select 
               value={watch('syllabus') || ""}
-              onValueChange={val => setValue('syllabus', val)}
+              onValueChange={val => setValue('syllabus', val, { shouldValidate: true, shouldDirty: true })}
             >
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select syllabus" />
@@ -93,45 +135,70 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
               </SelectContent>
             </Select>
             <input type="hidden" {...register("syllabus", { required: isSchoolGrade })} value={watch("syllabus") || ""} />
+            {errors.syllabus && (
+              <span className="text-xs text-red-500">Required</span>
+            )}
           </div>
         </div>
       )}
 
-      {/* Show subject text box only for higher education (not school or music/dance/art/violin) */}
+      {/* Higher Ed: University/Branch/Subjects */}
       {isHigherEd && (
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="university">University/Institution *</Label>
-            <Input id="university" {...register("university", { required: true })} required className="mt-1" placeholder="Enter university name" />
+        <>
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full">
+              <Label htmlFor="university">University/Institution *</Label>
+              <Input
+                id="university"
+                placeholder="Enter university name"
+                {...register("university", { required: "University is required" })}
+                required
+                className="mt-1"
+              />
+              {errors.university && (
+                <span className="text-xs text-red-500">{errors.university.message as string}</span>
+              )}
+            </div>
+            <div className="w-full">
+              <Label htmlFor="branch">Branch/Specialization *</Label>
+              <Input
+                id="branch"
+                placeholder="Enter branch/specialization"
+                {...register("branch", { required: "Branch/Specialization is required" })}
+                required
+                className="mt-1"
+              />
+              {errors.branch && (
+                <span className="text-xs text-red-500">{errors.branch.message as string}</span>
+              )}
+            </div>
           </div>
-          <div>
-            <Label htmlFor="branch">Branch/Specialization *</Label>
-            <Input id="branch" {...register("branch", { required: true })} required className="mt-1" placeholder="Enter branch/specialization" />
+
+          <div className="flex flex-col">
+            <Label htmlFor="customSubjects">Subjects *</Label>
+            <Input
+              id="customSubjects"
+              placeholder="Enter subject(s) required (e.g. Data Structures, Algorithms, Economics)"
+              {...register("customSubjects", { required: "Subjects required" })}
+              className="mt-1"
+              required
+            />
+            {errors.customSubjects && (
+              <span className="text-xs text-red-500">{errors.customSubjects.message as string}</span>
+            )}
           </div>
-        </div>
+        </>
       )}
 
-      {isHigherEd && (
-        <div>
-          <Label htmlFor="customSubjects">Subjects *</Label>
-          <Input
-            id="customSubjects"
-            {...register("customSubjects", { required: true })}
-            className="mt-1"
-            placeholder="Enter subject(s) required (e.g. Data Structures, Algorithms, Economics)"
-            required
-          />
-        </div>
-      )}
+      {/* For dance/music/art/violin: show nothing extra */}
 
-      {/* For dance/music/art/violin do NOT show class/grade, syllabus, or customSubjects! */}
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
+      {/* Mode & Time Preference */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-full">
           <Label htmlFor="mode">Tutoring Mode *</Label>
           <Select
             value={watch('mode') || ""}
-            onValueChange={val => setValue('mode', val)}
+            onValueChange={val => setValue('mode', val, { shouldValidate: true, shouldDirty: true })}
           >
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select mode" />
@@ -143,8 +210,11 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
             </SelectContent>
           </Select>
           <input type="hidden" {...register("mode", { required: true })} value={watch("mode") || ""} />
+          {errors.mode && (
+            <span className="text-xs text-red-500">Required</span>
+          )}
         </div>
-        <div>
+        <div className="w-full">
           <Label htmlFor="preferredTime">Preferred Time</Label>
           <Select
             value={watch('preferredTime') || ""}
@@ -164,24 +234,27 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="languages">Preferred Teaching Language</Label>
-        <Select
-          value={watch('languages') || ""}
-          onValueChange={val => setValue('languages', val)}
-        >
-          <SelectTrigger className="mt-1">
-            <SelectValue placeholder="Select language preference" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="English">English</SelectItem>
-            <SelectItem value="Malayalam">Malayalam</SelectItem>
-            <SelectItem value="English/Malayalam">English/Malayalam</SelectItem>
-            <SelectItem value="Hindi">Hindi</SelectItem>
-            <SelectItem value="Tamil">Tamil</SelectItem>
-          </SelectContent>
-        </Select>
-        <input type="hidden" {...register("languages")} value={watch("languages") || ""} />
+      {/* Preferred Language */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-full">
+          <Label htmlFor="languages">Preferred Teaching Language</Label>
+          <Select
+            value={watch('languages') || ""}
+            onValueChange={val => setValue('languages', val)}
+          >
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select language preference" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="English">English</SelectItem>
+              <SelectItem value="Malayalam">Malayalam</SelectItem>
+              <SelectItem value="English/Malayalam">English/Malayalam</SelectItem>
+              <SelectItem value="Hindi">Hindi</SelectItem>
+              <SelectItem value="Tamil">Tamil</SelectItem>
+            </SelectContent>
+          </Select>
+          <input type="hidden" {...register("languages")} value={watch("languages") || ""} />
+        </div>
       </div>
     </div>
   );
