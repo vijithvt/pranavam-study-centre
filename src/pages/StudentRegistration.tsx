@@ -308,17 +308,20 @@ const StudentRegistration = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full text-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 sm:p-4">
+        <Card className="w-full max-w-[416px] text-center rounded-xl shadow-xl">
           <CardContent className="pt-12 pb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
               Request Submitted!
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 text-base sm:text-lg">
               We've received your tuition request. Our team will find suitable tutors in your area and contact you within 24 hours.
             </p>
             <div className="space-y-3">
-              <button onClick={() => { setIsSubmitted(false); setStep(0); }} className="w-full bg-primary text-white py-3 rounded-lg font-bold mt-2">
+              <button 
+                onClick={() => { setIsSubmitted(false); setStep(0); }}
+                className="w-full bg-primary text-white py-3 sm:py-3.5 rounded-lg font-bold text-base sm:text-lg shadow-md hover:bg-primary/90 transition"
+              >
                 Submit Another Request
               </button>
             </div>
@@ -329,12 +332,12 @@ const StudentRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
-      <div className="max-w-2xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-10">
+      <div className="w-full max-w-2xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
         <FormProvider {...methods}>
           <form
             onSubmit={e => { e.preventDefault(); }}
-            className="bg-white shadow-xl rounded-xl py-10 px-2 sm:px-6 md:px-12 mb-8 animate-fade-in"
+            className="bg-white shadow-xl rounded-xl py-6 sm:py-10 px-1 xs:px-1.5 sm:px-6 md:px-12 mb-4 sm:mb-8 animate-fade-in"
             autoComplete="off"
           >
             <StepWizard
