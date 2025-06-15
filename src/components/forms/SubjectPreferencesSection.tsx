@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -36,8 +37,8 @@ const SubjectPreferencesSection = ({
     'music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'
   ].includes(classGrade);
 
-  const allSchoolSubjects = [
-    // Core academic subjects
+  // --- School Subjects ---
+  const schoolSubjects = [
     'Mathematics',
     'Science',
     'Physics',
@@ -69,14 +70,11 @@ const SubjectPreferencesSection = ({
     'Artificial Intelligence',
     'Statistics',
     'Electronics',
-    'Home Science',
-    'Fine Arts',
-    'Drawing & Painting',
-    'Music',
-    'Dance',
-    'Theatre',
-    'Design & Technology',
-    // Higher Education & Streams
+    'Home Science'
+  ];
+
+  // --- Professional Courses/Degrees ---
+  const professionalCourses = [
     'B.Tech',
     'B.Sc',
     'B.A',
@@ -86,7 +84,10 @@ const SubjectPreferencesSection = ({
     'M.Sc',
     'M.A',
     'M.Com',
-    // Entrance Exam Preparation
+  ];
+
+  // --- Entrance Exam Preparation ---
+  const entranceExams = [
     'NEET',
     'JEE',
     'UPSC',
@@ -103,7 +104,16 @@ const SubjectPreferencesSection = ({
     'SAT',
     'IELTS',
     'TOEFL',
-    // Arts
+  ];
+
+  // --- Arts & Music ---
+  const artsAndMusic = [
+    'Fine Arts',
+    'Drawing & Painting',
+    'Music',
+    'Dance',
+    'Theatre',
+    'Design & Technology',
     'Violin (Classical)',
     'Violin (Western)',
     'Guitar',
@@ -112,6 +122,18 @@ const SubjectPreferencesSection = ({
     'Mridangam',
     'Vocal (Classical)',
     'Vocal (Light)'
+  ];
+
+  // Compose the subject list with group headers (display only, not actual values)
+  const groupedSubjectList: { label?: string; isLabel?: boolean; subject?: string }[] = [
+    { label: "School Subjects", isLabel: true },
+    ...schoolSubjects.map(subject => ({ subject })),
+    { label: "Professional Courses", isLabel: true },
+    ...professionalCourses.map(subject => ({ subject })),
+    { label: "Entrance Exam Preparation", isLabel: true },
+    ...entranceExams.map(subject => ({ subject })),
+    { label: "Arts & Music", isLabel: true },
+    ...artsAndMusic.map(subject => ({ subject })),
   ];
 
   const handleSubjectChange = (subject: string, checked: boolean) => {
@@ -144,7 +166,7 @@ const SubjectPreferencesSection = ({
     );
   }
 
-  // Regular school subjects with multi-selection
+  // Regular school subjects with multi-selection, grouped by sections
   return (
     <div className="space-y-4">
       <div>
@@ -158,28 +180,37 @@ const SubjectPreferencesSection = ({
             bg-muted/40
           "
         >
-          {allSchoolSubjects.map((subject) => (
-            <div
-              key={subject}
-              className="flex items-start min-w-0 mb-2 max-w-full"
-              style={{ alignItems: 'flex-start' }}
-            >
-              <Checkbox
-                id={subject}
-                name="subjects"
-                value={subject}
-                checked={internalSelected.includes(subject)}
-                onCheckedChange={(checked) => handleSubjectChange(subject, checked as boolean)}
-              />
-              <Label
-                htmlFor={subject}
-                className="ml-2 text-sm font-normal cursor-pointer whitespace-normal break-words"
-                style={{ maxWidth: "100%", wordBreak: "break-word" }}
+          {groupedSubjectList.map((item, idx) =>
+            item.isLabel ? (
+              <div
+                key={item.label || idx}
+                className="col-span-full text-xs font-semibold text-primary/80 py-2 pl-1 border-b border-muted/40 mb-1"
               >
-                <span className="block max-w-[90vw] sm:max-w-[220px] break-words">{subject}</span>
-              </Label>
-            </div>
-          ))}
+                {item.label}
+              </div>
+            ) : (
+              <div
+                key={item.subject}
+                className="flex items-start min-w-0 mb-2 max-w-full"
+                style={{ alignItems: 'flex-start' }}
+              >
+                <Checkbox
+                  id={item.subject}
+                  name="subjects"
+                  value={item.subject}
+                  checked={internalSelected.includes(item.subject!)}
+                  onCheckedChange={(checked) => handleSubjectChange(item.subject!, checked as boolean)}
+                />
+                <Label
+                  htmlFor={item.subject}
+                  className="ml-2 text-sm font-normal cursor-pointer whitespace-normal break-words"
+                  style={{ maxWidth: "100%", wordBreak: "break-word" }}
+                >
+                  <span className="block max-w-[90vw] sm:max-w-[220px] break-words">{item.subject}</span>
+                </Label>
+              </div>
+            )
+          )}
         </div>
         {/* Hidden inputs for form submission */}
         {internalSelected.map((subject) => (
