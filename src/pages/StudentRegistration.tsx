@@ -351,12 +351,31 @@ const StudentRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-10">
-      <div className="w-full max-w-2xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
+    <div className="
+      min-h-screen bg-gray-50 
+      flex items-center justify-center 
+      px-2 xs:px-4 sm:px-6 py-5
+    ">
+      <div className="
+        w-full 
+        max-w-[420px] 
+        sm:max-w-xl 
+        md:max-w-2xl 
+        bg-white 
+        rounded-2xl 
+        shadow-xl 
+        mx-auto
+        p-1 xs:p-2 sm:p-5 md:p-8 
+      ">
         <FormProvider {...methods}>
           <form
             onSubmit={e => { e.preventDefault(); }}
-            className="bg-white shadow-xl rounded-xl py-6 sm:py-10 px-1 xs:px-1.5 sm:px-6 md:px-12 mb-4 sm:mb-8 animate-fade-in"
+            className="
+              flex flex-col gap-4 
+              bg-transparent 
+              rounded-xl 
+              w-full
+              "
             autoComplete="off"
           >
             <StepWizard
@@ -373,7 +392,6 @@ const StudentRegistration = () => {
                       const requiredFields = getInfoRequiredFields(values);
                       return requiredFields.every(
                         (field) =>
-                          // cover react-hook-form default behavior for booleans (for consent) and string fields
                           typeof values[field] === "boolean" ? values[field] : !!values[field]
                       ) && isValid;
                     })()
