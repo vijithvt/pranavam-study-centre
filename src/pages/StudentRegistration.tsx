@@ -1,73 +1,18 @@
+
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import StepWizard from "@/components/forms/StepWizard";
 import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
-import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
-import LocationSection from '@/components/forms/LocationSection';
-import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
-import BudgetCalculatorSection from '@/components/forms/BudgetCalculatorSection';
-import FormSectionCard from '@/components/forms/FormSectionCard';
-import { useToast } from '@/hooks/use-toast';
-
-const subjectSchema = z.object({
-  subjects: z
-    .array(z.string())
-    .min(1, "Please select or enter at least one subject.")
-    .or(z.array(z.object({ customSubjects: z.string().min(1) })).min(1, "Please enter subject(s).")),
-  customSubjects: z.string().optional(),
-  otherSubjects: z.string().optional(),
-});
+import PersonalInfoSection from "@/components/forms/PersonalInfoSection";
+import LocationSection from "@/components/forms/LocationSection";
+import FormSectionCard from "@/components/forms/FormSectionCard";
+import BudgetCalculatorSection from "@/components/forms/BudgetCalculatorSection";
+import { useToast } from "@/hooks/use-toast";
+import SubjectPreferencesSection from "@/components/forms/SubjectPreferencesSection";
 
 const phoneRegex = /^\+?\d{10,15}$/;
-
-const infoSchema = z.object({
-  studentName: z.string().min(2),
-  parentName: z.string().min(2),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  parentPhone: z.string().regex(phoneRegex, "Phone with country code, 10-15 digits."),
-  class: z.string().min(1),
-  mode: z.string().min(1),
-  syllabus: z.string().optional(),
-  university: z.string().optional(),
-  branch: z.string().optional(),
-  preferredTime: z.string().optional(),
-  languages: z.string().optional(),
-  district: z.string().min(1),
-  area: z.string().min(1),
-});
-
-const budgetSchema = z.object({
-  monthlyFee: z.coerce.number().min(1000).max(50000),
-});
-
-const preferenceSchema = z.object({
-  tutorGender: z.string().min(1),
-  urgency: z.string().min(1),
-  requirements: z.string().optional(),
-  consent: z.boolean().refine((v) => v, "Consent required"),
-});
-
-function useQueryParam(param: string) {
-  const { search } = useLocation();
-  return React.useMemo(() => {
-    try {
-      return new URLSearchParams(search).get(param) || "";
-    } catch {
-      return "";
-    }
-  }, [search]);
-}
-
-const stepsDef = [
-  { title: "Subject Preferences" },
-  { title: "Student & Parent Info" },
-  { title: "Budget & Scheduling" },
-  { title: "Preferences & Needs" },
-];
 
 const defaultValues = {
   studentName: "",
@@ -91,7 +36,34 @@ const defaultValues = {
   tutorGender: "",
   urgency: "",
   consent: false,
+};
+
+function useQueryParam(param: string) {
+  const { search } = useLocation();
+  return React.useMemo(() => {
+    try {
+      return new URLSearchParams(search).get(param) || "";
+    } catch {
+      return "";
+    }
+  }, [search]);
 }
+
+const stepsDef = [
+  { title: "Student & Parent Info" },
+  { title: "Budget & Scheduling" },
+  { title: "Preferences & Needs" },
+];
+
+const schoolGrades = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+];
+const higherEdGrades = [
+  "btech", "bsc", "ba", "bcom", "llb", "mtech", "msc", "ma", "mcom"
+];
+const artMusicGrades = [
+  "music", "dance", "art", "violin-classical", "violin-western"
+];
 
 const StudentRegistration = () => {
   const [step, setStep] = React.useState(0);
@@ -114,50 +86,31 @@ const StudentRegistration = () => {
     trigger,
     getValues,
     setValue,
-    formState: { isValid },
+    watch,
+    formState: { isValid, errors },
   } = methods;
 
   // Prefill subjects and/or class from search param
   useEffect(() => {
     if (subjectParam) {
-      // from homepage search we want to skip subject step and also possibly class
-      // Try to match to school class or not
       const schoolSubjects = [
         "mathematics", "physics", "chemistry", "biology", "english", "hindi", "malayalam",
         "social science", "history", "geography", "political science", "economics", "computer science",
         "accountancy", "business studies", "psychology", "sociology", "philosophy", "physical education", "environmental science"
       ];
       if (classParam) {
-        // School + class provided: prefill and skip subject step
         setValue("class", classParam);
         setValue("subjects", [subjectParam]);
-        setStep(1); // skip to info
-      } else if (
-        schoolSubjects.includes(subjectParam.toLowerCase())
-      ) {
-        // If it's a school subject but no class, stay on step 0 – prompt for class (already handled in homepage)
-        // Should never hit this due to homepage picker
+      } else if (schoolSubjects.includes(subjectParam.toLowerCase())) {
         setValue("subjects", [subjectParam]);
       } else {
-        // Not a school subject; higher ed/art
         setValue("class", subjectParam.toLowerCase());
-        setStep(1); // skip to info
       }
     }
   }, [subjectParam, classParam, setValue]);
 
   // Helper to determine which required fields to validate in Student & Parent Info
   function getInfoRequiredFields(values: any) {
-    const schoolGrades = [
-      "1","2","3","4","5","6","7","8","9","10","11","12"
-    ];
-    const higherEdGrades = [
-      "btech","bsc","ba","bcom","llb",
-      "mtech","msc","ma","mcom"
-    ];
-    const artMusicGrades = [
-      "music", "dance", "art", "violin-classical", "violin-western"
-    ];
     const required = [
       "studentName",
       "parentName",
@@ -169,73 +122,104 @@ const StudentRegistration = () => {
       "area"
     ];
     const classGrade = values.class;
-
     if (schoolGrades.includes(classGrade)) {
-      required.push("syllabus");
+      required.push("syllabus", "subjects");
     } else if (higherEdGrades.includes(classGrade)) {
-      required.push("university", "branch");
+      required.push("university", "branch", "customSubjects");
       // no "syllabus"
+    } else if (classGrade) {
+      required.push("otherSubjects");
     }
-    // for artMusic: no syllabus/uni/branch required (do not add)
     return required;
   }
 
-  // Step configs
+  // -- Step 1 Content: Student & Parent Info + Subject Preference --
+  const infoStepContent = (
+    <FormSectionCard
+      title="Student & Parent Information"
+      description="Provide details to help us match you with the best tutors."
+    >
+      <PersonalInfoSection
+        classGrade={watch("class")}
+        setClassGrade={(val) => setValue("class", val)}
+      />
+      {/* Subject Preferences */}
+      <div className="mt-8">
+        {(schoolGrades.includes(watch("class"))) && (
+          <SubjectPreferencesSection
+            classGrade={watch("class")}
+            onSubjectsChange={(subs) => setValue("subjects", subs)}
+            selectedSubjects={watch("subjects")}
+            onOtherSubjectChange={(other) => setValue("otherSubjects", other)}
+            defaultOtherSubject={watch("otherSubjects")}
+          />
+        )}
+        {(higherEdGrades.includes(watch("class"))) && (
+          <div className="mt-8 space-y-4">
+            <label htmlFor="customSubjects" className="font-semibold block mb-1">Subjects *</label>
+            <input
+              id="customSubjects"
+              name="customSubjects"
+              value={watch("customSubjects")}
+              onChange={e => setValue("customSubjects", e.target.value)}
+              className="w-full rounded px-3 py-2 border"
+              placeholder="Enter subject(s) required (e.g. Data Structures, Economics)"
+            />
+            {errors.customSubjects && (
+              <div className="text-xs text-red-500">{errors.customSubjects.message as string}</div>
+            )}
+          </div>
+        )}
+        {
+          (!schoolGrades.includes(watch("class")) && !higherEdGrades.includes(watch("class")) && watch("class")) && (
+            <div className="mt-8 space-y-4">
+              <label htmlFor="otherSubjects" className="font-semibold block mb-1">Subject(s) Required *</label>
+              <input
+                id="otherSubjects"
+                name="otherSubjects"
+                value={watch("otherSubjects")}
+                onChange={e => setValue("otherSubjects", e.target.value)}
+                className="w-full rounded px-3 py-2 border"
+                placeholder="Describe subject/course needed"
+                required
+              />
+              {errors.otherSubjects && (
+                <div className="text-xs text-red-500">{errors.otherSubjects.message as string}</div>
+              )}
+            </div>
+          )
+        }
+      </div>
+      <LocationSection />
+    </FormSectionCard>
+  );
+
+  // Steps config
   const steps = [
     {
       title: stepsDef[0].title,
-      content: (
-        <FormSectionCard title="Subject Preferences"
-          description="Which subjects do you need help with?">
-          <SubjectPreferencesSection
-            classGrade={methods.watch("class")}
-            defaultOtherSubject={methods.watch("otherSubjects")}
-            onSubjectsChange={(subs) => setValue("subjects", subs)}
-            onOtherSubjectChange={(other) => setValue("otherSubjects", other)}
-            selectedSubjects={methods.watch("subjects")}
-          />
-        </FormSectionCard>
-      ),
+      content: infoStepContent,
       validate: async () => {
-        // At least 1 subject or customSubjects
-        const subs = methods.getValues("subjects") || [];
-        const other = methods.getValues("otherSubjects");
-        const custom = methods.getValues("customSubjects");
-        if (
-          (!custom && (!subs || subs.length === 0) && !other)
-        ) {
-          setStepError("Please select or enter at least one subject.");
-          return false;
+        const values = methods.getValues();
+        const requiredFields = getInfoRequiredFields(values) as (keyof typeof defaultValues)[];
+        const valid = await trigger(requiredFields);
+        let hasAtLeastOneSubject = true;
+        if (schoolGrades.includes(values.class)) {
+          // school: must have subjects
+          hasAtLeastOneSubject = (values.subjects && values.subjects.length > 0);
+        } else if (higherEdGrades.includes(values.class)) {
+          hasAtLeastOneSubject = !!values.customSubjects;
+        } else if (values.class) {
+          hasAtLeastOneSubject = !!values.otherSubjects;
         }
-        setStepError("");
-        return true;
+        setStepError(valid && hasAtLeastOneSubject ? "" : "Please complete all required info and specify subjects.");
+        return valid && hasAtLeastOneSubject;
       },
     },
     {
       title: stepsDef[1].title,
       content: (
-        <FormSectionCard title="Student & Parent Information"
-          description="Provide basics to help us contact you and recommend best tutors.">
-          <PersonalInfoSection
-            classGrade={methods.watch("class")}
-            setClassGrade={(val) => methods.setValue("class", val)}
-          />
-          <LocationSection />
-        </FormSectionCard>
-      ),
-      validate: async () => {
-        const values = methods.getValues();
-        const requiredFields = getInfoRequiredFields(values) as (keyof typeof defaultValues)[];
-        const valid = await trigger(requiredFields);
-        setStepError(valid ? "" : "Please correct highlighted fields.");
-        return valid;
-      },
-    },
-    {
-      title: stepsDef[2].title,
-      content: (
-        <FormSectionCard title="Budget & Scheduling"
-          description="Mention preferred budget, schedule or timing.">
+        <FormSectionCard title="Budget & Scheduling" description="Mention preferred budget, schedule or timing.">
           <BudgetCalculatorSection
             setMonthlyFee={(val: number) => methods.setValue("monthlyFee", val)}
             classGrade={methods.watch("class")}
@@ -249,15 +233,16 @@ const StudentRegistration = () => {
       },
     },
     {
-      title: stepsDef[3].title,
+      title: stepsDef[2].title,
       content: (
-        <FormSectionCard title="Preferences & Needs"
-          description="Special preferences? Learning difficulties? Add here!">
+        <FormSectionCard
+          title="Preferences & Needs"
+          description="Special preferences? Learning difficulties? Add here!"
+        >
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="font-semibold mb-1 block" htmlFor="tutorGender">Tutor Gender Preference *</label>
-              <select id="tutorGender" {...methods.register("tutorGender", { required: true })}
-                className="w-full rounded px-3 py-2 border">
+              <select id="tutorGender" {...methods.register("tutorGender", { required: true })} className="w-full rounded px-3 py-2 border">
                 <option value="">Select preference</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -266,8 +251,7 @@ const StudentRegistration = () => {
             </div>
             <div>
               <label htmlFor="urgency" className="font-semibold mb-1 block">When to start? *</label>
-              <select id="urgency" {...methods.register("urgency", { required: true })}
-                className="w-full rounded px-3 py-2 border">
+              <select id="urgency" {...methods.register("urgency", { required: true })} className="w-full rounded px-3 py-2 border">
                 <option value="">Select start time</option>
                 <option value="immediately">Immediately</option>
                 <option value="within-week">Within this week</option>
@@ -315,7 +299,6 @@ const StudentRegistration = () => {
 
   const doSubmit = handleSubmit(async (values) => {
     setIsSubmitting(true);
-    // Here, add Supabase submission as original, or show a mock success.
     setSubmittedData(values);
     setIsSubmitted(true);
     setIsSubmitting(false);
@@ -385,19 +368,25 @@ const StudentRegistration = () => {
               goNext={handleNext}
               showBack={step > 0}
               canNext={
-                step === 0 ||
-                (step === 1
+                step === 0
                   ? (() => {
                       const values = methods.getValues();
                       const requiredFields = getInfoRequiredFields(values);
+                      const classType = values.class;
+                      let subjectsOk = true;
+                      if (schoolGrades.includes(classType)) {
+                        subjectsOk = values.subjects && values.subjects.length > 0;
+                      } else if (higherEdGrades.includes(classType)) {
+                        subjectsOk = !!values.customSubjects;
+                      } else if (classType) {
+                        subjectsOk = !!values.otherSubjects;
+                      }
                       return requiredFields.every(
                         (field) =>
                           typeof values[field] === "boolean" ? values[field] : !!values[field]
-                      ) && isValid;
+                      ) && isValid && subjectsOk;
                     })()
-                  : isValid) ||
-                (step === 2 && isValid) ||
-                (step === 3 && isValid)
+                  : isValid
               }
               stepError={stepError}
               onSubmit={doSubmit}
@@ -412,3 +401,6 @@ const StudentRegistration = () => {
 };
 
 export default StudentRegistration;
+
+// END OF FILE
+
