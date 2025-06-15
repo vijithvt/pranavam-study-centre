@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -16,32 +17,40 @@ const artMusicGrades = [
 ];
 
 const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionProps) => {
+  const { register, watch, setValue, formState: { errors } } = useFormContext();
+
   // Helper logic: figure out user type based on classGrade
   const isSchoolGrade = schoolGrades.includes(classGrade);
   const isHigherEd = higherEdGrades.includes(classGrade);
   const isArtMusic = artMusicGrades.includes(classGrade);
+
+  // If user selects a new class, update parent
+  const handleClassChange = (val: string) => {
+    setClassGrade(val);
+    setValue('class', val);
+  };
 
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="studentName">Student Name *</Label>
-          <Input name="studentName" id="studentName" required className="mt-1" />
+          <Input id="studentName" {...register("studentName", { required: true })} required className="mt-1" />
         </div>
         <div>
           <Label htmlFor="parentName">Parent/Guardian Name *</Label>
-          <Input name="parentName" id="parentName" required className="mt-1" />
+          <Input id="parentName" {...register("parentName", { required: true })} required className="mt-1" />
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="email">Email *</Label>
-          <Input name="email" id="email" type="email" required className="mt-1" />
+          <Input id="email" type="email" {...register("email", { required: true })} required className="mt-1" />
         </div>
         <div>
           <Label htmlFor="parentPhone">Parent Phone Number *</Label>
-          <Input name="parentPhone" id="parentPhone" type="tel" required className="mt-1" />
+          <Input id="parentPhone" type="tel" {...register("parentPhone", { required: true })} required className="mt-1" />
         </div>
       </div>
 
@@ -50,7 +59,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <Label htmlFor="class">Class/Grade *</Label>
-            <Select name="class" value={classGrade} onValueChange={setClassGrade} required>
+            <Select value={classGrade} onValueChange={handleClassChange}>
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select class" />
               </SelectTrigger>
@@ -64,10 +73,15 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
                 ))}
               </SelectContent>
             </Select>
+            {/* Still ensure value is in react-hook-form's state */}
+            <input type="hidden" {...register("class", { required: true })} value={classGrade || ""} />
           </div>
           <div>
             <Label htmlFor="syllabus">Syllabus *</Label>
-            <Select name="syllabus" required>
+            <Select 
+              value={watch('syllabus') || ""}
+              onValueChange={val => setValue('syllabus', val)}
+            >
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select syllabus" />
               </SelectTrigger>
@@ -78,6 +92,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
                 <SelectItem value="IB">IB</SelectItem>
               </SelectContent>
             </Select>
+            <input type="hidden" {...register("syllabus", { required: isSchoolGrade })} value={watch("syllabus") || ""} />
           </div>
         </div>
       )}
@@ -87,11 +102,11 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <Label htmlFor="university">University/Institution *</Label>
-            <Input name="university" id="university" required className="mt-1" placeholder="Enter university name" />
+            <Input id="university" {...register("university", { required: true })} required className="mt-1" placeholder="Enter university name" />
           </div>
           <div>
             <Label htmlFor="branch">Branch/Specialization *</Label>
-            <Input name="branch" id="branch" required className="mt-1" placeholder="Enter branch/specialization" />
+            <Input id="branch" {...register("branch", { required: true })} required className="mt-1" placeholder="Enter branch/specialization" />
           </div>
         </div>
       )}
@@ -100,8 +115,8 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
         <div>
           <Label htmlFor="customSubjects">Subjects *</Label>
           <Input
-            name="customSubjects"
             id="customSubjects"
+            {...register("customSubjects", { required: true })}
             className="mt-1"
             placeholder="Enter subject(s) required (e.g. Data Structures, Algorithms, Economics)"
             required
@@ -114,7 +129,10 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="mode">Tutoring Mode *</Label>
-          <Select name="mode" required>
+          <Select
+            value={watch('mode') || ""}
+            onValueChange={val => setValue('mode', val)}
+          >
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select mode" />
             </SelectTrigger>
@@ -124,10 +142,14 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
               <SelectItem value="both">Both Home & Online</SelectItem>
             </SelectContent>
           </Select>
+          <input type="hidden" {...register("mode", { required: true })} value={watch("mode") || ""} />
         </div>
         <div>
           <Label htmlFor="preferredTime">Preferred Time</Label>
-          <Select name="preferredTime">
+          <Select
+            value={watch('preferredTime') || ""}
+            onValueChange={val => setValue('preferredTime', val)}
+          >
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select time preference" />
             </SelectTrigger>
@@ -138,12 +160,16 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
               <SelectItem value="flexible">Flexible</SelectItem>
             </SelectContent>
           </Select>
+          <input type="hidden" {...register("preferredTime")} value={watch("preferredTime") || ""} />
         </div>
       </div>
 
       <div>
         <Label htmlFor="languages">Preferred Teaching Language</Label>
-        <Select name="languages">
+        <Select
+          value={watch('languages') || ""}
+          onValueChange={val => setValue('languages', val)}
+        >
           <SelectTrigger className="mt-1">
             <SelectValue placeholder="Select language preference" />
           </SelectTrigger>
@@ -155,6 +181,7 @@ const PersonalInfoSection = ({ classGrade, setClassGrade }: PersonalInfoSectionP
             <SelectItem value="Tamil">Tamil</SelectItem>
           </SelectContent>
         </Select>
+        <input type="hidden" {...register("languages")} value={watch("languages") || ""} />
       </div>
     </div>
   );
