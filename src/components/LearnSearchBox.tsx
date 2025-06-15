@@ -6,7 +6,6 @@ import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SUBJECT_OPTIONS = [
-  // School Subjects
   "Mathematics",
   "Physics",
   "Chemistry",
@@ -27,9 +26,7 @@ const SUBJECT_OPTIONS = [
   "Philosophy",
   "Physical Education",
   "Environmental Science",
-  // Higher Ed
   "B.Tech", "B.Sc", "B.A", "B.Com", "LLB", "M.Tech", "M.Sc", "M.A", "M.Com",
-  // Arts, Entrance
   "Music", "Dance", "Art/Drawing", "Violin (Classical)", "Violin (Western)",
   "NEET", "JEE", "UPSC", "PSC", "Banking", "SSC", "Railway",
 ];
@@ -58,30 +55,61 @@ export default function LearnSearchBox() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative max-w-lg mx-auto mt-10 w-full">
+    <form
+      onSubmit={handleSubmit}
+      className="relative w-full max-w-xl mx-auto mt-14"
+      autoComplete="off"
+    >
       <div className="flex items-center relative">
-        <Search className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
+        <Search
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-6 w-6 pointer-events-none"
+        />
         <Input
           type="text"
           autoFocus
           spellCheck={false}
           placeholder="What do you want to learn? (Eg: Maths, NEET, Drawing...)"
-          className="pl-10 pr-4 py-3 rounded-xl shadow-lg !text-lg bg-white border border-gray-200 focus:border-primary/70"
+          className={cn(
+            "pl-14 pr-6 py-5 rounded-2xl text-xl shadow-xl bg-white border border-primary/20 focus:border-primary/60 transition-all duration-200 ease-out outline-none",
+            "focus:shadow-lg focus:bg-primary/5 focus:ring-2 focus:ring-primary/20",
+            "font-semibold placeholder:font-normal"
+          )}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
-          onBlur={() => setTimeout(() => setFocused(false), 120)}
+          onBlur={() => setTimeout(() => setFocused(false), 140)}
+          style={{ minHeight: "54px" }}
+          aria-label="What do you want to learn"
         />
       </div>
+      {/* Suggestions Dropdown */}
       {focused && suggestions.length > 0 && (
-        <ul className={cn(
-          "absolute z-50 left-0 right-0 mt-2 bg-white border rounded-xl shadow-lg py-2 animate-fade-in",
-          "max-h-52 overflow-auto"
-        )}>
+        <ul
+          className={cn(
+            "absolute z-50 left-0 right-0 mt-2 bg-white border border-primary/20 rounded-2xl shadow-2xl py-2 animate-fade-in",
+            "max-h-56 overflow-auto",
+          )}
+          style={{
+            // ensure dropdown sits above hero or any section
+            minWidth: "100%",
+          }}
+        >
           {suggestions.map((s) => (
             <li
               key={s}
-              className="px-4 py-2 hover:bg-primary/10 cursor-pointer text-base"
+              className={cn(
+                "px-5 py-3 cursor-pointer text-lg rounded-xl transition-all",
+                "hover:bg-primary/10 hover:text-primary font-medium",
+                "focus-visible:bg-primary/10 focus-visible:text-primary outline-none",
+                "truncate",
+              )}
+              style={{
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+                // ensure readability for long text
+                maxWidth: "100%",
+              }}
+              tabIndex={0}
               onMouseDown={() => handleSelect(s)}
             >
               {s}
@@ -89,7 +117,15 @@ export default function LearnSearchBox() {
           ))}
         </ul>
       )}
-      <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white rounded-lg px-3 py-1.5 text-base shadow hover:bg-primary/90 transition">
+      {/* "Go" button */}
+      <button
+        type="submit"
+        className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white rounded-xl px-6 py-2 text-lg font-bold shadow hover:bg-primary/90 transition-all duration-200"
+        style={{
+          minWidth: 64,
+          boxShadow: "0 2px 8px rgba(59,130,246,0.07)",
+        }}
+      >
         Go
       </button>
     </form>
