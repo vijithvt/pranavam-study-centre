@@ -79,7 +79,8 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
           {allSchoolSubjects.map((subject) => (
             <div
               key={subject}
-              className="flex items-center space-x-2 min-w-0"
+              className="flex items-center min-w-0 mb-2"
+              style={{ alignItems: 'flex-start' }}
             >
               <Checkbox
                 id={subject}
@@ -90,9 +91,8 @@ const SubjectPreferencesSection = ({ classGrade }: SubjectPreferencesSectionProp
               />
               <Label
                 htmlFor={subject}
-                className="text-sm font-normal cursor-pointer truncate"
-                style={{ maxWidth: "160px" }}
-                title={subject}
+                className="ml-2 text-sm font-normal cursor-pointer whitespace-normal break-words"
+                style={{ maxWidth: "100%", wordBreak: "break-word" }}
               >
                 {subject}
               </Label>

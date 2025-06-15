@@ -22,15 +22,122 @@ const StudentRegistration = () => {
   const { toast } = useToast();
   const [classGrade, setClassGrade] = useState<string>("");
 
+  const fieldLabels: Record<string, string> = {
+    studentName: "Student Name",
+    parentName: "Parent/Guardian Name",
+    email: "Email",
+    parentPhone: "Parent Phone Number",
+    class: "Class/Grade",
+    mode: "Tutoring Mode",
+    district: "District",
+    area: "Area/Locality",
+    tutorGender: "Tutor Gender Preference",
+    urgency: "When to Start",
+    customSubjects: "Subjects",
+    subjects: "Subjects",
+    university: "University/Institution",
+    branch: "Branch/Specialization",
+    syllabus: "Syllabus",
+  };
+
+  const validateForm = (formData: FormData, classGrade: string, isHigherEd: boolean, isArts: boolean, isEntrance: boolean) => {
+    // Validate required fields based on the chosen class/grade
+    let requiredFields = [
+      "studentName",
+      "parentName",
+      "email",
+      "parentPhone",
+      "class",
+      "mode",
+      "district",
+      "area",
+      "tutorGender",
+      "urgency"
+    ];
+
+    if (isHigherEd) {
+      requiredFields = [
+        ...requiredFields,
+        "university",
+        "branch",
+        "customSubjects"
+      ];
+    } else if (isArts || isEntrance) {
+      requiredFields = [
+        ...requiredFields,
+        "customSubjects"
+      ];
+    } else {
+      requiredFields = [
+        ...requiredFields,
+        "syllabus"
+      ];
+    }
+
+    const missing = requiredFields.filter((field) => {
+      const val = formData.get(field);
+      if (val === null || (typeof val === "string" && val.trim() === "")) {
+        return true;
+      }
+      return false;
+    });
+
+    if (missing.length > 0) {
+      return `Please fill in: ${missing.map(f => fieldLabels[f] || f).join(", ")}.`;
+    }
+
+    // Additional email validation
+    const email = formData.get("email") as string;
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+      return "Please enter a valid email address.";
+    }
+
+    // Basic phone validation
+    const phone = formData.get("parentPhone") as string;
+    if (phone && !/^(\+?\d{10,15})$/.test(phone.replace(/\s+/g, ''))) {
+      return "Please enter a correct phone number with 10-15 digits.";
+    }
+
+    // At least 1 subject selected/entered
+    if (!(isHigherEd || isArts || isEntrance)) {
+      const subjects = Array.from(formData.getAll('subjects') as string[]).filter(Boolean);
+      const otherSubjects = (formData.get('otherSubjects') as string || "").trim();
+      if (subjects.length === 0 && !otherSubjects) {
+        return "Please select or enter at least one subject.";
+      }
+    }
+
+    // Consent checkbox
+    const consent = (formData.get("consent") as string | null);
+    if (!consent) {
+      return "Please provide consent to proceed.";
+    }
+
+    return "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const formData = new FormData(e.target as HTMLFormElement);
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
       const classGrade = formData.get('class') as string;
       const isHigherEd = ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
       const isArts = ['music','dance','art','violin-classical','violin-western'].includes(classGrade);
       const isEntrance = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
+
+      // Field validation
+      const errorMsg = validateForm(formData, classGrade, isHigherEd, isArts, isEntrance);
+      if (errorMsg) {
+        toast({
+          title: "Validation Error",
+          description: errorMsg,
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
       let subjects: string[] = [];
       let customSubjectsValue = '';
@@ -42,19 +149,6 @@ const StudentRegistration = () => {
         if (otherSubjects) {
           subjects.push(otherSubjects);
         }
-      }
-
-      if (
-        !(isHigherEd || isArts || isEntrance) &&
-        (!subjects || subjects.length === 0)
-      ) {
-        toast({
-          title: "Validation Error",
-          description: "Please select or enter at least one subject.",
-          variant: "destructive"
-        });
-        setIsSubmitting(false);
-        return;
       }
 
       const studentData = {
