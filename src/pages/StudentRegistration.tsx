@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -138,59 +137,65 @@ const StudentRegistration = () => {
     <FormSectionCard
       title="Student & Parent Information"
       description="Provide details to help us match you with the best tutors."
+      className="!mb-6"
     >
-      <PersonalInfoSection
-        classGrade={watch("class")}
-        setClassGrade={(val) => setValue("class", val)}
-      />
-      {/* Subject Preferences */}
-      <div className="mt-8">
-        {(schoolGrades.includes(watch("class"))) && (
-          <SubjectPreferencesSection
-            classGrade={watch("class")}
-            onSubjectsChange={(subs) => setValue("subjects", subs)}
-            selectedSubjects={watch("subjects")}
-            onOtherSubjectChange={(other) => setValue("otherSubjects", other)}
-            defaultOtherSubject={watch("otherSubjects")}
-          />
-        )}
-        {(higherEdGrades.includes(watch("class"))) && (
-          <div className="mt-8 space-y-4">
-            <label htmlFor="customSubjects" className="font-semibold block mb-1">Subjects *</label>
-            <input
-              id="customSubjects"
-              name="customSubjects"
-              value={watch("customSubjects")}
-              onChange={e => setValue("customSubjects", e.target.value)}
-              className="w-full rounded px-3 py-2 border"
-              placeholder="Enter subject(s) required (e.g. Data Structures, Economics)"
+      <div className="flex flex-col gap-7">
+        <PersonalInfoSection
+          classGrade={watch("class")}
+          setClassGrade={(val) => setValue("class", val)}
+        />
+
+        {/* Subject Preferences */}
+        <div>
+          {(schoolGrades.includes(watch("class"))) && (
+            <SubjectPreferencesSection
+              classGrade={watch("class")}
+              onSubjectsChange={(subs) => setValue("subjects", subs)}
+              selectedSubjects={watch("subjects")}
+              onOtherSubjectChange={(other) => setValue("otherSubjects", other)}
+              defaultOtherSubject={watch("otherSubjects")}
             />
-            {errors.customSubjects && (
-              <div className="text-xs text-red-500">{errors.customSubjects.message as string}</div>
-            )}
-          </div>
-        )}
-        {
-          (!schoolGrades.includes(watch("class")) && !higherEdGrades.includes(watch("class")) && watch("class")) && (
-            <div className="mt-8 space-y-4">
-              <label htmlFor="otherSubjects" className="font-semibold block mb-1">Subject(s) Required *</label>
+          )}
+
+          {(higherEdGrades.includes(watch("class"))) && (
+            <div className="space-y-3 mt-3">
+              <label htmlFor="customSubjects" className="font-semibold block mb-1 text-left">Subjects *</label>
               <input
-                id="otherSubjects"
-                name="otherSubjects"
-                value={watch("otherSubjects")}
-                onChange={e => setValue("otherSubjects", e.target.value)}
+                id="customSubjects"
+                name="customSubjects"
+                value={watch("customSubjects")}
+                onChange={e => setValue("customSubjects", e.target.value)}
                 className="w-full rounded px-3 py-2 border"
-                placeholder="Describe subject/course needed"
-                required
+                placeholder="Enter subject(s) required (e.g. Data Structures, Economics)"
               />
-              {errors.otherSubjects && (
-                <div className="text-xs text-red-500">{errors.otherSubjects.message as string}</div>
+              {errors.customSubjects && (
+                <div className="text-xs text-red-500">{errors.customSubjects.message as string}</div>
               )}
             </div>
-          )
-        }
+          )}
+
+          {
+            (!schoolGrades.includes(watch("class")) && !higherEdGrades.includes(watch("class")) && watch("class")) && (
+              <div className="space-y-3 mt-3">
+                <label htmlFor="otherSubjects" className="font-semibold block mb-1 text-left">Subject(s) Required *</label>
+                <input
+                  id="otherSubjects"
+                  name="otherSubjects"
+                  value={watch("otherSubjects")}
+                  onChange={e => setValue("otherSubjects", e.target.value)}
+                  className="w-full rounded px-3 py-2 border"
+                  placeholder="Describe subject/course needed"
+                  required
+                />
+                {errors.otherSubjects && (
+                  <div className="text-xs text-red-500">{errors.otherSubjects.message as string}</div>
+                )}
+              </div>
+            )
+          }
+        </div>
+        <LocationSection />
       </div>
-      <LocationSection />
     </FormSectionCard>
   );
 
@@ -219,11 +224,17 @@ const StudentRegistration = () => {
     {
       title: stepsDef[1].title,
       content: (
-        <FormSectionCard title="Budget & Scheduling" description="Mention preferred budget, schedule or timing.">
-          <BudgetCalculatorSection
-            setMonthlyFee={(val: number) => methods.setValue("monthlyFee", val)}
-            classGrade={methods.watch("class")}
-          />
+        <FormSectionCard
+          title="Budget & Scheduling"
+          description="Mention preferred budget, schedule or timing."
+          className="!mb-6"
+        >
+          <div className="flex flex-col gap-7">
+            <BudgetCalculatorSection
+              setMonthlyFee={(val: number) => methods.setValue("monthlyFee", val)}
+              classGrade={methods.watch("class")}
+            />
+          </div>
         </FormSectionCard>
       ),
       validate: async () => {
@@ -238,20 +249,21 @@ const StudentRegistration = () => {
         <FormSectionCard
           title="Preferences & Needs"
           description="Special preferences? Learning difficulties? Add here!"
+          className="!mb-2"
         >
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label className="font-semibold mb-1 block" htmlFor="tutorGender">Tutor Gender Preference *</label>
-              <select id="tutorGender" {...methods.register("tutorGender", { required: true })} className="w-full rounded px-3 py-2 border">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="flex flex-col gap-1">
+              <label className="font-semibold mb-1 block text-left" htmlFor="tutorGender">Tutor Gender Preference *</label>
+              <select id="tutorGender" {...methods.register("tutorGender", { required: true })} className="w-full rounded px-3 py-2 border text-base">
                 <option value="">Select preference</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="no-preference">No Preference</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="urgency" className="font-semibold mb-1 block">When to start? *</label>
-              <select id="urgency" {...methods.register("urgency", { required: true })} className="w-full rounded px-3 py-2 border">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="urgency" className="font-semibold mb-1 block text-left">When to start? *</label>
+              <select id="urgency" {...methods.register("urgency", { required: true })} className="w-full rounded px-3 py-2 border text-base">
                 <option value="">Select start time</option>
                 <option value="immediately">Immediately</option>
                 <option value="within-week">Within this week</option>
@@ -261,34 +273,32 @@ const StudentRegistration = () => {
             </div>
           </div>
           <div className="mb-4">
-            <label htmlFor="requirements" className="font-semibold mb-1 block">Special Requirements or Comments</label>
+            <label htmlFor="requirements" className="font-semibold mb-1 block text-left">Special Requirements or Comments</label>
             <textarea
-              className="w-full rounded px-3 py-2 border min-h-[70px]"
+              className="w-full rounded px-3 py-2 border min-h-[70px] text-base"
               {...methods.register("requirements")}
               placeholder="Any learning difficulties, exam goals, preferences, etc."
             />
           </div>
-          <div className="mb-6">
-            <div className="flex justify-center">
-              <div className="w-full max-w-md bg-muted/60 border rounded-lg p-4 flex flex-col items-center shadow-sm">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="consent"
-                    {...methods.register("consent")}
-                    className="h-5 w-5 rounded border-gray-300 accent-primary"
-                  />
-                  <label
-                    htmlFor="consent"
-                    className="ml-2 text-sm leading-relaxed font-medium text-gray-700 cursor-pointer"
-                  >
-                    I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
-                    <br />
-                    <span className="text-xs text-muted-foreground">
-                      I understand this is a free service and there are no charges for connecting with tutors.
-                    </span>
-                  </label>
-                </div>
+          <div className="mb-6 flex justify-center">
+            <div className="w-full max-w-md bg-muted/60 border rounded-lg p-4 flex flex-col items-center shadow-sm">
+              <div className="flex items-center gap-3 w-full">
+                <input
+                  type="checkbox"
+                  id="consent"
+                  {...methods.register("consent")}
+                  className="h-5 w-5 rounded border-gray-300 accent-primary"
+                />
+                <label
+                  htmlFor="consent"
+                  className="ml-2 text-sm leading-relaxed font-medium text-gray-700 cursor-pointer text-left"
+                >
+                  I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
+                  <br />
+                  <span className="text-xs text-muted-foreground">
+                    I understand this is a free service and there are no charges for connecting with tutors.
+                  </span>
+                </label>
               </div>
             </div>
           </div>
@@ -418,6 +428,3 @@ const StudentRegistration = () => {
 };
 
 export default StudentRegistration;
-
-// END OF FILE
-
