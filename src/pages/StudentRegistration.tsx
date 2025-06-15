@@ -268,12 +268,29 @@ const StudentRegistration = () => {
               placeholder="Any learning difficulties, exam goals, preferences, etc."
             />
           </div>
-          <div className="mb-6 flex items-start gap-2 rounded-lg bg-muted/60 border p-4">
-            <input type="checkbox" id="consent" {...methods.register("consent")} />
-            <label htmlFor="consent" className="text-sm leading-relaxed">
-              I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
-              I understand this is a free service and there are no charges for connecting with tutors.
-            </label>
+          <div className="mb-6">
+            <div className="flex justify-center">
+              <div className="w-full max-w-md bg-muted/60 border rounded-lg p-4 flex flex-col items-center shadow-sm">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="consent"
+                    {...methods.register("consent")}
+                    className="h-5 w-5 rounded border-gray-300 accent-primary"
+                  />
+                  <label
+                    htmlFor="consent"
+                    className="ml-2 text-sm leading-relaxed font-medium text-gray-700 cursor-pointer"
+                  >
+                    I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
+                    <br />
+                    <span className="text-xs text-muted-foreground">
+                      I understand this is a free service and there are no charges for connecting with tutors.
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </FormSectionCard>
       ),
