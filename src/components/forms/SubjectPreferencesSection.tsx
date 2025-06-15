@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useSubjects } from "@/hooks/useSubjects";
 
 interface SubjectPreferencesSectionProps {
   classGrade?: string;
@@ -22,6 +23,9 @@ const SubjectPreferencesSection = ({
   const [internalSelected, setInternalSelected] = useState<string[]>(selectedSubjects);
   const [otherValue, setOtherValue] = useState(defaultOtherSubject);
 
+  // Fetch subjects from DB; fallback to empty structure if loading/error
+  const { grouped, categoryLabels, sortedCategories, isLoading, error } = useSubjects();
+
   useEffect(() => {
     setInternalSelected(selectedSubjects);
   }, [selectedSubjects]);
@@ -37,105 +41,7 @@ const SubjectPreferencesSection = ({
     'music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'
   ].includes(classGrade);
 
-  // --- School Subjects ---
-  const schoolSubjects = [
-    'Mathematics',
-    'Science',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'Computer Science',
-    'Information Technology',
-    'English',
-    'Hindi',
-    'Malayalam',
-    'Sanskrit',
-    'French',
-    'Arabic',
-    'German',
-    'Spanish',
-    'Social Science',
-    'History',
-    'Geography',
-    'Political Science',
-    'Economics',
-    'Accountancy',
-    'Business Studies',
-    'Commerce',
-    'Psychology',
-    'Sociology',
-    'Philosophy',
-    'Physical Education',
-    'Environmental Science',
-    'Artificial Intelligence',
-    'Statistics',
-    'Electronics',
-    'Home Science'
-  ];
-
-  // --- Professional Courses/Degrees ---
-  const professionalCourses = [
-    'B.Tech',
-    'B.Sc',
-    'B.A',
-    'B.Com',
-    'LLB',
-    'M.Tech',
-    'M.Sc',
-    'M.A',
-    'M.Com',
-  ];
-
-  // --- Entrance Exam Preparation ---
-  const entranceExams = [
-    'NEET',
-    'JEE',
-    'UPSC',
-    'PSC',
-    'Banking',
-    'SSC',
-    'Railway',
-    'CAT',
-    'CLAT',
-    'GATE',
-    'KVPY',
-    'GRE',
-    'GMAT',
-    'SAT',
-    'IELTS',
-    'TOEFL',
-  ];
-
-  // --- Arts & Music ---
-  const artsAndMusic = [
-    'Fine Arts',
-    'Drawing & Painting',
-    'Music',
-    'Dance',
-    'Theatre',
-    'Design & Technology',
-    'Violin (Classical)',
-    'Violin (Western)',
-    'Guitar',
-    'Piano',
-    'Tabla',
-    'Mridangam',
-    'Vocal (Classical)',
-    'Vocal (Light)'
-  ];
-
-  // Compose the subject list with group headers (display only, not actual values)
-  const groupedSubjectList: { label?: string; isLabel?: boolean; subject?: string }[] = [
-    { label: "School Subjects", isLabel: true },
-    ...schoolSubjects.map(subject => ({ subject })),
-    { label: "Professional Courses", isLabel: true },
-    ...professionalCourses.map(subject => ({ subject })),
-    { label: "Entrance Exam Preparation", isLabel: true },
-    ...entranceExams.map(subject => ({ subject })),
-    { label: "Arts & Music", isLabel: true },
-    ...artsAndMusic.map(subject => ({ subject })),
-  ];
-
+  // --- UI Handlers ---
   const handleSubjectChange = (subject: string, checked: boolean) => {
     let next = checked
       ? [...internalSelected, subject]
@@ -166,7 +72,15 @@ const SubjectPreferencesSection = ({
     );
   }
 
-  // Regular school subjects with multi-selection, grouped by sections
+  // Show loading/error UI
+  if (isLoading) {
+    return <div className="text-sm text-gray-500">Loading subjects...</div>;
+  }
+  if (error) {
+    return <div className="text-sm text-red-600">Failed to load subjects.</div>;
+  }
+
+  // UI for school/regular subjects with multi-selection, now DB-driven
   return (
     <div className="space-y-4">
       <div>
@@ -180,37 +94,37 @@ const SubjectPreferencesSection = ({
             bg-muted/40
           "
         >
-          {groupedSubjectList.map((item, idx) =>
-            item.isLabel ? (
-              <div
-                key={item.label || idx}
-                className="col-span-full text-xs font-semibold text-primary/80 py-2 pl-1 border-b border-muted/40 mb-1"
-              >
-                {item.label}
-              </div>
-            ) : (
-              <div
-                key={item.subject}
-                className="flex items-start min-w-0 mb-2 max-w-full"
-                style={{ alignItems: 'flex-start' }}
-              >
-                <Checkbox
-                  id={item.subject}
-                  name="subjects"
-                  value={item.subject}
-                  checked={internalSelected.includes(item.subject!)}
-                  onCheckedChange={(checked) => handleSubjectChange(item.subject!, checked as boolean)}
-                />
-                <Label
-                  htmlFor={item.subject}
-                  className="ml-2 text-sm font-normal cursor-pointer whitespace-normal break-words"
-                  style={{ maxWidth: "100%", wordBreak: "break-word" }}
-                >
-                  <span className="block max-w-[90vw] sm:max-w-[220px] break-words">{item.subject}</span>
-                </Label>
-              </div>
-            )
-          )}
+          {sortedCategories.map((cat) => (
+            grouped[cat]?.length ? (
+              <React.Fragment key={cat}>
+                <div className="col-span-full text-xs font-semibold text-primary/80 py-2 pl-1 border-b border-muted/40 mb-1">
+                  {categoryLabels[cat] || cat}
+                </div>
+                {grouped[cat].map(({ id, name }) => (
+                  <div
+                    key={id}
+                    className="flex items-start min-w-0 mb-2 max-w-full"
+                    style={{ alignItems: 'flex-start' }}
+                  >
+                    <Checkbox
+                      id={name}
+                      name="subjects"
+                      value={name}
+                      checked={internalSelected.includes(name)}
+                      onCheckedChange={(checked) => handleSubjectChange(name, checked as boolean)}
+                    />
+                    <Label
+                      htmlFor={name}
+                      className="ml-2 text-sm font-normal cursor-pointer whitespace-normal break-words"
+                      style={{ maxWidth: "100%", wordBreak: "break-word" }}
+                    >
+                      <span className="block max-w-[90vw] sm:max-w-[220px] break-words">{name}</span>
+                    </Label>
+                  </div>
+                ))}
+              </React.Fragment>
+            ) : null
+          ))}
         </div>
         {/* Hidden inputs for form submission */}
         {internalSelected.map((subject) => (

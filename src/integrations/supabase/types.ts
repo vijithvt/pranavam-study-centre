@@ -111,6 +111,24 @@ export type Database = {
         }
         Relationships: []
       }
+      subjects: {
+        Row: {
+          category: string
+          id: number
+          name: string
+        }
+        Insert: {
+          category: string
+          id?: number
+          name: string
+        }
+        Update: {
+          category?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       tutor_registrations: {
         Row: {
           admin_comments: string | null
