@@ -220,7 +220,6 @@ const StudentRegistration = () => {
           <BudgetCalculatorSection
             setMonthlyFee={(val: number) => methods.setValue("monthlyFee", val)}
             classGrade={methods.watch("class")}
-            value={methods.watch("monthlyFee")}
           />
         </FormSectionCard>
       ),
