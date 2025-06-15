@@ -225,7 +225,7 @@ const StudentRegistration = () => {
       ),
       validate: async () => {
         const values = methods.getValues();
-        const requiredFields = getInfoRequiredFields(values);
+        const requiredFields = getInfoRequiredFields(values) as (keyof typeof defaultValues)[];
         const valid = await trigger(requiredFields);
         setStepError(valid ? "" : "Please correct highlighted fields.");
         return valid;
