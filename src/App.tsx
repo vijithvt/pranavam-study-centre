@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard"
 import TutorTerms from "./pages/TutorTerms"
 import TutorAcceptTerms from "./pages/TutorAcceptTerms"
 import Auth from "./pages/Auth"
+import TutorAuth from "./pages/TutorAuth"
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/tutor-terms" element={<TutorTerms />} />
             <Route path="/tutor-agreement/:tutorId" element={<TutorAcceptTerms />} />
+            <Route path="/tutor-auth" element={<TutorAuth />} />
             <Route path="*" element={<div className="p-8 text-center text-red-600">Page Not Found</div>} />
           </Routes>
         </Suspense>

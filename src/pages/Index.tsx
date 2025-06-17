@@ -7,6 +7,7 @@ import Testimonials from '../components/Testimonials';
 import HighlightedFindTutor from '../components/HighlightedFindTutor';
 import AnimatedSubjects from '../components/AnimatedSubjects';
 import FloatingContactButtons from '../components/FloatingContactButtons';
+import WhatsAppEnquiryPopup from '../components/WhatsAppEnquiryPopup';
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
       <HowItWorks />
       <Testimonials />
       <FloatingContactButtons />
+      <WhatsAppEnquiryPopup phoneNumber="+919496315903" />
     </div>
   );
 };
