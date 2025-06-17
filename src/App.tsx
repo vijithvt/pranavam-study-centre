@@ -1,9 +1,9 @@
-
 import React, { Suspense } from "react"
 import { Route, Routes } from "react-router-dom"
 
 import Navigation from "@/components/Navigation"
 import Footer from "@/components/Footer"
+import { Toaster } from "@/components/ui/toaster"
 
 import Index from "./pages/Index"
 import About from "./pages/About"
@@ -41,6 +41,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
+      <Toaster />
     </div>
   )
 }
