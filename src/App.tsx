@@ -13,8 +13,7 @@ import StudentRegistration from "./pages/StudentRegistration"
 import AdminDashboard from "./pages/AdminDashboard"
 import TutorTerms from "./pages/TutorTerms"
 import TutorAcceptTerms from "./pages/TutorAcceptTerms"
-
-// You can add other page imports here as needed (e.g., About, Contact, etc.)
+import Auth from "./pages/Auth"
 
 function App() {
   return (
@@ -26,11 +25,11 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            {/* Optional: make /students and /tutors go to something sensible for now */}
             <Route path="/students" element={<StudentRegistration />} />
             <Route path="/tutors" element={<TutorRegistration />} />
             <Route path="/tutor-registration" element={<TutorRegistration />} />
             <Route path="/student-registration" element={<StudentRegistration />} />
+            <Route path="/admin" element={<Auth />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/tutor-terms" element={<TutorTerms />} />
             <Route path="/tutor-agreement/:tutorId" element={<TutorAcceptTerms />} />
