@@ -29,6 +29,7 @@ function App() {
             <Route path="/tutors" element={<TutorRegistration />} />
             <Route path="/tutor-registration" element={<TutorRegistration />} />
             <Route path="/student-registration" element={<StudentRegistration />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Auth />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/tutor-terms" element={<TutorTerms />} />
