@@ -134,7 +134,7 @@ const StudentRegistration = () => {
 
   // -- Step 1 Content: Student & Parent Info + Subject Preference --
   const infoStepContent = (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <FormSectionCard
         title="Student & Parent Information"
         description="Provide details to help us match you with the best tutors."
@@ -300,7 +300,7 @@ const StudentRegistration = () => {
               />
             </div>
             
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
               <div className="flex items-start gap-4">
                 <input
                   type="checkbox"
@@ -313,10 +313,6 @@ const StudentRegistration = () => {
                   className="text-sm leading-relaxed font-medium text-gray-700 cursor-pointer"
                 >
                   I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
-                  <br />
-                  <span className="text-xs text-gray-500 mt-1 block">
-                    I understand this is a free service and there are no charges for connecting with tutors.
-                  </span>
                 </label>
               </div>
             </div>
@@ -350,7 +346,7 @@ const StudentRegistration = () => {
     setIsSubmitting(false);
     toast({
       title: "Request Submitted!",
-      description: "We'll find suitable tutors and contact you within 24 hours.",
+      description: "We'll find suitable tutors and contact you soon.",
     });
   });
 
@@ -368,7 +364,7 @@ const StudentRegistration = () => {
               Request Submitted!
             </h2>
             <p className="text-gray-600 mb-8 text-base leading-relaxed">
-              We've received your tuition request. Our team will find suitable tutors in your area and contact you within 24 hours.
+              We've received your tuition request. Our team will find suitable tutors in your area and contact you soon.
             </p>
             <button 
               onClick={() => { setIsSubmitted(false); setStep(0); }}
@@ -383,15 +379,15 @@ const StudentRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Find Your Perfect Tutor</h1>
-          <p className="text-gray-600 text-lg">Tell us what you need and we'll connect you with qualified tutors</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 px-3">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Find Your Perfect Tutor</h1>
+          <p className="text-gray-600 text-base sm:text-lg">Tell us what you need and we'll connect you with qualified tutors</p>
         </div>
         
-        <Card className="bg-white rounded-2xl shadow-2xl border-0 overflow-hidden">
-          <CardContent className="p-6 sm:p-8">
+        <Card className="bg-white rounded-xl shadow-lg border-0 overflow-hidden">
+          <CardContent className="p-4 sm:p-6">
             <FormProvider {...methods}>
               <form
                 onSubmit={e => { e.preventDefault(); }}
