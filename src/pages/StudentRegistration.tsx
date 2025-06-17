@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -125,7 +126,6 @@ const StudentRegistration = () => {
       required.push("syllabus", "subjects");
     } else if (higherEdGrades.includes(classGrade)) {
       required.push("university", "branch", "customSubjects");
-      // no "syllabus"
     } else if (classGrade) {
       required.push("otherSubjects");
     }
@@ -134,69 +134,80 @@ const StudentRegistration = () => {
 
   // -- Step 1 Content: Student & Parent Info + Subject Preference --
   const infoStepContent = (
-    <FormSectionCard
-      title="Student & Parent Information"
-      description="Provide details to help us match you with the best tutors."
-      className="!mb-6"
-    >
-      <div className="flex flex-col gap-7">
+    <div className="space-y-6">
+      <FormSectionCard
+        title="Student & Parent Information"
+        description="Provide details to help us match you with the best tutors."
+        className="!mb-0"
+      >
         <PersonalInfoSection
           classGrade={watch("class")}
           setClassGrade={(val) => setValue("class", val)}
         />
+      </FormSectionCard>
 
-        {/* Subject Preferences */}
-        <div>
-          {(schoolGrades.includes(watch("class"))) && (
-            <SubjectPreferencesSection
-              classGrade={watch("class")}
-              onSubjectsChange={(subs) => setValue("subjects", subs)}
-              selectedSubjects={watch("subjects")}
-              onOtherSubjectChange={(other) => setValue("otherSubjects", other)}
-              defaultOtherSubject={watch("otherSubjects")}
+      {/* Subject Preferences */}
+      <FormSectionCard
+        title="Subject Preferences"
+        description="Select the subjects you need help with."
+        className="!mb-0"
+      >
+        {(schoolGrades.includes(watch("class"))) && (
+          <SubjectPreferencesSection
+            classGrade={watch("class")}
+            onSubjectsChange={(subs) => setValue("subjects", subs)}
+            selectedSubjects={watch("subjects")}
+            onOtherSubjectChange={(other) => setValue("otherSubjects", other)}
+            defaultOtherSubject={watch("otherSubjects")}
+          />
+        )}
+
+        {(higherEdGrades.includes(watch("class"))) && (
+          <div className="space-y-3">
+            <label htmlFor="customSubjects" className="font-semibold block mb-1 text-left">Subjects *</label>
+            <input
+              id="customSubjects"
+              name="customSubjects"
+              value={watch("customSubjects")}
+              onChange={e => setValue("customSubjects", e.target.value)}
+              className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              placeholder="Enter subject(s) required (e.g. Data Structures, Economics)"
             />
-          )}
+            {errors.customSubjects && (
+              <div className="text-xs text-red-500">{errors.customSubjects.message as string}</div>
+            )}
+          </div>
+        )}
 
-          {(higherEdGrades.includes(watch("class"))) && (
-            <div className="space-y-3 mt-3">
-              <label htmlFor="customSubjects" className="font-semibold block mb-1 text-left">Subjects *</label>
+        {
+          (!schoolGrades.includes(watch("class")) && !higherEdGrades.includes(watch("class")) && watch("class")) && (
+            <div className="space-y-3">
+              <label htmlFor="otherSubjects" className="font-semibold block mb-1 text-left">Subject(s) Required *</label>
               <input
-                id="customSubjects"
-                name="customSubjects"
-                value={watch("customSubjects")}
-                onChange={e => setValue("customSubjects", e.target.value)}
-                className="w-full rounded px-3 py-2 border"
-                placeholder="Enter subject(s) required (e.g. Data Structures, Economics)"
+                id="otherSubjects"
+                name="otherSubjects"
+                value={watch("otherSubjects")}
+                onChange={e => setValue("otherSubjects", e.target.value)}
+                className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                placeholder="Describe subject/course needed"
+                required
               />
-              {errors.customSubjects && (
-                <div className="text-xs text-red-500">{errors.customSubjects.message as string}</div>
+              {errors.otherSubjects && (
+                <div className="text-xs text-red-500">{errors.otherSubjects.message as string}</div>
               )}
             </div>
-          )}
+          )
+        }
+      </FormSectionCard>
 
-          {
-            (!schoolGrades.includes(watch("class")) && !higherEdGrades.includes(watch("class")) && watch("class")) && (
-              <div className="space-y-3 mt-3">
-                <label htmlFor="otherSubjects" className="font-semibold block mb-1 text-left">Subject(s) Required *</label>
-                <input
-                  id="otherSubjects"
-                  name="otherSubjects"
-                  value={watch("otherSubjects")}
-                  onChange={e => setValue("otherSubjects", e.target.value)}
-                  className="w-full rounded px-3 py-2 border"
-                  placeholder="Describe subject/course needed"
-                  required
-                />
-                {errors.otherSubjects && (
-                  <div className="text-xs text-red-500">{errors.otherSubjects.message as string}</div>
-                )}
-              </div>
-            )
-          }
-        </div>
+      <FormSectionCard
+        title="Location"
+        description="Where do you need the tutoring?"
+        className="!mb-0"
+      >
         <LocationSection />
-      </div>
-    </FormSectionCard>
+      </FormSectionCard>
+    </div>
   );
 
   // Steps config
@@ -229,12 +240,10 @@ const StudentRegistration = () => {
           description="Mention preferred budget, schedule or timing."
           className="!mb-6"
         >
-          <div className="flex flex-col gap-7">
-            <BudgetCalculatorSection
-              setMonthlyFee={(val: number) => methods.setValue("monthlyFee", val)}
-              classGrade={methods.watch("class")}
-            />
-          </div>
+          <BudgetCalculatorSection
+            setMonthlyFee={(val: number) => methods.setValue("monthlyFee", val)}
+            classGrade={methods.watch("class")}
+          />
         </FormSectionCard>
       ),
       validate: async () => {
@@ -247,55 +256,65 @@ const StudentRegistration = () => {
       title: stepsDef[2].title,
       content: (
         <FormSectionCard
-          title="Preferences & Needs"
-          description="Special preferences? Learning difficulties? Add here!"
+          title="Preferences & Additional Requirements"
+          description="Tell us about your specific preferences and requirements."
           className="!mb-2"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="flex flex-col gap-1">
-              <label className="font-semibold mb-1 block text-left" htmlFor="tutorGender">Tutor Gender Preference *</label>
-              <select id="tutorGender" {...methods.register("tutorGender", { required: true })} className="w-full rounded px-3 py-2 border text-base">
-                <option value="">Select preference</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="no-preference">No Preference</option>
-              </select>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="font-semibold text-sm block text-left" htmlFor="tutorGender">Tutor Gender Preference *</label>
+                <select 
+                  id="tutorGender" 
+                  {...methods.register("tutorGender", { required: true })} 
+                  className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white"
+                >
+                  <option value="">Select preference</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="no-preference">No Preference</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="urgency" className="font-semibold text-sm block text-left">When to start? *</label>
+                <select 
+                  id="urgency" 
+                  {...methods.register("urgency", { required: true })} 
+                  className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white"
+                >
+                  <option value="">Select start time</option>
+                  <option value="immediately">Immediately</option>
+                  <option value="within-week">Within this week</option>
+                  <option value="within-month">Within this month</option>
+                  <option value="flexible">Flexible</option>
+                </select>
+              </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="urgency" className="font-semibold mb-1 block text-left">When to start? *</label>
-              <select id="urgency" {...methods.register("urgency", { required: true })} className="w-full rounded px-3 py-2 border text-base">
-                <option value="">Select start time</option>
-                <option value="immediately">Immediately</option>
-                <option value="within-week">Within this week</option>
-                <option value="within-month">Within this month</option>
-                <option value="flexible">Flexible</option>
-              </select>
+            
+            <div className="space-y-2">
+              <label htmlFor="requirements" className="font-semibold text-sm block text-left">Special Requirements or Comments</label>
+              <textarea
+                className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
+                {...methods.register("requirements")}
+                placeholder="Any learning difficulties, exam goals, preferences, etc."
+              />
             </div>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="requirements" className="font-semibold mb-1 block text-left">Special Requirements or Comments</label>
-            <textarea
-              className="w-full rounded px-3 py-2 border min-h-[70px] text-base"
-              {...methods.register("requirements")}
-              placeholder="Any learning difficulties, exam goals, preferences, etc."
-            />
-          </div>
-          <div className="mb-6 flex justify-center">
-            <div className="w-full max-w-md bg-muted/60 border rounded-lg p-4 flex flex-col items-center shadow-sm">
-              <div className="flex items-center gap-3 w-full">
+            
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+              <div className="flex items-start gap-4">
                 <input
                   type="checkbox"
                   id="consent"
                   {...methods.register("consent")}
-                  className="h-5 w-5 rounded border-gray-300 accent-primary"
+                  className="h-5 w-5 rounded border-gray-300 accent-primary mt-1 flex-shrink-0"
                 />
                 <label
                   htmlFor="consent"
-                  className="ml-2 text-sm leading-relaxed font-medium text-gray-700 cursor-pointer text-left"
+                  className="text-sm leading-relaxed font-medium text-gray-700 cursor-pointer"
                 >
                   I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
                   <br />
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-gray-500 mt-1 block">
                     I understand this is a free service and there are no charges for connecting with tutors.
                   </span>
                 </label>
@@ -337,23 +356,26 @@ const StudentRegistration = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 sm:p-4">
-        <Card className="w-full max-w-[416px] text-center rounded-xl shadow-xl">
-          <CardContent className="pt-12 pb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md text-center rounded-2xl shadow-2xl border-0">
+          <CardContent className="p-8">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Request Submitted!
             </h2>
-            <p className="text-gray-600 mb-6 text-base sm:text-lg">
+            <p className="text-gray-600 mb-8 text-base leading-relaxed">
               We've received your tuition request. Our team will find suitable tutors in your area and contact you within 24 hours.
             </p>
-            <div className="space-y-3">
-              <button 
-                onClick={() => { setIsSubmitted(false); setStep(0); }}
-                className="w-full bg-primary text-white py-3 sm:py-3.5 rounded-lg font-bold text-base sm:text-lg shadow-md hover:bg-primary/90 transition"
-              >
-                Submit Another Request
-              </button>
-            </div>
+            <button 
+              onClick={() => { setIsSubmitted(false); setStep(0); }}
+              className="w-full bg-primary text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:bg-primary/90 transition-all duration-200"
+            >
+              Submit Another Request
+            </button>
           </CardContent>
         </Card>
       </div>
@@ -361,67 +383,57 @@ const StudentRegistration = () => {
   }
 
   return (
-    <div className="
-      min-h-screen bg-gray-50 
-      flex items-center justify-center 
-      px-2 xs:px-4 sm:px-6 py-5
-    ">
-      <div className="
-        w-full 
-        max-w-[420px] 
-        sm:max-w-xl 
-        md:max-w-2xl 
-        bg-white 
-        rounded-2xl 
-        shadow-xl 
-        mx-auto
-        p-1 xs:p-2 sm:p-5 md:p-8 
-      ">
-        <FormProvider {...methods}>
-          <form
-            onSubmit={e => { e.preventDefault(); }}
-            className="
-              flex flex-col gap-4 
-              bg-transparent 
-              rounded-xl 
-              w-full
-              "
-            autoComplete="off"
-          >
-            <StepWizard
-              steps={steps}
-              current={step}
-              goBack={handleBack}
-              goNext={handleNext}
-              showBack={step > 0}
-              canNext={
-                step === 0
-                  ? (() => {
-                      const values = methods.getValues();
-                      const requiredFields = getInfoRequiredFields(values);
-                      const classType = values.class;
-                      let subjectsOk = true;
-                      if (schoolGrades.includes(classType)) {
-                        subjectsOk = values.subjects && values.subjects.length > 0;
-                      } else if (higherEdGrades.includes(classType)) {
-                        subjectsOk = !!values.customSubjects;
-                      } else if (classType) {
-                        subjectsOk = !!values.otherSubjects;
-                      }
-                      return requiredFields.every(
-                        (field) =>
-                          typeof values[field] === "boolean" ? values[field] : !!values[field]
-                      ) && isValid && subjectsOk;
-                    })()
-                  : isValid
-              }
-              stepError={stepError}
-              onSubmit={doSubmit}
-              nextLabel={step < steps.length - 1 ? "Next" : "Submit"}
-              finishLabel="Submit"
-            />
-          </form>
-        </FormProvider>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Find Your Perfect Tutor</h1>
+          <p className="text-gray-600 text-lg">Tell us what you need and we'll connect you with qualified tutors</p>
+        </div>
+        
+        <Card className="bg-white rounded-2xl shadow-2xl border-0 overflow-hidden">
+          <CardContent className="p-6 sm:p-8">
+            <FormProvider {...methods}>
+              <form
+                onSubmit={e => { e.preventDefault(); }}
+                className="w-full"
+                autoComplete="off"
+              >
+                <StepWizard
+                  steps={steps}
+                  current={step}
+                  goBack={handleBack}
+                  goNext={handleNext}
+                  showBack={step > 0}
+                  canNext={
+                    step === 0
+                      ? (() => {
+                          const values = methods.getValues();
+                          const requiredFields = getInfoRequiredFields(values);
+                          const classType = values.class;
+                          let subjectsOk = true;
+                          if (schoolGrades.includes(classType)) {
+                            subjectsOk = values.subjects && values.subjects.length > 0;
+                          } else if (higherEdGrades.includes(classType)) {
+                            subjectsOk = !!values.customSubjects;
+                          } else if (classType) {
+                            subjectsOk = !!values.otherSubjects;
+                          }
+                          return requiredFields.every(
+                            (field) =>
+                              typeof values[field] === "boolean" ? values[field] : !!values[field]
+                          ) && isValid && subjectsOk;
+                        })()
+                      : isValid
+                  }
+                  stepError={stepError}
+                  onSubmit={doSubmit}
+                  nextLabel={step < steps.length - 1 ? "Next" : "Submit"}
+                  finishLabel="Submit"
+                />
+              </form>
+            </FormProvider>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
