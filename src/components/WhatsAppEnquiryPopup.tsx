@@ -21,6 +21,19 @@ const WhatsAppEnquiryPopup: React.FC<WhatsAppEnquiryPopupProps> = ({ phoneNumber
   const [hasShown, setHasShown] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   
+  // Show popup after 60 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const hasSeenPopup = localStorage.getItem('hasSeenWhatsAppPopup');
+      if (!hasSeenPopup) {
+        setIsVisible(true);
+        setHasShown(true);
+      }
+    }, 60000); // 60 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // Handle mouse leave event
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
@@ -46,7 +59,7 @@ const WhatsAppEnquiryPopup: React.FC<WhatsAppEnquiryPopupProps> = ({ phoneNumber
     document.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('scroll', handleScroll);
 
-    // Check if we should show popup based on cookie
+    // Check if we should show popup based on localStorage
     const hasSeenPopup = localStorage.getItem('hasSeenWhatsAppPopup');
     if (hasSeenPopup) {
       setHasShown(true);
@@ -89,7 +102,7 @@ Enquiry: ${enquiry}`;
     // Open WhatsApp with the pre-filled message
     window.open(`https://wa.me/${phoneNumber.replace(/\+/g, '')}?text=${message}`, '_blank');
     
-    // Set cookie to remember that user has seen the popup
+    // Set localStorage to remember that user has seen the popup
     localStorage.setItem('hasSeenWhatsAppPopup', 'true');
     setIsVisible(false);
   };
@@ -98,16 +111,16 @@ Enquiry: ${enquiry}`;
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in p-4">
-      <Card className="w-full max-w-md relative overflow-hidden" ref={popupRef}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in p-4">
+      <Card className="w-full max-w-md relative overflow-hidden bg-white shadow-2xl" ref={popupRef}>
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-green-600"></div>
         
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-4 bg-gradient-to-r from-green-50 to-green-100">
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={() => setIsVisible(false)} 
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 hover:bg-white/50"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -116,7 +129,7 @@ Enquiry: ${enquiry}`;
           </CardTitle>
         </CardHeader>
         
-        <CardContent>
+        <CardContent className="bg-white">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Your Name</Label>
@@ -172,7 +185,7 @@ Enquiry: ${enquiry}`;
             <CardFooter className="px-0 pb-0">
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2 shadow-lg"
               >
                 <Send className="h-4 w-4" />
                 Send via WhatsApp

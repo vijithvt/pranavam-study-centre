@@ -1,13 +1,17 @@
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
@@ -22,19 +26,38 @@ const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-primary transition-colors">
+            <Link 
+              to="/" 
+              className={`transition-colors ${isActive('/') ? 'text-primary font-medium' : 'text-gray-700 hover:text-primary'}`}
+            >
               Home
             </Link>
-            <Link to="/about" className="text-gray-700 hover:text-primary transition-colors">
+            <Link 
+              to="/about" 
+              className={`transition-colors ${isActive('/about') ? 'text-primary font-medium' : 'text-gray-700 hover:text-primary'}`}
+            >
               About
             </Link>
-            <Link to="/students" className="text-gray-700 hover:text-primary transition-colors">
+            <Link 
+              to="/students" 
+              className={`relative px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+                isActive('/students') 
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' 
+                  : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg hover:scale-105'
+              } animate-pulse`}
+            >
               Find Tutor
             </Link>
-            <Link to="/tutors" className="text-gray-700 hover:text-primary transition-colors">
+            <Link 
+              to="/tutors" 
+              className={`transition-colors ${isActive('/tutors') ? 'text-primary font-medium' : 'text-gray-700 hover:text-primary'}`}
+            >
               Join as Tutor
             </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-primary transition-colors">
+            <Link 
+              to="/contact" 
+              className={`transition-colors ${isActive('/contact') ? 'text-primary font-medium' : 'text-gray-700 hover:text-primary'}`}
+            >
               Contact
             </Link>
           </div>
@@ -56,35 +79,39 @@ const Navigation = () => {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               <Link
                 to="/"
-                className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
+                className={`block px-3 py-2 transition-colors ${isActive('/') ? 'text-primary font-medium bg-blue-50' : 'text-gray-700 hover:text-primary'}`}
                 onClick={() => setIsOpen(false)}
               >
                 Home
               </Link>
               <Link
                 to="/about"
-                className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
+                className={`block px-3 py-2 transition-colors ${isActive('/about') ? 'text-primary font-medium bg-blue-50' : 'text-gray-700 hover:text-primary'}`}
                 onClick={() => setIsOpen(false)}
               >
                 About
               </Link>
               <Link
                 to="/students"
-                className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
+                className={`block px-3 py-2 rounded-lg font-medium transition-all ${
+                  isActive('/students') 
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-md'
+                }`}
                 onClick={() => setIsOpen(false)}
               >
-                Find Tutor
+                Find Tutor ⭐
               </Link>
               <Link
                 to="/tutors"
-                className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
+                className={`block px-3 py-2 transition-colors ${isActive('/tutors') ? 'text-primary font-medium bg-blue-50' : 'text-gray-700 hover:text-primary'}`}
                 onClick={() => setIsOpen(false)}
               >
                 Join as Tutor
               </Link>
               <Link
                 to="/contact"
-                className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
+                className={`block px-3 py-2 transition-colors ${isActive('/contact') ? 'text-primary font-medium bg-blue-50' : 'text-gray-700 hover:text-primary'}`}
                 onClick={() => setIsOpen(false)}
               >
                 Contact

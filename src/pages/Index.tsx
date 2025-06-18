@@ -8,6 +8,7 @@ import HighlightedFindTutor from '../components/HighlightedFindTutor';
 import AnimatedSubjects from '../components/AnimatedSubjects';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import WhatsAppEnquiryPopup from '../components/WhatsAppEnquiryPopup';
+import Chatbot from '../components/Chatbot';
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
       <Testimonials />
       <FloatingContactButtons />
       <WhatsAppEnquiryPopup phoneNumber="+919496315903" />
+      <Chatbot />
     </div>
   );
 };

@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { useForm, FormProvider } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Search, ChevronDown, Users, BookOpen, Clock, MapPin, Phone, Mail, User, GraduationCap } from "lucide-react";
+import { Search, ChevronDown, Users, BookOpen, Clock, MapPin, Phone, Mail, User, GraduationCap, Calculator } from "lucide-react";
+import BudgetCalculatorSection from "@/components/forms/BudgetCalculatorSection";
 
 const ALL_SUBJECTS = [
   "Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi", "Malayalam",
@@ -67,6 +67,7 @@ const StudentRegistration = () => {
   const [subjectSearch, setSubjectSearch] = useState("");
   const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [monthlyFee, setMonthlyFee] = useState(8000);
   const { toast } = useToast();
   const navigate = useNavigate();
   const subjectParam = useQueryParam("subject");
@@ -126,6 +127,9 @@ const StudentRegistration = () => {
 
   const doSubmit = handleSubmit(async (values) => {
     setIsSubmitting(true);
+    // Add monthlyFee to the submission data
+    const submissionData = { ...values, monthlyFee };
+    console.log('Submitting with monthly fee:', submissionData);
     setIsSubmitted(true);
     setIsSubmitting(false);
     toast({
@@ -373,6 +377,29 @@ const StudentRegistration = () => {
                         ))}
                       </div>
                     )}
+                  </div>
+                </div>
+
+                {/* Budget Calculator */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-xl flex items-center justify-center">
+                      <Calculator className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800">Budget Calculator</h2>
+                  </div>
+                  
+                  <BudgetCalculatorSection 
+                    setMonthlyFee={setMonthlyFee}
+                    classGrade={currentClass}
+                  />
+                  
+                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600 mb-1">Your estimated monthly fee:</p>
+                      <p className="text-3xl font-bold text-blue-600">₹{monthlyFee.toLocaleString()}</p>
+                      <p className="text-xs text-gray-500">*Final fee may vary based on tutor experience and requirements</p>
+                    </div>
                   </div>
                 </div>
 
