@@ -6,6 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { Search, ChevronDown, Users, BookOpen, MapPin, Phone, Mail, User, GraduationCap } from "lucide-react";
 import SubjectPreferencesSection from "@/components/forms/SubjectPreferencesSection";
+import BudgetSliderSection from "@/components/forms/BudgetSliderSection";
 
 const ALL_SUBJECTS = [
   "Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi", "Malayalam",
@@ -37,7 +38,7 @@ const defaultValues = {
   languages: "",
   district: "",
   area: "",
-  monthlyFee: 8000,
+  monthlyFee: 3000,
   requirements: "",
   subjects: [],
   customSubjects: "",
@@ -61,6 +62,7 @@ function useQueryParam(param: string) {
 const schoolGrades = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 const higherEdGrades = ["btech", "bsc", "ba", "bcom", "llb", "mtech", "msc", "ma", "mcom"];
 const artMusicGrades = ["music", "dance", "art", "violin-classical", "violin-western"];
+const entranceExamGrades = ["neet", "jee", "upsc", "psc", "banking", "ssc", "railway"];
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -95,6 +97,7 @@ const StudentRegistration = () => {
   const isSchoolGrade = schoolGrades.includes(currentClass);
   const isHigherEd = higherEdGrades.includes(currentClass);
   const isArtsMusic = artMusicGrades.includes(currentClass);
+  const isEntranceExam = entranceExamGrades.includes(currentClass);
 
   const getAvailableSubjects = () => {
     if (isSchoolGrade) return SCHOOL_SUBJECTS;
@@ -139,10 +142,10 @@ const StudentRegistration = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 flex items-center justify-center p-4 animate-fade-in">
         <Card className="w-full max-w-lg text-center rounded-3xl shadow-2xl border-0 backdrop-blur-sm bg-white/90">
           <CardContent className="p-10">
-            <div className="w-24 h-24 bg-gradient-to-r from-emerald-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-in">
+            <div className="w-24 h-24 bg-gradient-to-r from-purple-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-in">
               <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
@@ -155,7 +158,7 @@ const StudentRegistration = () => {
             </p>
             <button 
               onClick={() => { setIsSubmitted(false); }}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105"
             >
               Submit Another Request
             </button>
@@ -166,10 +169,10 @@ const StudentRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
             Find Your Perfect Tutor
           </h1>
           <p className="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
@@ -185,7 +188,7 @@ const StudentRegistration = () => {
                 {/* Student & Parent Information */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
                       <User className="w-5 h-5 text-white" />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-800">Student & Parent Information</h2>
@@ -244,7 +247,7 @@ const StudentRegistration = () => {
                 {/* Academic Information */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl flex items-center justify-center">
                       <GraduationCap className="w-5 h-5 text-white" />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-800">Academic Information</h2>
@@ -255,7 +258,7 @@ const StudentRegistration = () => {
                       <label className="text-sm font-semibold text-gray-700">Class/Grade *</label>
                       <select
                         {...methods.register("class", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg bg-white"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-lg bg-white"
                       >
                         <option value="">Select class/grade</option>
                         {schoolGrades.map(grade => (
@@ -267,6 +270,9 @@ const StudentRegistration = () => {
                         {artMusicGrades.map(grade => (
                           <option key={grade} value={grade}>{grade}</option>
                         ))}
+                        {entranceExamGrades.map(grade => (
+                          <option key={grade} value={grade}>{grade.toUpperCase()}</option>
+                        ))}
                       </select>
                     </div>
                     
@@ -275,7 +281,7 @@ const StudentRegistration = () => {
                         <label className="text-sm font-semibold text-gray-700">Syllabus *</label>
                         <select
                           {...methods.register("syllabus", { required: isSchoolGrade })}
-                          className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg bg-white"
+                          className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-lg bg-white"
                         >
                           <option value="">Select syllabus</option>
                           <option value="CBSE">CBSE</option>
@@ -292,7 +298,7 @@ const StudentRegistration = () => {
                           <label className="text-sm font-semibold text-gray-700">University/Institution *</label>
                           <input
                             {...methods.register("university", { required: isHigherEd })}
-                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
+                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-lg"
                             placeholder="Enter university name"
                           />
                         </div>
@@ -300,7 +306,7 @@ const StudentRegistration = () => {
                           <label className="text-sm font-semibold text-gray-700">Branch/Specialization *</label>
                           <input
                             {...methods.register("branch", { required: isHigherEd })}
-                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
+                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-lg"
                             placeholder="Enter branch/specialization"
                           />
                         </div>
@@ -309,23 +315,27 @@ const StudentRegistration = () => {
                   </div>
                 </div>
 
-                {/* Subject Selection - Only show if not arts/music */}
-                {!isArtsMusic && (
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-3 mb-8">
-                      <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center">
-                        <BookOpen className="w-5 h-5 text-white" />
-                      </div>
-                      <h2 className="text-2xl font-bold text-gray-800">Subject Preferences</h2>
+                {/* Subject Selection - Show for all classes */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-orange-500 rounded-xl flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-white" />
                     </div>
-                    
-                    <SubjectPreferencesSection
-                      classGrade={currentClass}
-                      selectedSubjects={selectedSubjects}
-                      onSubjectsChange={setSelectedSubjects}
-                    />
+                    <h2 className="text-2xl font-bold text-gray-800">Subject Preferences</h2>
                   </div>
-                )}
+                  
+                  <SubjectPreferencesSection
+                    classGrade={currentClass}
+                    selectedSubjects={selectedSubjects}
+                    onSubjectsChange={setSelectedSubjects}
+                  />
+                </div>
+
+                {/* Budget Section */}
+                <BudgetSliderSection
+                  onBudgetChange={(budget) => setValue("monthlyFee", budget)}
+                  defaultBudget={defaultValues.monthlyFee}
+                />
 
                 {/* Location & Preferences */}
                 <div className="space-y-6">
@@ -387,19 +397,19 @@ const StudentRegistration = () => {
                     <textarea
                       {...methods.register("requirements")}
                       rows={4}
-                      className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg resize-none"
+                      className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-lg resize-none"
                       placeholder="Any special requirements, learning goals, or preferences..."
                     />
                   </div>
                 </div>
 
                 {/* Consent */}
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-6">
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-6">
                   <div className="flex items-start gap-4">
                     <input
                       type="checkbox"
                       {...methods.register("consent", { required: true })}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 mt-1"
+                      className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 mt-1"
                     />
                     <label className="text-sm leading-relaxed font-medium text-gray-700 cursor-pointer">
                       I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
@@ -412,7 +422,7 @@ const StudentRegistration = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-6 rounded-2xl font-bold text-xl shadow-2xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-6 rounded-2xl font-bold text-xl shadow-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? "Submitting..." : "Find My Perfect Tutor"}
                   </button>

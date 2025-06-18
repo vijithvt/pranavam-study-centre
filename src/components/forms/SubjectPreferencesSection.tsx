@@ -38,8 +38,12 @@ const SubjectPreferencesSection = ({
     'btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'
   ].includes(classGrade);
   
-  const isArtsOrEntrance = !!classGrade && [
-    'music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'
+  const isArtsOrMusic = !!classGrade && [
+    'music','dance','art','violin-classical','violin-western'
+  ].includes(classGrade);
+
+  const isEntranceExam = !!classGrade && [
+    'neet','jee','upsc','psc','banking','ssc','railway'
   ].includes(classGrade);
 
   // --- UI Handlers ---
@@ -55,11 +59,6 @@ const SubjectPreferencesSection = ({
     setOtherValue(evt.target.value);
     onOtherSubjectChange?.(evt.target.value);
   };
-
-  // Don't show subject preferences for music/instruments/arts
-  if (isArtsOrEntrance) {
-    return null;
-  }
 
   if (isHigherEd) {
     return (
@@ -86,7 +85,15 @@ const SubjectPreferencesSection = ({
     return <div className="text-sm text-red-600">Failed to load subjects.</div>;
   }
 
-  // UI for school/regular subjects with multi-selection, now DB-driven
+  // Filter categories based on class type
+  let categoriesToShow = sortedCategories;
+  if (isArtsOrMusic) {
+    categoriesToShow = ["arts"];
+  } else if (isEntranceExam) {
+    categoriesToShow = ["entrance"];
+  }
+
+  // UI for all subjects with multi-selection, now filtered by class type
   return (
     <div className="space-y-4">
       <div>
@@ -100,7 +107,7 @@ const SubjectPreferencesSection = ({
             bg-muted/40
           "
         >
-          {sortedCategories.map((cat) => (
+          {categoriesToShow.map((cat) => (
             grouped[cat]?.length ? (
               <React.Fragment key={cat}>
                 <div className="col-span-full text-xs font-semibold text-primary/80 py-2 pl-1 border-b border-muted/40 mb-1">
