@@ -43,6 +43,7 @@ const defaultValues = {
   subjects: [],
   customSubjects: "",
   otherSubjects: "",
+  specialization: "",
   tutorGender: "",
   urgency: "",
   consent: false,
@@ -70,6 +71,7 @@ const StudentRegistration = () => {
   const [subjectSearch, setSubjectSearch] = useState("");
   const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [specialization, setSpecialization] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
   const subjectParam = useQueryParam("subject");
@@ -268,7 +270,7 @@ const StudentRegistration = () => {
                           <option key={grade} value={grade}>{grade.toUpperCase()}</option>
                         ))}
                         {artMusicGrades.map(grade => (
-                          <option key={grade} value={grade}>{grade}</option>
+                          <option key={grade} value={grade}>{grade.charAt(0).toUpperCase() + grade.slice(1)}</option>
                         ))}
                         {entranceExamGrades.map(grade => (
                           <option key={grade} value={grade}>{grade.toUpperCase()}</option>
@@ -328,6 +330,8 @@ const StudentRegistration = () => {
                     classGrade={currentClass}
                     selectedSubjects={selectedSubjects}
                     onSubjectsChange={setSelectedSubjects}
+                    onSpecializationChange={setSpecialization}
+                    defaultSpecialization={specialization}
                   />
                 </div>
 
@@ -402,6 +406,9 @@ const StudentRegistration = () => {
                     />
                   </div>
                 </div>
+
+                {/* Hidden inputs for specialization */}
+                <input type="hidden" name="specialization" value={specialization} />
 
                 {/* Consent */}
                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-6">

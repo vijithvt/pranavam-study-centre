@@ -47,6 +47,7 @@ export type Database = {
           parent_name: string
           phone: string
           special_requests: string | null
+          specialization: string | null
           status: string
           student_name: string
           subjects: string[]
@@ -73,6 +74,7 @@ export type Database = {
           parent_name: string
           phone: string
           special_requests?: string | null
+          specialization?: string | null
           status?: string
           student_name: string
           subjects: string[]
@@ -99,6 +101,7 @@ export type Database = {
           parent_name?: string
           phone?: string
           special_requests?: string | null
+          specialization?: string | null
           status?: string
           student_name?: string
           subjects?: string[]

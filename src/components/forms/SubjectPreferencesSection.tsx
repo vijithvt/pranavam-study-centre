@@ -9,19 +9,24 @@ interface SubjectPreferencesSectionProps {
   classGrade?: string;
   onSubjectsChange?: (subs: string[]) => void;
   onOtherSubjectChange?: (other: string) => void;
+  onSpecializationChange?: (spec: string) => void;
   selectedSubjects?: string[];
   defaultOtherSubject?: string;
+  defaultSpecialization?: string;
 }
 
 const SubjectPreferencesSection = ({
   classGrade,
   onSubjectsChange,
   onOtherSubjectChange,
+  onSpecializationChange,
   selectedSubjects = [],
   defaultOtherSubject = "",
+  defaultSpecialization = "",
 }: SubjectPreferencesSectionProps) => {
   const [internalSelected, setInternalSelected] = useState<string[]>(selectedSubjects);
   const [otherValue, setOtherValue] = useState(defaultOtherSubject);
+  const [specializationValue, setSpecializationValue] = useState(defaultSpecialization);
 
   // Fetch subjects from DB; fallback to empty structure if loading/error
   const { grouped, categoryLabels, sortedCategories, isLoading, error } = useSubjects();
@@ -33,6 +38,10 @@ const SubjectPreferencesSection = ({
   useEffect(() => {
     setOtherValue(defaultOtherSubject || "");
   }, [defaultOtherSubject]);
+
+  useEffect(() => {
+    setSpecializationValue(defaultSpecialization || "");
+  }, [defaultSpecialization]);
 
   const isHigherEd = !!classGrade && [
     'btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'
@@ -60,6 +69,11 @@ const SubjectPreferencesSection = ({
     onOtherSubjectChange?.(evt.target.value);
   };
 
+  const handleSpecializationChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setSpecializationValue(evt.target.value);
+    onSpecializationChange?.(evt.target.value);
+  };
+
   if (isHigherEd) {
     return (
       <div className="space-y-4">
@@ -85,13 +99,50 @@ const SubjectPreferencesSection = ({
     return <div className="text-sm text-red-600">Failed to load subjects.</div>;
   }
 
-  // Filter categories based on class type
-  let categoriesToShow = sortedCategories;
-  if (isArtsOrMusic) {
-    categoriesToShow = ["arts"];
-  } else if (isEntranceExam) {
-    categoriesToShow = ["entrance"];
+  // For entrance exams, show specialization input
+  if (isEntranceExam) {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Entrance Exam Preparation</h3>
+          <Label htmlFor="specialization">Specialization *</Label>
+          <Input
+            name="specialization"
+            id="specialization"
+            className="mt-1"
+            placeholder="Enter specialization (e.g. Medical, Engineering, Civil Services)"
+            value={specializationValue}
+            onChange={handleSpecializationChange}
+            required
+          />
+        </div>
+      </div>
+    );
   }
+
+  // For arts/music, show specialization input
+  if (isArtsOrMusic) {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Arts & Music</h3>
+          <Label htmlFor="specialization">Specialization *</Label>
+          <Input
+            name="specialization"
+            id="specialization"
+            className="mt-1"
+            placeholder="Enter specialization (e.g. Classical Music, Western Music, Painting)"
+            value={specializationValue}
+            onChange={handleSpecializationChange}
+            required
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Filter categories based on class type - show only school subjects for regular classes
+  let categoriesToShow = ["school"];
 
   // UI for all subjects with multi-selection, now filtered by class type
   return (
