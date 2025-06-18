@@ -37,6 +37,7 @@ const SubjectPreferencesSection = ({
   const isHigherEd = !!classGrade && [
     'btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'
   ].includes(classGrade);
+  
   const isArtsOrEntrance = !!classGrade && [
     'music','dance','art','violin-classical','violin-western','neet','jee','upsc','psc','banking','ssc','railway'
   ].includes(classGrade);
@@ -55,7 +56,12 @@ const SubjectPreferencesSection = ({
     onOtherSubjectChange?.(evt.target.value);
   };
 
-  if (isHigherEd || isArtsOrEntrance) {
+  // Don't show subject preferences for music/instruments/arts
+  if (isArtsOrEntrance) {
+    return null;
+  }
+
+  if (isHigherEd) {
     return (
       <div className="space-y-4">
         <div>

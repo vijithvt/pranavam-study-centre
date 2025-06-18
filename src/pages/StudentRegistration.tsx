@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { useForm, FormProvider } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Search, ChevronDown, Users, BookOpen, Clock, MapPin, Phone, Mail, User, GraduationCap, Calculator } from "lucide-react";
-import BudgetCalculatorSection from "@/components/forms/BudgetCalculatorSection";
+import { Search, ChevronDown, Users, BookOpen, MapPin, Phone, Mail, User, GraduationCap } from "lucide-react";
+import SubjectPreferencesSection from "@/components/forms/SubjectPreferencesSection";
 
 const ALL_SUBJECTS = [
   "Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi", "Malayalam",
@@ -67,7 +68,6 @@ const StudentRegistration = () => {
   const [subjectSearch, setSubjectSearch] = useState("");
   const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
-  const [monthlyFee, setMonthlyFee] = useState(8000);
   const { toast } = useToast();
   const navigate = useNavigate();
   const subjectParam = useQueryParam("subject");
@@ -94,6 +94,7 @@ const StudentRegistration = () => {
   const currentClass = watch("class");
   const isSchoolGrade = schoolGrades.includes(currentClass);
   const isHigherEd = higherEdGrades.includes(currentClass);
+  const isArtsMusic = artMusicGrades.includes(currentClass);
 
   const getAvailableSubjects = () => {
     if (isSchoolGrade) return SCHOOL_SUBJECTS;
@@ -127,9 +128,7 @@ const StudentRegistration = () => {
 
   const doSubmit = handleSubmit(async (values) => {
     setIsSubmitting(true);
-    // Add monthlyFee to the submission data
-    const submissionData = { ...values, monthlyFee };
-    console.log('Submitting with monthly fee:', submissionData);
+    console.log('Submitting form data:', values);
     setIsSubmitted(true);
     setIsSubmitting(false);
     toast({
@@ -140,10 +139,10 @@ const StudentRegistration = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4 animate-fade-in">
         <Card className="w-full max-w-lg text-center rounded-3xl shadow-2xl border-0 backdrop-blur-sm bg-white/90">
           <CardContent className="p-10">
-            <div className="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-in">
+            <div className="w-24 h-24 bg-gradient-to-r from-emerald-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-in">
               <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
@@ -156,7 +155,7 @@ const StudentRegistration = () => {
             </p>
             <button 
               onClick={() => { setIsSubmitted(false); }}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105"
             >
               Submit Another Request
             </button>
@@ -167,10 +166,10 @@ const StudentRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent mb-4">
             Find Your Perfect Tutor
           </h1>
           <p className="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
@@ -186,7 +185,7 @@ const StudentRegistration = () => {
                 {/* Student & Parent Information */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
                       <User className="w-5 h-5 text-white" />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-800">Student & Parent Information</h2>
@@ -200,7 +199,7 @@ const StudentRegistration = () => {
                       </label>
                       <input
                         {...methods.register("studentName", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                         placeholder="Enter student name"
                       />
                     </div>
@@ -211,7 +210,7 @@ const StudentRegistration = () => {
                       </label>
                       <input
                         {...methods.register("parentName", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                         placeholder="Enter parent/guardian name"
                       />
                     </div>
@@ -223,7 +222,7 @@ const StudentRegistration = () => {
                       <input
                         type="email"
                         {...methods.register("email", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                         placeholder="Enter email address"
                       />
                     </div>
@@ -235,7 +234,7 @@ const StudentRegistration = () => {
                       <input
                         type="tel"
                         {...methods.register("parentPhone", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                         placeholder="+91XXXXXXXXXX"
                       />
                     </div>
@@ -245,7 +244,7 @@ const StudentRegistration = () => {
                 {/* Academic Information */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center">
                       <GraduationCap className="w-5 h-5 text-white" />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-800">Academic Information</h2>
@@ -256,7 +255,7 @@ const StudentRegistration = () => {
                       <label className="text-sm font-semibold text-gray-700">Class/Grade *</label>
                       <select
                         {...methods.register("class", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg bg-white"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg bg-white"
                       >
                         <option value="">Select class/grade</option>
                         {schoolGrades.map(grade => (
@@ -276,7 +275,7 @@ const StudentRegistration = () => {
                         <label className="text-sm font-semibold text-gray-700">Syllabus *</label>
                         <select
                           {...methods.register("syllabus", { required: isSchoolGrade })}
-                          className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg bg-white"
+                          className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg bg-white"
                         >
                           <option value="">Select syllabus</option>
                           <option value="CBSE">CBSE</option>
@@ -293,7 +292,7 @@ const StudentRegistration = () => {
                           <label className="text-sm font-semibold text-gray-700">University/Institution *</label>
                           <input
                             {...methods.register("university", { required: isHigherEd })}
-                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                             placeholder="Enter university name"
                           />
                         </div>
@@ -301,7 +300,7 @@ const StudentRegistration = () => {
                           <label className="text-sm font-semibold text-gray-700">Branch/Specialization *</label>
                           <input
                             {...methods.register("branch", { required: isHigherEd })}
-                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                            className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                             placeholder="Enter branch/specialization"
                           />
                         </div>
@@ -310,98 +309,23 @@ const StudentRegistration = () => {
                   </div>
                 </div>
 
-                {/* Subject Selection */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center">
-                      <BookOpen className="w-5 h-5 text-white" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-800">Subject Preferences</h2>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <label className="text-sm font-semibold text-gray-700">Select Subjects *</label>
-                    <div className="relative">
-                      <div className="flex items-center">
-                        <Search className="absolute left-4 w-5 h-5 text-gray-400" />
-                        <input
-                          type="text"
-                          value={subjectSearch}
-                          onChange={(e) => setSubjectSearch(e.target.value)}
-                          onFocus={() => setShowSubjectDropdown(true)}
-                          className="w-full pl-12 pr-12 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
-                          placeholder="Search or type subject name..."
-                        />
-                        <ChevronDown className="absolute right-4 w-5 h-5 text-gray-400" />
+                {/* Subject Selection - Only show if not arts/music */}
+                {!isArtsMusic && (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-white" />
                       </div>
-                      
-                      {showSubjectDropdown && (
-                        <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto animate-fade-in">
-                          {filteredSubjects.map((subject) => (
-                            <div
-                              key={subject}
-                              onClick={() => addSubject(subject)}
-                              className="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors duration-200 border-b border-gray-100 last:border-b-0"
-                            >
-                              {subject}
-                            </div>
-                          ))}
-                          {subjectSearch && !filteredSubjects.length && (
-                            <div
-                              onClick={addCustomSubject}
-                              className="px-4 py-3 hover:bg-green-50 cursor-pointer transition-colors duration-200 text-green-600 font-medium"
-                            >
-                              + Add "{subjectSearch}" as custom subject
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      <h2 className="text-2xl font-bold text-gray-800">Subject Preferences</h2>
                     </div>
                     
-                    {selectedSubjects.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-4">
-                        {selectedSubjects.map((subject) => (
-                          <div
-                            key={subject}
-                            className="flex items-center gap-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-4 py-2 rounded-full border border-blue-200 animate-scale-in"
-                          >
-                            <span className="font-medium">{subject}</span>
-                            <button
-                              type="button"
-                              onClick={() => removeSubject(subject)}
-                              className="w-5 h-5 rounded-full bg-blue-200 hover:bg-blue-300 flex items-center justify-center transition-colors duration-200"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    <SubjectPreferencesSection
+                      classGrade={currentClass}
+                      selectedSubjects={selectedSubjects}
+                      onSubjectsChange={setSelectedSubjects}
+                    />
                   </div>
-                </div>
-
-                {/* Budget Calculator */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-xl flex items-center justify-center">
-                      <Calculator className="w-5 h-5 text-white" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-800">Budget Calculator</h2>
-                  </div>
-                  
-                  <BudgetCalculatorSection 
-                    setMonthlyFee={setMonthlyFee}
-                    classGrade={currentClass}
-                  />
-                  
-                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600 mb-1">Your estimated monthly fee:</p>
-                      <p className="text-3xl font-bold text-blue-600">₹{monthlyFee.toLocaleString()}</p>
-                      <p className="text-xs text-gray-500">*Final fee may vary based on tutor experience and requirements</p>
-                    </div>
-                  </div>
-                </div>
+                )}
 
                 {/* Location & Preferences */}
                 <div className="space-y-6">
@@ -417,7 +341,7 @@ const StudentRegistration = () => {
                       <label className="text-sm font-semibold text-gray-700">District *</label>
                       <input
                         {...methods.register("district", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                         placeholder="Enter district"
                       />
                     </div>
@@ -425,7 +349,7 @@ const StudentRegistration = () => {
                       <label className="text-sm font-semibold text-gray-700">Area *</label>
                       <input
                         {...methods.register("area", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg"
                         placeholder="Enter area/locality"
                       />
                     </div>
@@ -433,7 +357,7 @@ const StudentRegistration = () => {
                       <label className="text-sm font-semibold text-gray-700">Tutoring Mode *</label>
                       <select
                         {...methods.register("mode", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg bg-white"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg bg-white"
                       >
                         <option value="">Select mode</option>
                         <option value="home">Home Tuition</option>
@@ -445,7 +369,7 @@ const StudentRegistration = () => {
                       <label className="text-sm font-semibold text-gray-700">Tutor Gender Preference *</label>
                       <select
                         {...methods.register("tutorGender", { required: true })}
-                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg bg-white"
+                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg bg-white"
                       >
                         <option value="">Select preference</option>
                         <option value="male">Male</option>
@@ -463,19 +387,19 @@ const StudentRegistration = () => {
                     <textarea
                       {...methods.register("requirements")}
                       rows={4}
-                      className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg resize-none"
+                      className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-300 text-lg resize-none"
                       placeholder="Any special requirements, learning goals, or preferences..."
                     />
                   </div>
                 </div>
 
                 {/* Consent */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-6">
                   <div className="flex items-start gap-4">
                     <input
                       type="checkbox"
                       {...methods.register("consent", { required: true })}
-                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1"
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 mt-1"
                     />
                     <label className="text-sm leading-relaxed font-medium text-gray-700 cursor-pointer">
                       I consent to Pranavam Study Centre contacting me and sharing my details with suitable tutors.
@@ -488,7 +412,7 @@ const StudentRegistration = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 rounded-2xl font-bold text-xl shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-6 rounded-2xl font-bold text-xl shadow-2xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? "Submitting..." : "Find My Perfect Tutor"}
                   </button>
