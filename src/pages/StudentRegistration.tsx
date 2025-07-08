@@ -12,18 +12,12 @@ import StepWizard from '@/components/forms/StepWizard';
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [otherSubject, setOtherSubject] = useState('');
   const [specialization, setSpecialization] = useState('');
+  const [classGrade, setClassGrade] = useState('');
   const { toast } = useToast();
-
-  const steps = [
-    { id: 1, title: 'Personal Info', icon: User },
-    { id: 2, title: 'Location', icon: MapPin },
-    { id: 3, title: 'Subjects', icon: BookOpen },
-    { id: 4, title: 'Preferences', icon: Clock },
-  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +26,8 @@ const StudentRegistration = () => {
     const formData = new FormData(e.target as HTMLFormElement);
     
     // Validation
-    const classGrade = formData.get('classGrade') as string;
-    if (!classGrade) {
+    const classGradeValue = classGrade || formData.get('classGrade') as string;
+    if (!classGradeValue) {
       toast({
         title: "Validation Error",
         description: "Please select a class/grade.",
@@ -44,8 +38,8 @@ const StudentRegistration = () => {
     }
 
     // Check if entrance exam or arts/music requires specialization
-    const isEntranceExam = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
-    const isArtsOrMusic = ['music','dance','art','violin-classical','violin-western'].includes(classGrade);
+    const isEntranceExam = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGradeValue);
+    const isArtsOrMusic = ['music','dance','art','violin-classical','violin-western'].includes(classGradeValue);
     
     if ((isEntranceExam || isArtsOrMusic) && !specialization.trim()) {
       toast({
@@ -87,7 +81,7 @@ const StudentRegistration = () => {
           parent_name: formData.get('parentName') as string,
           email: formData.get('email') as string,
           phone: formData.get('phone') as string,
-          class_grade: classGrade,
+          class_grade: classGradeValue,
           subjects: subjects,
           specialization: specialization || null,
           mode: formData.get('mode') as string,
@@ -142,12 +136,103 @@ const StudentRegistration = () => {
     );
   }
 
+  const steps = [
+    { 
+      title: 'Personal Info', 
+      content: (
+        <PersonalInfoSection 
+          classGrade={classGrade}
+          setClassGrade={setClassGrade}
+        />
+      )
+    },
+    { 
+      title: 'Location', 
+      content: <LocationSection />
+    },
+    { 
+      title: 'Subjects', 
+      content: (
+        <SubjectPreferencesSection 
+          onSubjectsChange={setSelectedSubjects}
+          onOtherSubjectChange={setOtherSubject}
+          onSpecializationChange={setSpecialization}
+          selectedSubjects={selectedSubjects}
+          defaultOtherSubject={otherSubject}
+          defaultSpecialization={specialization}
+        />
+      )
+    },
+    { 
+      title: 'Preferences', 
+      content: (
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+              <Clock className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800">Learning Preferences</h2>
+          </div>
+          
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-2xl border border-purple-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="mode" className="text-sm font-semibold text-gray-700">Learning Mode *</label>
+                <select 
+                  name="mode" 
+                  id="mode" 
+                  required 
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-base bg-white"
+                >
+                  <option value="">Select mode</option>
+                  <option value="home">Home Tuition</option>
+                  <option value="online">Online Classes</option>
+                  <option value="both">Both Options</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="timePreference" className="text-sm font-semibold text-gray-700">Time Preference *</label>
+                <select 
+                  name="timePreference" 
+                  id="timePreference" 
+                  required 
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-base bg-white"
+                >
+                  <option value="">Select time</option>
+                  <option value="morning">Morning (6 AM - 12 PM)</option>
+                  <option value="afternoon">Afternoon (12 PM - 6 PM)</option>
+                  <option value="evening">Evening (6 PM - 10 PM)</option>
+                  <option value="flexible">Flexible</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageSquare className="w-5 h-5 text-gray-600" />
+              <label htmlFor="specialRequests" className="text-sm font-semibold text-gray-700">Special Requirements</label>
+            </div>
+            <textarea 
+              name="specialRequests" 
+              id="specialRequests"
+              className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-base resize-none bg-white"
+              rows={4}
+              placeholder="Any specific requirements, learning difficulties, or additional information..."
+            />
+          </div>
+        </div>
+      )
+    }
+  ];
+
   const nextStep = () => {
-    if (currentStep < steps.length) setCurrentStep(currentStep + 1);
+    if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
   return (
@@ -165,125 +250,26 @@ const StudentRegistration = () => {
           </p>
         </div>
 
-        <StepWizard 
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={setCurrentStep}
-        />
-
         <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden animate-slide-in-right">
           <CardContent className="p-8 sm:p-12">
             <form onSubmit={handleSubmit} className="space-y-10">
-              {currentStep === 1 && (
-                <PersonalInfoSection />
-              )}
-
-              {currentStep === 2 && (
-                <LocationSection />
-              )}
-
-              {currentStep === 3 && (
-                <SubjectPreferencesSection 
-                  onSubjectsChange={setSelectedSubjects}
-                  onOtherSubjectChange={setOtherSubject}
-                  onSpecializationChange={setSpecialization}
-                  selectedSubjects={selectedSubjects}
-                  defaultOtherSubject={otherSubject}
-                  defaultSpecialization={specialization}
-                />
-              )}
-
-              {currentStep === 4 && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-white" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-800">Learning Preferences</h2>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-2xl border border-purple-200">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label htmlFor="mode" className="text-sm font-semibold text-gray-700">Learning Mode *</label>
-                        <select 
-                          name="mode" 
-                          id="mode" 
-                          required 
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-base bg-white"
-                        >
-                          <option value="">Select mode</option>
-                          <option value="home">Home Tuition</option>
-                          <option value="online">Online Classes</option>
-                          <option value="both">Both Options</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label htmlFor="timePreference" className="text-sm font-semibold text-gray-700">Time Preference *</label>
-                        <select 
-                          name="timePreference" 
-                          id="timePreference" 
-                          required 
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-base bg-white"
-                        >
-                          <option value="">Select time</option>
-                          <option value="morning">Morning (6 AM - 12 PM)</option>
-                          <option value="afternoon">Afternoon (12 PM - 6 PM)</option>
-                          <option value="evening">Evening (6 PM - 10 PM)</option>
-                          <option value="flexible">Flexible</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 mb-2">
-                      <MessageSquare className="w-5 h-5 text-gray-600" />
-                      <label htmlFor="specialRequests" className="text-sm font-semibold text-gray-700">Special Requirements</label>
-                    </div>
-                    <textarea 
-                      name="specialRequests" 
-                      id="specialRequests"
-                      className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 text-base resize-none bg-white"
-                      rows={4}
-                      placeholder="Any specific requirements, learning difficulties, or additional information..."
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6">
-                {currentStep > 1 && (
-                  <Button 
-                    type="button" 
-                    onClick={prevStep}
-                    variant="outline"
-                    className="px-8 py-3 rounded-xl font-semibold"
-                  >
-                    Previous
-                  </Button>
-                )}
-                
-                {currentStep < steps.length ? (
-                  <Button 
-                    type="button" 
-                    onClick={nextStep}
-                    className="px-8 py-3 rounded-xl font-semibold ml-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                  >
-                    Next
-                  </Button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="px-8 py-3 rounded-xl font-semibold ml-auto bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? "Submitting..." : "Find My Tutor"}
-                  </button>
-                )}
-              </div>
+              <StepWizard 
+                steps={steps}
+                current={currentStep}
+                goNext={nextStep}
+                goBack={prevStep}
+                canNext={true}
+                showBack={currentStep > 0}
+                nextLabel="Next"
+                finishLabel="Find My Tutor"
+                onSubmit={() => {
+                  const form = document.querySelector('form');
+                  if (form) {
+                    const event = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(event);
+                  }
+                }}
+              />
             </form>
           </CardContent>
         </Card>
