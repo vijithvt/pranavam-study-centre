@@ -65,16 +65,16 @@ const StudentDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading student details...</div>
+      <div className="min-h-screen readable-bg flex items-center justify-center">
+        <div className="text-lg readable-text">Loading student details...</div>
       </div>
     );
   }
 
   if (!student) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <div className="text-lg text-red-600">Student not found.</div>
+      <div className="min-h-screen readable-bg flex items-center justify-center">
+        <div className="text-lg text-destructive">Student not found.</div>
       </div>
     );
   }
@@ -83,7 +83,7 @@ const StudentDetailsPage = () => {
   const uniqueSubjects = [...new Set(student.subjects)];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
+    <div className="min-h-screen readable-bg py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <Card className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8">

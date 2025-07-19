@@ -67,22 +67,22 @@ const TutorDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading tutor details...</div>
+      <div className="min-h-screen readable-bg flex items-center justify-center">
+        <div className="text-lg readable-text">Loading tutor details...</div>
       </div>
     );
   }
 
   if (!tutor) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center">
-        <div className="text-lg text-red-600">Tutor not found.</div>
+      <div className="min-h-screen readable-bg flex items-center justify-center">
+        <div className="text-lg text-destructive">Tutor not found.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8 px-4">
+    <div className="min-h-screen readable-bg py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <Card className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-8">
