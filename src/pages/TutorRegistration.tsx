@@ -118,6 +118,34 @@ const TutorRegistration = () => {
 
       if (error) throw error;
 
+      // Send admin notification
+      try {
+        await supabase.functions.invoke('send-admin-notification', {
+          body: {
+            type: 'tutor',
+            registration: {
+              full_name: formData.get('fullName') as string,
+              email: formData.get('email') as string,
+              phone: formData.get('phone') as string,
+              whatsapp: formData.get('whatsapp') as string,
+              district: formData.get('district') as string,
+              location: formData.get('area') as string,
+              subjects: subjects,
+              classes: selectedClasses,
+              qualification: formData.get('qualification') as string,
+              specialization: formData.get('specialization') as string,
+              experience: parseInt(formData.get('experience') as string) || 0,
+              availability: formData.get('teachingMode') as string,
+              languages: selectedLanguages,
+              mode: formData.get('teachingMode') as string,
+              created_at: new Date().toISOString()
+            }
+          }
+        });
+      } catch (notificationError) {
+        console.error('Failed to send admin notification:', notificationError);
+      }
+
       toast({
         title: "Registration Successful!",
         description: "We'll review your application and contact you soon.",
