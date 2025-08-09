@@ -396,8 +396,8 @@ const StudentRegistration = () => {
   };
 
   const canProceed = () => {
-    const validation = validateCurrentStep();
-    return validation.isValid;
+    const stepValidation = validateCurrentStep();
+    return stepValidation.isValid;
   };
 
   const handleNextStep = () => {
