@@ -49,8 +49,10 @@ export type Database = {
           languages: string | null
           location: string
           mode: string
+          monthly_budget: number | null
           parent_name: string
           phone: string
+          preferred_start_date: string | null
           special_requests: string | null
           specialization: string | null
           status: string
@@ -76,8 +78,10 @@ export type Database = {
           languages?: string | null
           location: string
           mode: string
+          monthly_budget?: number | null
           parent_name: string
           phone: string
+          preferred_start_date?: string | null
           special_requests?: string | null
           specialization?: string | null
           status?: string
@@ -103,8 +107,10 @@ export type Database = {
           languages?: string | null
           location?: string
           mode?: string
+          monthly_budget?: number | null
           parent_name?: string
           phone?: string
+          preferred_start_date?: string | null
           special_requests?: string | null
           specialization?: string | null
           status?: string
