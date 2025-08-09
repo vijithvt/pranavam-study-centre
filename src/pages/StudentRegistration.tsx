@@ -418,9 +418,9 @@ const StudentRegistration = () => {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 animate-fade-in px-4">
-          <div className="flex items-center justify-center mb-4">
-            <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-primary mr-2 sm:mr-3" />
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="flex items-center justify-center mb-6 sm:mb-8">
+            <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-primary mr-3" />
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
               Find Your Perfect Tutor
             </h1>
           </div>
