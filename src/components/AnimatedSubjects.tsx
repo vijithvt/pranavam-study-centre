@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Calculator, Atom, Laptop, Brain, Book, Microscope } from 'lucide-react';
-import QuickStudentForm from './QuickStudentForm';
+import StudentRegistration from '../pages/StudentRegistration';
 
 const AnimatedSubjects = () => {
   const subjects = [
@@ -27,9 +27,9 @@ const AnimatedSubjects = () => {
           </p>
         </div>
         
-        {/* Quick Student Registration Form */}
+        {/* Student Registration Form */}
         <div className="mb-16">
-          <QuickStudentForm />
+          <StudentRegistration variant="embedded" />
         </div>
         
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-fade-in">

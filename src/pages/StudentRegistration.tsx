@@ -13,10 +13,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import QuickStudentForm from '@/components/QuickStudentForm';
 
-const StudentRegistration = () => {
-  const [showDetailedForm, setShowDetailedForm] = useState(false);
+interface StudentRegistrationProps {
+  variant?: 'embedded' | 'standalone';
+}
+
+const StudentRegistration = ({ variant = 'standalone' }: StudentRegistrationProps) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -29,23 +31,15 @@ const StudentRegistration = () => {
   const { toast } = useToast();
   const methods = useForm();
 
-  if (!showDetailedForm) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="pt-16">
-          <QuickStudentForm variant="standalone" onShowDetailedForm={() => setShowDetailedForm(true)} />
-          <div className="text-center mt-8">
-            <button 
-              onClick={() => setShowDetailedForm(true)}
-              className="text-primary hover:underline font-medium"
-            >
-              Need more options? Use detailed registration form
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // UI styling based on variant
+  const isEmbedded = variant === 'embedded';
+  const containerClass = isEmbedded 
+    ? "" 
+    : "min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-16";
+  const cardClass = isEmbedded
+    ? "w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-sm shadow-xl border-0 rounded-3xl"
+    : "w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-sm shadow-2xl border-0 rounded-3xl";
+  const titleSize = isEmbedded ? "text-2xl sm:text-3xl" : "text-3xl sm:text-4xl";
 
   const validateCurrentStep = (): { isValid: boolean; error?: string } => {
     switch (currentStep) {
@@ -247,9 +241,16 @@ const StudentRegistration = () => {
   };
 
   if (isSubmitted) {
+    const successContainerClass = isEmbedded
+      ? "w-full max-w-2xl mx-auto"
+      : "min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4";
+    const successCardClass = isEmbedded
+      ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 rounded-2xl"
+      : "w-full max-w-lg text-center rounded-3xl shadow-2xl border-0 backdrop-blur-sm bg-white/90";
+
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 animate-fade-in">
-        <Card className="w-full max-w-lg text-center rounded-3xl shadow-2xl border-0 backdrop-blur-sm bg-white/90">
+      <div className={successContainerClass}>
+        <Card className={successCardClass}>
           <CardContent className="p-10">
             <div className="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-in">
               <CheckCircle className="w-12 h-12 text-white" />
@@ -434,87 +435,81 @@ const StudentRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-2 sm:px-4 pt-20 sm:pt-24">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 animate-fade-in px-4">
-          <div className="flex items-center justify-center mb-6 sm:mb-8">
-            <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-primary mr-3" />
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-              Find Your Perfect Tutor
-            </h1>
-          </div>
-          <p className="text-gray-600 text-base sm:text-xl max-w-2xl mx-auto leading-relaxed px-4">
-            Tell us about your learning needs and we'll connect you with qualified educators
-          </p>
-        </div>
+    <div className={containerClass}>
+      <div className={isEmbedded ? "p-6" : "p-4"}>
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit}>
+            <Card className={cardClass}>
+              <CardHeader className="text-center pb-6">
+                <CardTitle className={`font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${titleSize}`}>
+                  {isEmbedded ? 'Find Your Perfect Tutor' : 'Student Registration'}
+                </CardTitle>
+                <CardDescription className={`${isEmbedded ? 'text-base' : 'text-lg'} text-gray-600`}>
+                  {isEmbedded ? 'Complete your registration to get matched with expert tutors' : 'Fill out this form to find the perfect tutor for your needs'}
+                </CardDescription>
+              </CardHeader>
 
-        {/* Progress Bar */}
-        <div className="mb-6 sm:mb-8 px-2 sm:px-0">
-          <div className="flex justify-between items-center mb-4 px-2">
-            {steps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <div key={index} className="flex flex-col items-center flex-1 px-1">
-                  <div className={cn(
-                    "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300",
-                    index < currentStep ? "bg-green-500 border-green-500 text-white" :
-                    index === currentStep ? "bg-primary border-primary text-white" : 
-                    "bg-gray-100 border-gray-300 text-gray-400"
-                  )}>
-                    {index < currentStep ? (
-                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />
-                    ) : (
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
-                    )}
+              {/* Progress Bar - hidden in embedded mode for simplicity */}
+              {!isEmbedded && (
+                <div className="mb-6 px-8">
+                  <div className="flex justify-between items-center mb-4">
+                    {steps.map((step, index) => {
+                      const Icon = step.icon;
+                      return (
+                        <div key={index} className="flex flex-col items-center flex-1">
+                          <div className={cn(
+                            "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                            index < currentStep ? "bg-green-500 border-green-500 text-white" :
+                            index === currentStep ? "bg-primary border-primary text-white" : 
+                            "bg-gray-100 border-gray-300 text-gray-400"
+                          )}>
+                            {index < currentStep ? (
+                              <CheckCircle className="w-5 h-5" />
+                            ) : (
+                              <Icon className="w-5 h-5" />
+                            )}
+                          </div>
+                          <div className="mt-2 text-center">
+                            <div className={cn(
+                              "text-sm font-semibold",
+                              index <= currentStep ? "text-primary" : "text-gray-400"
+                            )}>
+                              {step.title}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="mt-1 sm:mt-2 text-center">
-                    <div className={cn(
-                      "text-xs sm:text-sm font-semibold",
-                      index <= currentStep ? "text-primary" : "text-gray-400"
-                    )}>
-                      {step.title}
-                    </div>
-                    <div className="text-xs text-gray-500 hidden md:block">
-                      {step.description}
-                    </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-primary to-blue-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+                    />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-primary to-blue-600 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
+              )}
 
-        {/* Main Content */}
-        <Card className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border-0 overflow-hidden animate-slide-in-right mx-2 sm:mx-0">
-          <CardContent className="p-4 sm:p-8 md:p-12">
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit} className="space-y-10">
+              <CardContent className={isEmbedded ? "p-6" : "p-8"}>
                 {/* Step Content */}
-                <div className="min-h-[400px]">
+                <div className={isEmbedded ? "space-y-6" : "min-h-[400px] space-y-8"}>
                   {steps[currentStep].content}
                 </div>
 
                 {/* Navigation */}
-                <div className="flex items-center justify-between pt-6 sm:pt-8 border-t border-gray-200">
+                <div className="flex items-center justify-between pt-8 border-t border-gray-200 mt-8">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={prevStep}
                     disabled={currentStep === 0}
-                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base"
+                    className="px-6 py-3 rounded-xl"
                   >
-                    <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <ArrowLeft className="w-4 h-4 mr-2" />
                     Back
                   </Button>
 
-                  <div className="text-xs sm:text-sm text-gray-500">
+                  <div className="text-sm text-gray-500">
                     Step {currentStep + 1} of {steps.length}
                   </div>
 
@@ -522,27 +517,27 @@ const StudentRegistration = () => {
                     <Button
                       type="submit"
                       disabled={isSubmitting || !canProceed()}
-                      className="px-6 sm:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-sm sm:text-base"
+                      className="px-8 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                     >
                       {isSubmitting ? "Finding Tutors..." : "Find My Tutor"}
-                      <Star className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
+                      <Star className="w-4 h-4 ml-2" />
                     </Button>
                   ) : (
                     <Button
                       type="button"
                       onClick={handleNextStep}
                       disabled={!canProceed()}
-                      className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base"
+                      className="px-6 py-3 rounded-xl"
                     >
                       Next
-                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
+                      <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   )}
                 </div>
-              </form>
-            </FormProvider>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );
