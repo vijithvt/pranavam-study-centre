@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { FormProvider, useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserPlus, CheckCircle, User, MapPin, BookOpen, Clock, MessageSquare, Calendar as CalendarIcon } from 'lucide-react';
+import { UserPlus, CheckCircle, User, MapPin, BookOpen, Clock, MessageSquare, Calendar as CalendarIcon, DollarSign, Star, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
 import LocationSection from '@/components/forms/LocationSection';
 import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
-import StepWizard from '@/components/forms/StepWizard';
+import { FormProvider, useForm } from 'react-hook-form';
 import BudgetSliderSection from '@/components/forms/BudgetSliderSection';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -23,9 +22,10 @@ const StudentRegistration = () => {
   const [otherSubject, setOtherSubject] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [classGrade, setClassGrade] = useState('');
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [budget, setBudget] = useState(3000);
   const { toast } = useToast();
   const methods = useForm();
-  const [startDate, setStartDate] = useState<Date | undefined>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +88,7 @@ const StudentRegistration = () => {
           student_name: formData.get('studentName') as string,
           parent_name: formData.get('parentName') as string,
           email: formData.get('email') as string,
-          phone: formData.get('phone') as string,
+          phone: formData.get('parentPhone') as string,
           class_grade: classGradeValue,
           subjects: subjects,
           specialization: specialization || null,
@@ -97,6 +97,8 @@ const StudentRegistration = () => {
           location: formData.get('area') as string,
           time_preference: formData.get('timePreference') as string,
           special_requests: formData.get('specialRequests') as string,
+          monthly_budget: budget,
+          preferred_start_date: startDate ? format(startDate, 'yyyy-MM-dd') : null,
         });
 
       if (error) throw error;
@@ -110,7 +112,7 @@ const StudentRegistration = () => {
               student_name: formData.get('studentName') as string,
               parent_name: formData.get('parentName') as string,
               email: formData.get('email') as string,
-              phone: formData.get('phone') as string,
+              phone: formData.get('parentPhone') as string,
               class_grade: classGradeValue,
               subjects: subjects,
               specialization: specialization || null,
@@ -119,6 +121,8 @@ const StudentRegistration = () => {
               location: formData.get('area') as string,
               time_preference: formData.get('timePreference') as string,
               special_requests: formData.get('specialRequests') as string,
+              monthly_budget: budget,
+              preferred_start_date: startDate ? format(startDate, 'yyyy-MM-dd') : null,
               created_at: new Date().toISOString()
             }
           }
@@ -172,7 +176,9 @@ const StudentRegistration = () => {
 
   const steps = [
     { 
-      title: 'Personal Info', 
+      title: 'Personal Info',
+      icon: User,
+      description: 'Student & Parent Details',
       content: (
         <PersonalInfoSection 
           classGrade={classGrade}
@@ -181,13 +187,12 @@ const StudentRegistration = () => {
       )
     },
     { 
-      title: 'Location', 
-      content: <LocationSection />
-    },
-    { 
-      title: 'Subjects', 
+      title: 'Classes & Subjects',
+      icon: BookOpen,
+      description: 'What subjects to learn',
       content: (
         <SubjectPreferencesSection 
+          classGrade={classGrade}
           onSubjectsChange={setSelectedSubjects}
           onOtherSubjectChange={setOtherSubject}
           onSpecializationChange={setSpecialization}
@@ -198,17 +203,25 @@ const StudentRegistration = () => {
       )
     },
     { 
-      title: 'Preferences', 
+      title: 'Location',
+      icon: MapPin,
+      description: 'Where to teach',
+      content: <LocationSection />
+    },
+    { 
+      title: 'Schedule & Budget',
+      icon: Clock,
+      description: 'When and budget preferences',
       content: (
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="space-y-8">
+          <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
               <Clock className="w-5 h-5 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-gray-800">Learning Preferences</h2>
           </div>
           
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-2xl border border-purple-200">
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl border border-purple-200">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label htmlFor="mode" className="text-sm font-semibold text-gray-700">Learning Mode *</label>
@@ -243,6 +256,41 @@ const StudentRegistration = () => {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-gray-700">Preferred Start Date</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, 'PPP') : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+              <input type="hidden" name="preferredStartDate" value={startDate ? format(startDate, 'yyyy-MM-dd') : ''} />
+            </div>
+
+            <div>
+              <BudgetSliderSection onBudgetChange={setBudget} defaultBudget={budget} />
+            </div>
+          </div>
+
           <div className="space-y-2">
             <div className="flex items-center gap-2 mb-2">
               <MessageSquare className="w-5 h-5 text-gray-600" />
@@ -269,9 +317,16 @@ const StudentRegistration = () => {
     if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
+  const canProceed = () => {
+    // Add basic validation for each step
+    if (currentStep === 0 && !classGrade) return false;
+    return true;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="flex items-center justify-center mb-4">
             <UserPlus className="h-10 w-10 text-primary mr-3" />
@@ -284,27 +339,96 @@ const StudentRegistration = () => {
           </p>
         </div>
 
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={index} className="flex flex-col items-center flex-1">
+                  <div className={cn(
+                    "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                    index < currentStep ? "bg-green-500 border-green-500 text-white" :
+                    index === currentStep ? "bg-primary border-primary text-white" : 
+                    "bg-gray-100 border-gray-300 text-gray-400"
+                  )}>
+                    {index < currentStep ? (
+                      <CheckCircle className="w-6 h-6" />
+                    ) : (
+                      <Icon className="w-6 h-6" />
+                    )}
+                  </div>
+                  <div className="mt-2 text-center">
+                    <div className={cn(
+                      "text-sm font-semibold",
+                      index <= currentStep ? "text-primary" : "text-gray-400"
+                    )}>
+                      {step.title}
+                    </div>
+                    <div className="text-xs text-gray-500 hidden sm:block">
+                      {step.description}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-primary to-blue-600 h-2 rounded-full transition-all duration-500"
+              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Main Content */}
         <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden animate-slide-in-right">
           <CardContent className="p-8 sm:p-12">
             <FormProvider {...methods}>
               <form onSubmit={handleSubmit} className="space-y-10">
-                <StepWizard 
-                  steps={steps}
-                  current={currentStep}
-                  goNext={nextStep}
-                  goBack={prevStep}
-                  canNext={true}
-                  showBack={currentStep > 0}
-                  nextLabel="Next"
-                  finishLabel="Find My Tutor"
-                  onSubmit={() => {
-                    const form = document.querySelector('form');
-                    if (form) {
-                      const event = new Event('submit', { bubbles: true, cancelable: true });
-                      form.dispatchEvent(event);
-                    }
-                  }}
-                />
+                {/* Step Content */}
+                <div className="min-h-[400px]">
+                  {steps[currentStep].content}
+                </div>
+
+                {/* Navigation */}
+                <div className="flex items-center justify-between pt-8 border-t border-gray-200">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={prevStep}
+                    disabled={currentStep === 0}
+                    className="px-6 py-3 rounded-xl"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+
+                  <div className="text-sm text-gray-500">
+                    Step {currentStep + 1} of {steps.length}
+                  </div>
+
+                  {currentStep === steps.length - 1 ? (
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || !canProceed()}
+                      className="px-8 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                    >
+                      {isSubmitting ? "Finding Tutors..." : "Find My Tutor"}
+                      <Star className="w-4 h-4 ml-2" />
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={nextStep}
+                      disabled={!canProceed()}
+                      className="px-6 py-3 rounded-xl"
+                    >
+                      Next
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
+                </div>
               </form>
             </FormProvider>
           </CardContent>
