@@ -6,6 +6,7 @@ import HowItWorks from '../components/HowItWorks';
 import About from '../components/About';
 import Testimonials from '../components/Testimonials';
 import AnimatedSubjects from '../components/AnimatedSubjects';
+import ModernCTASection from '../components/ModernCTASection';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import WhatsAppEnquiryPopup from '../components/WhatsAppEnquiryPopup';
 import Chatbot from '../components/Chatbot';
@@ -18,6 +19,7 @@ const Index = () => {
       <Features />
       <HowItWorks />
       <About />
+      <ModernCTASection />
       <Testimonials />
       <FloatingContactButtons />
       <WhatsAppEnquiryPopup phoneNumber="+919496315903" />
