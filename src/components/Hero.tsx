@@ -12,7 +12,7 @@ const Hero = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
-                Empowering Futures with Kerala’s Top Home Tutors
+                Personalized live classes with top teachers
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
                 Unlock your child’s potential with expert 1-to-1 home tuition—personalized learning, passionate teachers, and proven results. Trusted by families across Kerala since 2016.
@@ -63,8 +63,8 @@ const Hero = () => {
           <div className="relative">
             <div className="relative z-10">
               <img
-                src="/lovable-uploads/319f16a6-e208-4f34-be22-cf30f09fa003.png"
-                alt="Modern classroom setup"
+                src="/lovable-uploads/a2a584b4-0ae8-4d70-9e01-dc194aebdc8b.png"
+                alt="Student attending live online class with top teacher"
                 className="w-full h-auto rounded-2xl shadow-2xl"
               />
             </div>

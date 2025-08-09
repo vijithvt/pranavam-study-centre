@@ -22,7 +22,7 @@ const FloatingContactButtons = () => {
           onClick={() => setIsOpen(!isOpen)}
           className="w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full shadow-2xl flex items-center justify-center text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-110 animate-bounce"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Phone className="w-6 h-6" />}
+          {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
         </button>
       </div>
 
@@ -32,7 +32,7 @@ const FloatingContactButtons = () => {
           {/* WhatsApp Button */}
           <div className="flex items-center gap-3">
             <span className="bg-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium text-gray-700 whitespace-nowrap animate-slide-in-right">
-              Chat on WhatsApp
+              WhatsApp Us
             </span>
             <button
               onClick={handleWhatsApp}
@@ -42,18 +42,6 @@ const FloatingContactButtons = () => {
             </button>
           </div>
 
-          {/* Call Button */}
-          <div className="flex items-center gap-3">
-            <span className="bg-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium text-gray-700 whitespace-nowrap animate-slide-in-right">
-              Call Now
-            </span>
-            <button
-              onClick={handleCall}
-              className="w-12 h-12 bg-blue-500 rounded-full shadow-xl flex items-center justify-center text-white hover:bg-blue-600 transition-all duration-300 transform hover:scale-110"
-            >
-              <Phone className="w-5 h-5" />
-            </button>
-          </div>
         </div>
       )}
     </>

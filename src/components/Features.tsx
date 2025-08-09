@@ -1,44 +1,32 @@
 
 import React from 'react';
-import { MapPin, Users, BookOpen, Clock, Star, Shield } from 'lucide-react';
+import { Award, Users, MonitorPlay, BarChart3 } from 'lucide-react';
 
 const Features = () => {
   const features = [
     {
-      icon: MapPin,
-      title: 'All Kerala Coverage',
-      description: 'Tutors available across all 14 districts of Kerala, from Kasaragod to Thiruvananthapuram.',
-      color: 'bg-green-100 text-green-600'
-    },
-    {
-      icon: Users,
-      title: 'Verified Tutors',
-      description: 'All tutors are background-verified with proper qualifications and teaching experience.',
-      color: 'bg-blue-100 text-blue-600'
-    },
-    {
-      icon: BookOpen,
-      title: 'All Subjects',
-      description: 'Mathematics, Science, Languages, Social Studies - expert tutors for every subject.',
-      color: 'bg-purple-100 text-purple-600'
-    },
-    {
-      icon: Clock,
-      title: 'Flexible Timing',
-      description: 'Choose convenient time slots that work for your family\'s schedule.',
-      color: 'bg-orange-100 text-orange-600'
-    },
-    {
-      icon: Star,
-      title: 'Quality Assured',
-      description: 'Regular monitoring and feedback system to ensure the best learning experience.',
+      icon: Award,
+      title: 'Top Expert Teachers',
+      description: "Learn from India's best teachers",
       color: 'bg-yellow-100 text-yellow-600'
     },
     {
-      icon: Shield,
-      title: 'Safe & Secure',
-      description: 'Trusted platform with verified profiles and secure communication channels.',
-      color: 'bg-red-100 text-red-600'
+      icon: Users,
+      title: '1-on-1 or Small Group Batches',
+      description: 'Smaller batch size, more personal attention',
+      color: 'bg-blue-100 text-blue-600'
+    },
+    {
+      icon: MonitorPlay,
+      title: 'Interactive Live Classes',
+      description: 'Real time live classes, learn just like offline classroom',
+      color: 'bg-green-100 text-green-600'
+    },
+    {
+      icon: BarChart3,
+      title: 'Assessments',
+      description: 'Quizzes, Assessment, Reports to evaluate daily outcomes',
+      color: 'bg-purple-100 text-purple-600'
     }
   ];
 
