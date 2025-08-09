@@ -188,7 +188,7 @@ Enquiry: ${enquiry}`;
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2 shadow-lg"
               >
                 <Send className="h-4 w-4" />
-                Send via WhatsApp
+                WhatsApp Us
               </Button>
             </CardFooter>
           </form>
