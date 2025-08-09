@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserPlus, CheckCircle, User, MapPin, BookOpen, Clock, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +19,7 @@ const StudentRegistration = () => {
   const [specialization, setSpecialization] = useState('');
   const [classGrade, setClassGrade] = useState('');
   const { toast } = useToast();
+  const methods = useForm();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -278,25 +280,27 @@ const StudentRegistration = () => {
 
         <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden animate-slide-in-right">
           <CardContent className="p-8 sm:p-12">
-            <form onSubmit={handleSubmit} className="space-y-10">
-              <StepWizard 
-                steps={steps}
-                current={currentStep}
-                goNext={nextStep}
-                goBack={prevStep}
-                canNext={true}
-                showBack={currentStep > 0}
-                nextLabel="Next"
-                finishLabel="Find My Tutor"
-                onSubmit={() => {
-                  const form = document.querySelector('form');
-                  if (form) {
-                    const event = new Event('submit', { bubbles: true, cancelable: true });
-                    form.dispatchEvent(event);
-                  }
-                }}
-              />
-            </form>
+            <FormProvider {...methods}>
+              <form onSubmit={handleSubmit} className="space-y-10">
+                <StepWizard 
+                  steps={steps}
+                  current={currentStep}
+                  goNext={nextStep}
+                  goBack={prevStep}
+                  canNext={true}
+                  showBack={currentStep > 0}
+                  nextLabel="Next"
+                  finishLabel="Find My Tutor"
+                  onSubmit={() => {
+                    const form = document.querySelector('form');
+                    if (form) {
+                      const event = new Event('submit', { bubbles: true, cancelable: true });
+                      form.dispatchEvent(event);
+                    }
+                  }}
+                />
+              </form>
+            </FormProvider>
           </CardContent>
         </Card>
       </div>
