@@ -6,7 +6,12 @@ import { UserPlus, ArrowRight, Phone, Mail, MapPin, BookOpen } from 'lucide-reac
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-const QuickStudentForm = () => {
+interface QuickStudentFormProps {
+  variant?: 'embedded' | 'standalone';
+  onShowDetailedForm?: () => void;
+}
+
+const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStudentFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
@@ -99,39 +104,62 @@ const QuickStudentForm = () => {
   };
 
   if (isSubmitted) {
+    const containerClass = variant === 'standalone' 
+      ? "min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50" 
+      : "";
+    const cardClass = variant === 'standalone'
+      ? "w-full max-w-lg bg-white/95 backdrop-blur-sm shadow-2xl border-0 rounded-3xl"
+      : "w-full max-w-2xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 border-green-200";
+    const contentClass = variant === 'standalone' ? "p-10" : "p-8 text-center";
+
     return (
-      <Card className="w-full max-w-2xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-        <CardContent className="p-8 text-center">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserPlus className="w-8 h-8 text-white" />
-          </div>
-          <h3 className="text-2xl font-bold text-green-800 mb-2">Thank You!</h3>
-          <p className="text-green-700 mb-4">
-            We've received your registration. Our team will contact you within 24 hours.
-          </p>
-          <Button 
-            onClick={() => setIsSubmitted(false)}
-            variant="outline"
-            className="border-green-500 text-green-700 hover:bg-green-50"
-          >
-            Register Another Student
-          </Button>
-        </CardContent>
-      </Card>
+      <div className={containerClass}>
+        <Card className={cardClass}>
+          <CardContent className={contentClass}>
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserPlus className="w-8 h-8 text-white" />
+            </div>
+            <h3 className={`font-bold text-green-800 mb-2 ${variant === 'standalone' ? 'text-3xl' : 'text-2xl'}`}>
+              Thank You!
+            </h3>
+            <p className={`text-green-700 mb-4 ${variant === 'standalone' ? 'text-lg leading-relaxed mb-10' : ''}`}>
+              We've received your registration. Our team will contact you within 24 hours.
+            </p>
+            <Button 
+              onClick={() => setIsSubmitted(false)}
+              variant="outline"
+              className={`border-green-500 text-green-700 hover:bg-green-50 ${variant === 'standalone' ? 'w-full py-4 text-lg' : ''}`}
+            >
+              Register Another Student
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
+  const containerClass = variant === 'standalone' 
+    ? "min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50" 
+    : "";
+  const cardClass = variant === 'standalone'
+    ? "w-full max-w-4xl bg-white/95 backdrop-blur-sm shadow-2xl border-0 rounded-3xl"
+    : "w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-sm shadow-xl border-0";
+  const contentClass = variant === 'standalone' ? "p-8 sm:p-12" : "p-6 sm:p-8";
+  const titleClass = variant === 'standalone' ? "text-3xl sm:text-4xl" : "text-2xl";
+  const descClass = variant === 'standalone' ? "text-xl" : "";
+
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-sm shadow-xl border-0">
-      <CardContent className="p-6 sm:p-8">
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Quick Registration
-          </h3>
-          <p className="text-gray-600">
-            Get matched with the perfect tutor in just 2 minutes
-          </p>
-        </div>
+    <div className={containerClass}>
+      <Card className={cardClass}>
+        <CardContent className={contentClass}>
+          <div className="text-center mb-6">
+            <h3 className={`font-bold text-gray-800 mb-2 ${titleClass}`}>
+              Quick Registration
+            </h3>
+            <p className={`text-gray-600 ${descClass}`}>
+              Get matched with the perfect tutor in just 2 minutes
+            </p>
+          </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
@@ -249,14 +277,25 @@ const QuickStudentForm = () => {
           </Button>
           
           <p className="text-center text-sm text-gray-500 mt-4">
-            Need more customization? Use our{' '}
-            <a href="/students" className="text-primary hover:underline font-medium">
-              detailed registration form
-            </a>
+            Need more customization?{' '}
+            {variant === 'standalone' && onShowDetailedForm ? (
+              <button 
+                type="button"
+                onClick={onShowDetailedForm}
+                className="text-primary hover:underline font-medium"
+              >
+                Use detailed registration form
+              </button>
+            ) : (
+              <a href="/students" className="text-primary hover:underline font-medium">
+                Use detailed registration form
+              </a>
+            )}
           </p>
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 };
 

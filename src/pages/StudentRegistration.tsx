@@ -13,8 +13,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import QuickStudentForm from '@/components/QuickStudentForm';
 
 const StudentRegistration = () => {
+  const [showDetailedForm, setShowDetailedForm] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -26,6 +28,10 @@ const StudentRegistration = () => {
   const [budget, setBudget] = useState(3000);
   const { toast } = useToast();
   const methods = useForm();
+
+  if (!showDetailedForm) {
+    return <QuickStudentForm variant="standalone" onShowDetailedForm={() => setShowDetailedForm(true)} />;
+  }
 
   const validateCurrentStep = (): { isValid: boolean; error?: string } => {
     switch (currentStep) {
