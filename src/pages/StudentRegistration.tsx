@@ -27,51 +27,120 @@ const StudentRegistration = () => {
   const { toast } = useToast();
   const methods = useForm();
 
+  const validateStep = (step: number): { isValid: boolean; error?: string } => {
+    const formData = new FormData(document.querySelector('form') as HTMLFormElement);
+    
+    switch (step) {
+      case 0: // Personal Info
+        if (!classGrade) return { isValid: false, error: "Please select a class/grade" };
+        
+        const studentName = formData.get('studentName') as string;
+        const parentName = formData.get('parentName') as string;
+        const email = formData.get('email') as string;
+        const phone = formData.get('parentPhone') as string;
+        
+        if (!studentName?.trim()) return { isValid: false, error: "Student name is required" };
+        if (!parentName?.trim()) return { isValid: false, error: "Parent/Guardian name is required" };
+        if (!email?.trim()) return { isValid: false, error: "Email is required" };
+        if (!phone?.trim()) return { isValid: false, error: "Parent phone number is required" };
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) return { isValid: false, error: "Please enter a valid email address" };
+        
+        // Phone validation
+        const phoneRegex = /^[\+]?[0-9\-\(\)\s]{10,}$/;
+        if (!phoneRegex.test(phone)) return { isValid: false, error: "Please enter a valid phone number" };
+        
+        // School grade specific validation
+        const isSchoolGrade = ['1','2','3','4','5','6','7','8','9','10','11','12'].includes(classGrade);
+        if (isSchoolGrade) {
+          const syllabus = formData.get('syllabus') as string;
+          if (!syllabus) return { isValid: false, error: "Please select a syllabus" };
+        }
+        
+        // Higher education specific validation
+        const isHigherEd = ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
+        if (isHigherEd) {
+          const university = formData.get('university') as string;
+          const branch = formData.get('branch') as string;
+          if (!university?.trim()) return { isValid: false, error: "University/Institution is required" };
+          if (!branch?.trim()) return { isValid: false, error: "Branch/Specialization is required" };
+        }
+        
+        break;
+        
+      case 1: // Classes & Subjects
+        const isEntranceExam = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
+        const isArtsOrMusic = ['music','dance','art','violin-classical','violin-western'].includes(classGrade);
+        
+        if (isEntranceExam || isArtsOrMusic) {
+          if (!specialization?.trim()) return { isValid: false, error: "Please enter your specialization" };
+        } else {
+          const isHigherEd = ['btech','bsc','ba','bcom','llb','mtech','msc','ma','mcom'].includes(classGrade);
+          if (isHigherEd) {
+            const customSubjects = formData.get('customSubjects') as string;
+            if (!customSubjects?.trim()) return { isValid: false, error: "Please specify the subjects you need help with" };
+          } else {
+            // Regular school subjects validation
+            if (selectedSubjects.length === 0 && !otherSubject?.trim()) {
+              return { isValid: false, error: "Please select at least one subject or specify other subjects" };
+            }
+          }
+        }
+        break;
+        
+      case 2: // Location
+        const district = formData.get('district') as string;
+        const area = formData.get('area') as string;
+        
+        if (!district) return { isValid: false, error: "Please select your district" };
+        if (!area?.trim()) return { isValid: false, error: "Please enter your area/locality" };
+        break;
+        
+      case 3: // Schedule & Budget
+        const mode = formData.get('mode') as string;
+        const timePreference = formData.get('timePreference') as string;
+        
+        if (!mode) return { isValid: false, error: "Please select a learning mode" };
+        if (!timePreference) return { isValid: false, error: "Please select a time preference" };
+        
+        // Budget validation
+        if (!budget || budget < 2000 || budget > 20000) {
+          return { isValid: false, error: "Please set a valid budget between ₹2,000 and ₹20,000" };
+        }
+        break;
+    }
+    
+    return { isValid: true };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Validate all steps before submission
+    for (let i = 0; i < steps.length; i++) {
+      const validation = validateStep(i);
+      if (!validation.isValid) {
+        toast({
+          title: "Validation Error",
+          description: validation.error,
+          variant: "destructive"
+        });
+        setCurrentStep(i); // Navigate to the problematic step
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const formData = new FormData(e.target as HTMLFormElement);
     
-    // Validation
-    const classGradeValue = classGrade || formData.get('classGrade') as string;
-    if (!classGradeValue) {
-      toast({
-        title: "Validation Error",
-        description: "Please select a class/grade.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Check if entrance exam or arts/music requires specialization
-    const isEntranceExam = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGradeValue);
-    const isArtsOrMusic = ['music','dance','art','violin-classical','violin-western'].includes(classGradeValue);
-    
-    if ((isEntranceExam || isArtsOrMusic) && !specialization.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Please enter your specialization.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
-    // For regular classes, check subjects
-    if (!isEntranceExam && !isArtsOrMusic && selectedSubjects.length === 0 && !otherSubject.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Please select at least one subject or specify other subjects.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
     // Prepare subjects array
     let subjects: string[] = [];
+    const isEntranceExam = ['neet','jee','upsc','psc','banking','ssc','railway'].includes(classGrade);
+    const isArtsOrMusic = ['music','dance','art','violin-classical','violin-western'].includes(classGrade);
+    
     if (isEntranceExam || isArtsOrMusic) {
       subjects = [specialization];
     } else {
@@ -89,7 +158,7 @@ const StudentRegistration = () => {
           parent_name: formData.get('parentName') as string,
           email: formData.get('email') as string,
           phone: formData.get('parentPhone') as string,
-          class_grade: classGradeValue,
+          class_grade: classGrade,
           subjects: subjects,
           specialization: specialization || null,
           mode: formData.get('mode') as string,
@@ -118,7 +187,7 @@ const StudentRegistration = () => {
               parent_name: formData.get('parentName') as string,
               email: formData.get('email') as string,
               phone: formData.get('parentPhone') as string,
-              class_grade: classGradeValue,
+              class_grade: classGrade,
               subjects: subjects,
               specialization: specialization || null,
               mode: formData.get('mode') as string,
@@ -323,9 +392,21 @@ const StudentRegistration = () => {
   };
 
   const canProceed = () => {
-    // Add basic validation for each step
-    if (currentStep === 0 && !classGrade) return false;
-    return true;
+    const validation = validateStep(currentStep);
+    return validation.isValid;
+  };
+
+  const handleNextStep = () => {
+    const validation = validateStep(currentStep);
+    if (!validation.isValid) {
+      toast({
+        title: "Validation Error",
+        description: validation.error,
+        variant: "destructive"
+      });
+      return;
+    }
+    nextStep();
   };
 
   return (
@@ -425,7 +506,7 @@ const StudentRegistration = () => {
                   ) : (
                     <Button
                       type="button"
-                      onClick={nextStep}
+                      onClick={handleNextStep}
                       disabled={!canProceed()}
                       className="px-6 py-3 rounded-xl"
                     >
