@@ -414,48 +414,48 @@ const StudentRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-2 sm:px-4">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in px-4">
           <div className="flex items-center justify-center mb-4">
-            <UserPlus className="h-10 w-10 text-primary mr-3" />
-            <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-primary mr-2 sm:mr-3" />
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Find Your Perfect Tutor
             </h1>
           </div>
-          <p className="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-600 text-base sm:text-xl max-w-2xl mx-auto leading-relaxed px-4">
             Tell us about your learning needs and we'll connect you with qualified educators
           </p>
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
+        <div className="mb-6 sm:mb-8 px-2 sm:px-0">
+          <div className="flex justify-between items-center mb-4 px-2">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
-                <div key={index} className="flex flex-col items-center flex-1">
+                <div key={index} className="flex flex-col items-center flex-1 px-1">
                   <div className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                    "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300",
                     index < currentStep ? "bg-green-500 border-green-500 text-white" :
                     index === currentStep ? "bg-primary border-primary text-white" : 
                     "bg-gray-100 border-gray-300 text-gray-400"
                   )}>
                     {index < currentStep ? (
-                      <CheckCircle className="w-6 h-6" />
+                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                     ) : (
-                      <Icon className="w-6 h-6" />
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     )}
                   </div>
-                  <div className="mt-2 text-center">
+                  <div className="mt-1 sm:mt-2 text-center">
                     <div className={cn(
-                      "text-sm font-semibold",
+                      "text-xs sm:text-sm font-semibold",
                       index <= currentStep ? "text-primary" : "text-gray-400"
                     )}>
                       {step.title}
                     </div>
-                    <div className="text-xs text-gray-500 hidden sm:block">
+                    <div className="text-xs text-gray-500 hidden md:block">
                       {step.description}
                     </div>
                   </div>
@@ -472,8 +472,8 @@ const StudentRegistration = () => {
         </div>
 
         {/* Main Content */}
-        <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden animate-slide-in-right">
-          <CardContent className="p-8 sm:p-12">
+        <Card className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border-0 overflow-hidden animate-slide-in-right mx-2 sm:mx-0">
+          <CardContent className="p-4 sm:p-8 md:p-12">
             <FormProvider {...methods}>
               <form onSubmit={handleSubmit} className="space-y-10">
                 {/* Step Content */}
@@ -482,19 +482,19 @@ const StudentRegistration = () => {
                 </div>
 
                 {/* Navigation */}
-                <div className="flex items-center justify-between pt-8 border-t border-gray-200">
+                <div className="flex items-center justify-between pt-6 sm:pt-8 border-t border-gray-200">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={prevStep}
                     disabled={currentStep === 0}
-                    className="px-6 py-3 rounded-xl"
+                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     Back
                   </Button>
 
-                  <div className="text-sm text-gray-500">
+                  <div className="text-xs sm:text-sm text-gray-500">
                     Step {currentStep + 1} of {steps.length}
                   </div>
 
@@ -502,20 +502,20 @@ const StudentRegistration = () => {
                     <Button
                       type="submit"
                       disabled={isSubmitting || !canProceed()}
-                      className="px-8 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                      className="px-6 sm:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-sm sm:text-base"
                     >
                       {isSubmitting ? "Finding Tutors..." : "Find My Tutor"}
-                      <Star className="w-4 h-4 ml-2" />
+                      <Star className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
                     </Button>
                   ) : (
                     <Button
                       type="button"
                       onClick={handleNextStep}
                       disabled={!canProceed()}
-                      className="px-6 py-3 rounded-xl"
+                      className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     >
                       Next
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
                     </Button>
                   )}
                 </div>

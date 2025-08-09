@@ -190,66 +190,66 @@ const TutorRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12 animate-fade-in">
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in px-4">
           <div className="flex items-center justify-center mb-4">
-            <UserPlus className="h-10 w-10 text-primary mr-3" />
-            <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-primary mr-2 sm:mr-3" />
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Become a Tutor
             </h1>
           </div>
-          <p className="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-600 text-base sm:text-xl max-w-2xl mx-auto leading-relaxed px-4">
             Join our network of qualified educators and make a difference in students' lives
           </p>
         </div>
 
-        <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-0 overflow-hidden animate-slide-in-right">
-          <CardContent className="p-8 sm:p-12">
-            <form onSubmit={handleSubmit} className="space-y-10">
+        <Card className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border-0 overflow-hidden animate-slide-in-right mx-2 sm:mx-0">
+          <CardContent className="p-4 sm:p-8 md:p-12">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10">
 
               {/* Personal Information */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                    <UserPlus className="w-5 h-5 text-white" />
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Personal Information</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Personal Information</h2>
                 </div>
                 <TutorPersonalInfoSection />
               </div>
 
               {/* Location */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-white" />
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Location</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Location</h2>
                 </div>
                 <LocationSection />
               </div>
 
               {/* Qualifications */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                    <GraduationCap className="w-5 h-5 text-white" />
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Qualifications & Experience</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Qualifications & Experience</h2>
                 </div>
                 <TutorQualificationSection />
               </div>
 
               {/* Classes/Grades */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-white" />
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Classes/Grades You Can Teach</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Classes/Grades You Can Teach</h2>
                 </div>
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border-2 border-gray-200">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl sm:rounded-2xl border-2 border-gray-200 max-h-64 sm:max-h-80 overflow-y-auto">
                   {allClasses.map((classItem) => (
                     <div key={classItem} className="flex items-center space-x-2">
                       <Checkbox
@@ -381,11 +381,11 @@ const TutorRegistration = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="pt-6">
+              <div className="pt-4 sm:pt-6">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 rounded-2xl font-bold text-xl shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 sm:py-6 rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl shadow-xl sm:shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "Submitting..." : "Submit Registration"}
                 </button>
