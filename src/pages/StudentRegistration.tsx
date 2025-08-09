@@ -77,7 +77,7 @@ const StudentRegistration = () => {
     const district = formData.get('district') as string;
     const area = formData.get('area') as string;
     const mode = formData.get('mode') as string;
-    const timePreference = formData.get('timePreference') as string;
+    const timePreference = formData.get('timePreference') || formData.get('preferredTime') as string;
     
     // Personal Info validation
     if (!studentName?.trim()) return { isValid: false, error: "Student name is required" };
@@ -168,7 +168,7 @@ const StudentRegistration = () => {
           mode: formData.get('mode') as string,
           district: formData.get('district') as string,
           location: formData.get('area') as string,
-          time_preference: formData.get('timePreference') as string,
+          time_preference: (formData.get('timePreference') || formData.get('preferredTime')) as string,
           special_requests: formData.get('specialRequests') as string,
           monthly_budget: budget,
           preferred_start_date: startDate ? format(startDate, 'yyyy-MM-dd') : null,
