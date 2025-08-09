@@ -190,7 +190,7 @@ const TutorRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-2 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-2 sm:px-4 pt-20 sm:pt-24">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8 sm:mb-12 animate-fade-in px-4">
           <div className="flex items-center justify-center mb-6 sm:mb-8">
