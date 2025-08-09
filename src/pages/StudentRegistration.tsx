@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserPlus, CheckCircle, User, MapPin, BookOpen, Clock, MessageSquare } from 'lucide-react';
+import { UserPlus, CheckCircle, User, MapPin, BookOpen, Clock, MessageSquare, Calendar as CalendarIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PersonalInfoSection from '@/components/forms/PersonalInfoSection';
 import LocationSection from '@/components/forms/LocationSection';
 import SubjectPreferencesSection from '@/components/forms/SubjectPreferencesSection';
 import StepWizard from '@/components/forms/StepWizard';
+import BudgetSliderSection from '@/components/forms/BudgetSliderSection';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 const StudentRegistration = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -20,6 +25,7 @@ const StudentRegistration = () => {
   const [classGrade, setClassGrade] = useState('');
   const { toast } = useToast();
   const methods = useForm();
+  const [startDate, setStartDate] = useState<Date | undefined>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
