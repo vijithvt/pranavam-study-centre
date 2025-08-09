@@ -14,8 +14,12 @@ const Hero = () => {
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Personalized live classes with top teachers
               </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Unlock your child’s potential with expert 1-to-1 home tuition—personalized learning, passionate teachers, and proven results. Trusted by families across Kerala since 2016.
+              <p className="text-xl md:text-2xl text-gray-700 leading-relaxed">
+                <span className="font-semibold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                  Personalized live 1‑on‑1 classes
+                </span>{" "}
+                with top teachers — tailored lessons, daily progress, and proven results.
+                <span className="ml-1 font-medium text-gray-900">Trusted by families across Kerala since 2016.</span>
               </p>
             </div>
 
