@@ -387,7 +387,7 @@ const TutorRegistration = () => {
                   disabled={isSubmitting}
                   className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 rounded-2xl font-bold text-xl shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "Submitting..." : "Join Pranavam Study Centre"}
+                  {isSubmitting ? "Submitting..." : "Submit only"}
                 </button>
               </div>
             </form>
