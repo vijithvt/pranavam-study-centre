@@ -99,6 +99,11 @@ const StudentRegistration = () => {
           special_requests: formData.get('specialRequests') as string,
           monthly_budget: budget,
           preferred_start_date: startDate ? format(startDate, 'yyyy-MM-dd') : null,
+          syllabus: formData.get('syllabus') as string || null,
+          languages: formData.get('languages') as string || null,
+          university: formData.get('university') as string || null,
+          branch: formData.get('branch') as string || null,
+          custom_subjects: formData.get('customSubjects') as string || null,
         });
 
       if (error) throw error;
