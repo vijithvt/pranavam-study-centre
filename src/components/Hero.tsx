@@ -11,6 +11,14 @@ const Hero = () => {
           {/* Content */}
           <div className="space-y-8">
             <div className="space-y-4">
+              <div className="text-center mb-4">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                  കേരളത്തിലെ മികച്ച അധ്യാപകരുമായി വ്യക്തിഗത ക്ലാസുകൾ
+                </h2>
+                <p className="text-lg text-gray-600">
+                  മലയാളത്തിലും ഇംഗ്ലീഷിലും പഠനം - നിങ്ങളുടെ വീട്ടിൽ നിന്നോ ഓൺലൈനിലോ
+                </p>
+              </div>
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Personalized live classes with top teachers
               </h1>
