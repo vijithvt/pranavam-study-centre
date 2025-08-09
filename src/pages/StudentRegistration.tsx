@@ -30,7 +30,21 @@ const StudentRegistration = () => {
   const methods = useForm();
 
   if (!showDetailedForm) {
-    return <QuickStudentForm variant="standalone" onShowDetailedForm={() => setShowDetailedForm(true)} />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="pt-16">
+          <QuickStudentForm variant="standalone" onShowDetailedForm={() => setShowDetailedForm(true)} />
+          <div className="text-center mt-8">
+            <button 
+              onClick={() => setShowDetailedForm(true)}
+              className="text-primary hover:underline font-medium"
+            >
+              Need more options? Use detailed registration form
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const validateCurrentStep = (): { isValid: boolean; error?: string } => {

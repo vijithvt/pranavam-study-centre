@@ -28,11 +28,47 @@ const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStu
     const classGrade = formData.get('classGrade') as string;
     const subject = formData.get('subject') as string;
 
-    // Basic validation
+    // Enhanced validation
     if (!studentName?.trim() || !parentName?.trim() || !phone?.trim() || !email?.trim() || !classGrade || !subject?.trim()) {
       toast({
         title: "Please fill all fields",
         description: "All fields are required for quick registration.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Phone validation (Indian phone numbers)
+    const phoneRegex = /^[\+]?[0-9\-\(\)\s]{10,}$/;
+    if (!phoneRegex.test(phone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid 10-digit phone number.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Name validation (no numbers or special characters)
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(studentName) || !nameRegex.test(parentName)) {
+      toast({
+        title: "Invalid Name",
+        description: "Names should only contain letters and spaces.",
         variant: "destructive"
       });
       setIsSubmitting(false);
@@ -172,6 +208,8 @@ const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStu
                 name="studentName"
                 placeholder="Enter student name"
                 required
+                pattern="[a-zA-Z\s]+"
+                title="Please enter a valid name (letters and spaces only)"
                 className="w-full"
               />
             </div>
@@ -185,6 +223,8 @@ const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStu
                 name="parentName"
                 placeholder="Enter parent/guardian name"
                 required
+                pattern="[a-zA-Z\s]+"
+                title="Please enter a valid name (letters and spaces only)"
                 className="w-full"
               />
             </div>
@@ -199,8 +239,10 @@ const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStu
               <Input
                 name="phone"
                 type="tel"
-                placeholder="Enter phone number"
+                placeholder="Enter 10-digit phone number"
                 required
+                pattern="[0-9]{10}"
+                title="Please enter a valid 10-digit phone number"
                 className="w-full"
               />
             </div>
@@ -215,6 +257,7 @@ const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStu
                 type="email"
                 placeholder="Enter email address"
                 required
+                title="Please enter a valid email address"
                 className="w-full"
               />
             </div>
