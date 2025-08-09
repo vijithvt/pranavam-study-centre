@@ -1,1 +1,4 @@
 project_id = "pucrkdrmvjzzbatxpfqz"
+
+[functions.heartbeat]
+verify_jwt = false
