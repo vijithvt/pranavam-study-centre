@@ -276,22 +276,6 @@ const QuickStudentForm = ({ variant = 'embedded', onShowDetailedForm }: QuickStu
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           
-          <p className="text-center text-sm text-gray-500 mt-4">
-            Need more customization?{' '}
-            {variant === 'standalone' && onShowDetailedForm ? (
-              <button 
-                type="button"
-                onClick={onShowDetailedForm}
-                className="text-primary hover:underline font-medium"
-              >
-                Use detailed registration form
-              </button>
-            ) : (
-              <a href="/students" className="text-primary hover:underline font-medium">
-                Use detailed registration form
-              </a>
-            )}
-          </p>
         </form>
       </CardContent>
     </Card>
