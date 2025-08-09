@@ -14,14 +14,6 @@ const Hero = () => {
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Personalized live classes with top teachers
               </h1>
-              <div className="text-center py-4">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                  കേരളത്തിലെ മികച്ച അധ്യാപകരുമായി വ്യക്തിഗത ക്ലാസുകൾ
-                </h2>
-                <p className="text-lg text-gray-600">
-                  മലയാളത്തിലും ഇംഗ്ലീഷിലും പഠനം - നിങ്ങളുടെ വീട്ടിൽ നിന്നോ ഓൺലൈനിലോ
-                </p>
-              </div>
               <p className="text-xl md:text-2xl text-gray-700 leading-relaxed">
                 <span className="font-semibold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                   Personalized live 1‑on‑1 classes
