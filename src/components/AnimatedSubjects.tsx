@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Calculator, Atom, Laptop, Brain, Book, Microscope } from 'lucide-react';
-import StudentRegistration from '../pages/StudentRegistration';
+import ModernStudentRegistration from '../components/forms/ModernStudentRegistration';
 
 const AnimatedSubjects = () => {
   const subjects = [
@@ -18,7 +18,9 @@ const AnimatedSubjects = () => {
       {/* Enhanced Background with Animated Gradients */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50/80 to-pink-50/60"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%237c3aed" fill-opacity="0.03"%3E%3Cpath d="M50 50l50-50v100l-50-50zm-50 0l50 50h-100l50-50z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
+        <div className="absolute inset-0 opacity-40" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.03'%3E%3Cpath d='M50 50l50-50v100l-50-50zm-50 0l50 50h-100l50-50z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}></div>
       </div>
       
       <div className="relative max-w-6xl mx-auto px-4">
@@ -44,7 +46,7 @@ const AnimatedSubjects = () => {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-3xl blur-xl"></div>
             <div className="relative">
-              <StudentRegistration variant="embedded" />
+              <ModernStudentRegistration />
             </div>
           </div>
         </div>

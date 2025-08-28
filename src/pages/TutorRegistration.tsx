@@ -16,7 +16,7 @@ import TutorQualificationSection from '@/components/forms/TutorQualificationSect
 const allClasses = [
   '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
   'BTech', 'BSc', 'BA', 'BCom', 'LLB', 'MTech', 'MSc', 'MA', 'MCom',
-  'Music', 'Dance', 'Art', 'Violin-Classical', 'Violin-Western',
+  'Music', 'Dance', 'Art', 'Violin-Classical',
   'NEET', 'JEE', 'UPSC', 'PSC', 'Banking', 'SSC', 'Railway'
 ];
 
@@ -39,7 +39,7 @@ const TutorRegistration = () => {
 
   // Check if arts/music classes are selected
   const isArtsMusicSelected = selectedClasses.some(cls => 
-    ['Music', 'Dance', 'Art', 'Violin-Classical', 'Violin-Western'].includes(cls)
+    ['Music', 'Dance', 'Art', 'Violin-Classical'].includes(cls)
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -195,11 +195,11 @@ const TutorRegistration = () => {
         <div className="text-center mb-8 sm:mb-12 animate-fade-in px-4">
           <div className="flex items-center justify-center mb-6 sm:mb-8">
             <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-primary mr-3" />
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-              Become a Tutor
-            </h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 leading-tight">
+            Become a Tutor
+          </h1>
           </div>
-          <p className="text-gray-600 text-base sm:text-xl max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-4">
             Join our network of qualified educators and make a difference in students' lives
           </p>
         </div>
@@ -214,7 +214,7 @@ const TutorRegistration = () => {
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Personal Information</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Personal Information</h2>
                 </div>
                 <TutorPersonalInfoSection />
               </div>
@@ -225,7 +225,7 @@ const TutorRegistration = () => {
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Location</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Location</h2>
                 </div>
                 <LocationSection />
               </div>
@@ -236,7 +236,7 @@ const TutorRegistration = () => {
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Qualifications & Experience</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Qualifications & Experience</h2>
                 </div>
                 <TutorQualificationSection />
               </div>
@@ -247,7 +247,7 @@ const TutorRegistration = () => {
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Classes/Grades You Can Teach</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Classes/Grades You Can Teach</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl sm:rounded-2xl border-2 border-gray-200 max-h-64 sm:max-h-80 overflow-y-auto">
                   {allClasses.map((classItem) => (
@@ -275,7 +275,7 @@ const TutorRegistration = () => {
                     <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center">
                       <BookOpen className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800">Subjects You Can Teach</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Subjects You Can Teach</h2>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-6 bg-gradient-to-br from-gray-50 to-green-50 rounded-2xl border-2 border-gray-200 max-h-80 overflow-y-auto">
                     {allSubjects.map((subject) => (
@@ -312,7 +312,7 @@ const TutorRegistration = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl flex items-center justify-center">
                     <Languages className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Languages</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Languages</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-gradient-to-br from-gray-50 to-pink-50 rounded-2xl border-2 border-gray-200">
                   {allLanguages.map((language) => (

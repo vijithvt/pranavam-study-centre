@@ -30,7 +30,7 @@ const Navigation = () => {
               alt="Pranavam Study Centre" 
               className="h-8 w-8"
             />
-            <span className="font-bold text-xl text-primary">Pranavam</span>
+            <span className="font-bold text-xl text-primary">Pranavam Study Centre</span>
           </Link>
 
           {/* Desktop Navigation */}
