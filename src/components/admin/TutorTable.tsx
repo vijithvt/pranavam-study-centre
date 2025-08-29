@@ -27,6 +27,7 @@ interface TutorRegistration {
   updated_at: string | null;
   whatsapp?: string;
   specialization?: string;
+  resume_url?: string;
 }
 
 interface TutorTableProps {

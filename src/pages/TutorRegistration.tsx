@@ -35,6 +35,8 @@ const TutorRegistration = () => {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   // Check if arts/music classes are selected
@@ -97,6 +99,35 @@ const TutorRegistration = () => {
     }
 
     try {
+      let resumeUrl = null;
+      
+      // Handle file upload if resume is provided
+      if (resumeFile) {
+        setIsUploading(true);
+        const fileExt = resumeFile.name.split('.').pop();
+        const fileName = `${Date.now()}_${formData.get('fullName')}_resume.${fileExt}`;
+        const filePath = `public/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('tutor-documents')
+          .upload(filePath, resumeFile);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          toast({
+            title: "File Upload Failed",
+            description: "Failed to upload resume. Please try again.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        }
+
+        resumeUrl = filePath;
+        setIsUploading(false);
+      }
+
       const { error } = await supabase
         .from('tutor_registrations')
         .insert({
@@ -114,6 +145,7 @@ const TutorRegistration = () => {
           availability: formData.get('teachingMode') as string,
           languages: selectedLanguages,
           mode: formData.get('teachingMode') as string,
+          resume_url: resumeUrl,
         });
 
       if (error) throw error;
@@ -353,14 +385,15 @@ const TutorRegistration = () => {
 
               {/* Resume Upload */}
               <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="resume" className="text-sm font-semibold text-gray-700">Resume/CV (Optional)</Label>
-                  <div className="flex items-center space-x-3 p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-400 transition-colors duration-300">
-                    <Upload className="h-6 w-6 text-gray-400" />
-                    <Input 
-                      id="resume" 
-                      type="file" 
-                      accept=".pdf,.doc,.docx"
+                  <div className="space-y-2">
+                   <Label htmlFor="resume" className="text-sm font-semibold text-gray-700">Resume/CV (Optional)</Label>
+                   <div className="flex items-center space-x-3 p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-400 transition-colors duration-300">
+                     <Upload className="h-6 w-6 text-gray-400" />
+                     <Input 
+                       id="resume" 
+                       type="file" 
+                       accept=".pdf,.doc,.docx"
+                       onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
                       className="border-0 p-0 text-gray-600"
                     />
                   </div>

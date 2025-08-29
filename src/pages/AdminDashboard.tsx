@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import StatsCards from '@/components/admin/StatsCards';
 import TutorTable from '@/components/admin/TutorTable';
 import StudentTable from '@/components/admin/StudentTable';
-import TutorDetailsDialog from '@/components/admin/TutorDetailsDialog';
+import EnhancedTutorDetailsDialog from '@/components/admin/EnhancedTutorDetailsDialog';
 import StudentDetailsDialog from '@/components/admin/StudentDetailsDialog';
 import StatusFilter from '@/components/admin/StatusFilter';
 import StatusUpdateDialog from '@/components/admin/StatusUpdateDialog';
@@ -33,6 +33,9 @@ interface TutorRegistration {
   admin_comments: string | null;
   created_at: string;
   updated_at: string | null;
+  whatsapp?: string;
+  specialization?: string;
+  resume_url?: string;
 }
 
 interface StudentRegistration {
@@ -334,7 +337,7 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
 
-        <TutorDetailsDialog
+        <EnhancedTutorDetailsDialog
           tutor={selectedTutor}
           isOpen={isTutorDialogOpen}
           onClose={() => setIsTutorDialogOpen(false)}
