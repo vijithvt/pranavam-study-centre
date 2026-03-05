@@ -33,7 +33,7 @@ const TutorDashboard = () => {
       setAuthUser(session.user);
 
       // 1. Fetch profile to get email
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData, error: profileError } = await (supabase as any)
         .from('profiles')
         .select('email, role')
         .eq('id', session.user.id)
@@ -47,7 +47,7 @@ const TutorDashboard = () => {
       }
 
       // 2. Fetch tutor registration details using email and check status
-      const { data: tutorRegData, error: tutorRegError } = await supabase
+      const { data: tutorRegData, error: tutorRegError } = await (supabase as any)
         .from('tutor_registrations')
         .select('*') // Fetch all details for the dashboard
         .eq('email', profileData.email)
@@ -69,7 +69,7 @@ const TutorDashboard = () => {
       
       // 3. Update role to 'tutor' in profiles if not already set
       if (profileData.role !== 'tutor') {
-        const { error: updateRoleError } = await supabase
+        const { error: updateRoleError } = await (supabase as any)
           .from('profiles')
           .update({ role: 'tutor' })
           .eq('id', session.user.id);

@@ -40,7 +40,7 @@ const TutorDetailsPage = () => {
 
   const fetchTutor = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('tutor_registrations')
         .select('*')
         .eq('id', id)

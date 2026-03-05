@@ -38,7 +38,7 @@ const StudentDetailsPage = () => {
 
   const fetchStudent = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('student_registrations')
         .select('*')
         .eq('id', id)

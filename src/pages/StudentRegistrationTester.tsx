@@ -110,7 +110,7 @@ const StudentRegistrationTester = () => {
 
     // Insert 5 dummy students
     const studentsToAdd = DUMMY_STUDENTS.map(mergeStudentFields);
-    const { data: insertData, error: insertError } = await supabase
+    const { data: insertData, error: insertError } = await (supabase as any)
       .from("student_registrations")
       .insert(studentsToAdd)
       .select();
@@ -123,7 +123,7 @@ const StudentRegistrationTester = () => {
 
     // Fetch newly inserted by e-mail (for validation)
     const emails = DUMMY_STUDENTS.map(s => s.email);
-    const { data: found, error: fetchError } = await supabase
+    const { data: found, error: fetchError } = await (supabase as any)
       .from("student_registrations")
       .select("*")
       .in("email", emails);

@@ -169,7 +169,7 @@ const StudentRegistration = ({ variant = 'standalone' }: StudentRegistrationProp
     }
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('student_registrations')
         .insert({
           student_name: formData.get('studentName') as string,

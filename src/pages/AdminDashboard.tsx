@@ -114,7 +114,7 @@ const AdminDashboard = () => {
     }
 
     // Check if user is admin
-    const { data: profile } = await supabase
+    const { data: profile } = await (supabase as any)
       .from('profiles')
       .select('role')
       .eq('id', session.user.id)
@@ -133,8 +133,8 @@ const AdminDashboard = () => {
   const fetchRegistrations = async () => {
     try {
       const [tutorsResult, studentsResult] = await Promise.all([
-        supabase.from('tutor_registrations').select('*').order('created_at', { ascending: false }),
-        supabase.from('student_registrations').select('*').order('created_at', { ascending: false })
+        (supabase as any).from('tutor_registrations').select('*').order('created_at', { ascending: false }),
+        (supabase as any).from('student_registrations').select('*').order('created_at', { ascending: false })
       ]);
 
       if (tutorsResult.error) throw tutorsResult.error;

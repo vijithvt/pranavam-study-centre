@@ -23,14 +23,14 @@ const TutorAuth = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         // Verify if this user is an accepted tutor
-        const { data: profile } = await supabase
+        const { data: profile } = await (supabase as any)
           .from('profiles')
           .select('email, role')
           .eq('id', session.user.id)
           .single();
 
         if (profile) {
-          const { data: tutorRegistration } = await supabase
+          const { data: tutorRegistration } = await (supabase as any)
             .from('tutor_registrations')
             .select('status')
             .eq('email', profile.email)
@@ -47,15 +47,15 @@ const TutorAuth = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-         const { data: profile } = await supabase
+         const { data: profile } = await (supabase as any)
           .from('profiles')
           .select('email, role')
           .eq('id', session.user.id)
           .single();
 
         if (profile) {
-          const { data: tutorRegistration } = await supabase
-            .from('tutor_registrations')
+           const { data: tutorRegistration } = await (supabase as any)
+             .from('tutor_registrations')
             .select('status')
             .eq('email', profile.email)
             .eq('status', 'accepted')
@@ -63,7 +63,7 @@ const TutorAuth = () => {
           
           if (tutorRegistration) {
             if (profile.role !== 'tutor') {
-              await supabase.from('profiles').update({ role: 'tutor' }).eq('id', session.user.id);
+              await (supabase as any).from('profiles').update({ role: 'tutor' }).eq('id', session.user.id);
             }
             navigate('/tutor/dashboard');
           } else {
