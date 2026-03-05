@@ -9,7 +9,7 @@ export function useSubjects() {
   const query = useQuery({
     queryKey: ["subjects"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("subjects")
         .select("id, name, category")
         .order("category", { ascending: true })

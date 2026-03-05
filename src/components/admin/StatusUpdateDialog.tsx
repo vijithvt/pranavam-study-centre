@@ -36,7 +36,7 @@ const StatusUpdateDialog = ({
     try {
       const tableName = type === 'tutor' ? 'tutor_registrations' : 'student_registrations';
       
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from(tableName)
         .update({ 
           status: newStatus,

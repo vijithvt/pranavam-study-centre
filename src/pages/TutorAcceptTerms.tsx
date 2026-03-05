@@ -127,7 +127,7 @@ const TutorAcceptTerms = () => {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('tutor_registrations')
       .update({ status: "converted as tutor" })
       .eq("id", tutorId);

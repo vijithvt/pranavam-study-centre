@@ -128,7 +128,7 @@ const TutorRegistration = () => {
         setIsUploading(false);
       }
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('tutor_registrations')
         .insert({
           full_name: formData.get('fullName') as string,
