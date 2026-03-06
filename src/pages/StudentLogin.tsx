@@ -124,7 +124,7 @@ const StudentLogin = () => {
             </form>
           ) : (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 text-green-700 text-sm mb-2">
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 text-primary text-sm mb-2">
                 <CheckCircle className="h-4 w-4 flex-shrink-0" />
                 <span>Code sent to {email}</span>
               </div>
