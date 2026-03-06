@@ -1,11 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User, ChevronDown } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, role, signOut, loading } = useAuth();
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -15,15 +23,16 @@ const Navigation = () => {
     { name: 'Contact', path: '/contact' }
   ];
 
+  const dashboardPath = role === 'admin' ? '/admin-dashboard' : role === 'tutor' ? '/tutor-dashboard' : '/student-dashboard';
+
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
 
   return (
-    <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
+    <nav className="bg-background shadow-lg fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img 
               src="/lovable-uploads/f1375cac-1988-4227-98e7-d4a89e68c1af.png" 
@@ -33,8 +42,7 @@ const Navigation = () => {
             <span className="font-bold text-xl text-primary">Pranavam Study Centre</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -43,29 +51,72 @@ const Navigation = () => {
                   location.pathname === item.path
                     ? 'text-primary font-semibold'
                     : item.highlight
-                    ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 rounded-lg font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transform transition-all duration-200'
-                    : 'text-gray-700 hover:text-primary'
+                    ? 'text-primary-foreground bg-gradient-to-r from-primary to-primary/80 px-4 py-2 rounded-lg font-semibold shadow-lg hover:opacity-90 transform transition-all duration-200'
+                    : 'text-foreground hover:text-primary'
                 }`}
               >
                 {item.name}
               </Link>
             ))}
+
+            {!loading && (
+              <>
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-1">
+                        <User className="h-4 w-4" />
+                        <span className="capitalize">{role || 'User'}</span>
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link to={dashboardPath}>Dashboard</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={signOut} className="text-destructive">
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="sm" className="gap-1">
+                        Login
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link to="/student-login">Student Login</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/tutor-login">Tutor Login</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin-login">Admin Login</Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </>
+            )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 hover:text-primary transition-colors duration-200"
+              className="text-foreground hover:text-primary transition-colors duration-200"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="md:hidden bg-background border-t border-border">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
                 <Link
@@ -73,15 +124,36 @@ const Navigation = () => {
                   to={item.path}
                   className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                     location.pathname === item.path
-                      ? 'text-primary bg-blue-50'
+                      ? 'text-primary bg-primary/10'
                       : item.highlight
-                      ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg'
-                      : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                      ? 'text-primary-foreground bg-gradient-to-r from-primary to-primary/80 shadow-lg'
+                      : 'text-foreground hover:text-primary hover:bg-muted'
                   }`}
                 >
                   {item.name}
                 </Link>
               ))}
+              
+              {!loading && (
+                <>
+                  {user ? (
+                    <>
+                      <Link to={dashboardPath} className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted">
+                        Dashboard
+                      </Link>
+                      <button onClick={signOut} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-destructive hover:bg-muted">
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/student-login" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted">Student Login</Link>
+                      <Link to="/tutor-login" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted">Tutor Login</Link>
+                      <Link to="/admin-login" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted">Admin Login</Link>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
         )}

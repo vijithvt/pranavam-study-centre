@@ -4,6 +4,8 @@ import { Route, Routes } from "react-router-dom"
 import Navigation from "@/components/Navigation"
 import Footer from "@/components/Footer"
 import { Toaster } from "@/components/ui/toaster"
+import { AuthProvider } from "@/contexts/AuthContext"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 import Index from "./pages/Index"
 import About from "./pages/About"
@@ -17,36 +19,81 @@ import Auth from "./pages/Auth"
 import TutorAuth from "./pages/TutorAuth"
 import TutorDetailsPage from "./pages/TutorDetailsPage"
 import StudentDetailsPage from "./pages/StudentDetailsPage"
+import StudentLogin from "./pages/StudentLogin"
+import TutorLogin from "./pages/TutorLogin"
+import StudentOnboarding from "./pages/StudentOnboarding"
+import TutorOnboarding from "./pages/TutorOnboarding"
+import StudentDashboard from "./pages/StudentDashboard"
+import TutorDashboard from "./pages/TutorDashboard"
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navigation />
-      <main className="flex-1">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/students" element={<StudentRegistration />} />
-            <Route path="/tutors" element={<TutorRegistration />} />
-            <Route path="/tutor-registration" element={<TutorRegistration />} />
-            <Route path="/student-registration" element={<StudentRegistration />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Auth />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/tutor-terms" element={<TutorTerms />} />
-            <Route path="/tutor-agreement/:tutorId" element={<TutorAcceptTerms />} />
-            <Route path="/tutors/:id" element={<TutorDetailsPage />} />
-            <Route path="/students/:id" element={<StudentDetailsPage />} />
-            <Route path="/tutor-auth" element={<TutorAuth />} />
-            <Route path="*" element={<div className="p-8 text-center text-red-600">Page Not Found</div>} />
-          </Routes>
-        </Suspense>
-      </main>
-      <Footer />
-      <Toaster />
-    </div>
+    <AuthProvider>
+      <div className="flex flex-col min-h-screen">
+        <Navigation />
+        <main className="flex-1">
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/students" element={<StudentRegistration />} />
+              <Route path="/tutors" element={<TutorRegistration />} />
+              <Route path="/tutor-registration" element={<TutorRegistration />} />
+              <Route path="/student-registration" element={<StudentRegistration />} />
+              <Route path="/tutor-terms" element={<TutorTerms />} />
+              <Route path="/tutor-agreement/:tutorId" element={<TutorAcceptTerms />} />
+
+              {/* Auth routes */}
+              <Route path="/student-login" element={<StudentLogin />} />
+              <Route path="/tutor-login" element={<TutorLogin />} />
+              <Route path="/admin-login" element={<Auth />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin" element={<Auth />} />
+              <Route path="/tutor-auth" element={<TutorAuth />} />
+
+              {/* Onboarding routes */}
+              <Route path="/student-onboarding" element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <StudentOnboarding />
+                </ProtectedRoute>
+              } />
+              <Route path="/tutor-onboarding" element={
+                <ProtectedRoute allowedRoles={['tutor']}>
+                  <TutorOnboarding />
+                </ProtectedRoute>
+              } />
+
+              {/* Protected dashboards */}
+              <Route path="/student-dashboard" element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/tutor-dashboard" element={
+                <ProtectedRoute allowedRoles={['tutor']}>
+                  <TutorDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin-dashboard" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+
+              {/* Detail pages */}
+              <Route path="/tutors/:id" element={<TutorDetailsPage />} />
+              <Route path="/students/:id" element={<StudentDetailsPage />} />
+
+              <Route path="*" element={<div className="p-8 text-center text-destructive">Page Not Found</div>} />
+            </Routes>
+          </Suspense>
+        </main>
+        <Footer />
+        <Toaster />
+      </div>
+    </AuthProvider>
   )
 }
 
