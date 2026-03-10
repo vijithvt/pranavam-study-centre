@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Download, FileText } from 'lucide-react';
+import { Users, ClipboardList, IndianRupee, TrendingUp, Download, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import StatsCards from '@/components/admin/StatsCards';
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import TutorTable from '@/components/admin/TutorTable';
 import StudentTable from '@/components/admin/StudentTable';
 import EnhancedTutorDetailsDialog from '@/components/admin/EnhancedTutorDetailsDialog';
@@ -78,57 +78,18 @@ const AdminDashboard = () => {
   const [isTutorAgreementOpen, setIsTutorAgreementOpen] = useState(false);
 
   useEffect(() => {
-    checkAuth();
     fetchRegistrations();
   }, []);
 
   useEffect(() => {
-    filterTutors();
+    if (tutorStatusFilter === 'all') setFilteredTutors(tutorRegistrations);
+    else setFilteredTutors(tutorRegistrations.filter(t => t.status === tutorStatusFilter));
   }, [tutorRegistrations, tutorStatusFilter]);
 
   useEffect(() => {
-    filterStudents();
+    if (studentStatusFilter === 'all') setFilteredStudents(studentRegistrations);
+    else setFilteredStudents(studentRegistrations.filter(s => s.status === studentStatusFilter));
   }, [studentRegistrations, studentStatusFilter]);
-
-  const filterTutors = () => {
-    if (tutorStatusFilter === 'all') {
-      setFilteredTutors(tutorRegistrations);
-    } else {
-      setFilteredTutors(tutorRegistrations.filter(tutor => tutor.status === tutorStatusFilter));
-    }
-  };
-
-  const filterStudents = () => {
-    if (studentStatusFilter === 'all') {
-      setFilteredStudents(studentRegistrations);
-    } else {
-      setFilteredStudents(studentRegistrations.filter(student => student.status === studentStatusFilter));
-    }
-  };
-
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate('/auth');
-      return;
-    }
-
-    // Check if user is admin
-    const { data: profile } = await (supabase as any)
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single();
-
-    if (!profile || profile.role !== 'admin') {
-      toast({
-        title: "Access Denied",
-        description: "You don't have admin privileges.",
-        variant: "destructive",
-      });
-      navigate('/auth');
-    }
-  };
 
   const fetchRegistrations = async () => {
     try {
@@ -136,169 +97,104 @@ const AdminDashboard = () => {
         (supabase as any).from('tutor_registrations').select('*').order('created_at', { ascending: false }),
         (supabase as any).from('student_registrations').select('*').order('created_at', { ascending: false })
       ]);
-
       if (tutorsResult.error) throw tutorsResult.error;
       if (studentsResult.error) throw studentsResult.error;
-
       setTutorRegistrations(tutorsResult.data || []);
       setStudentRegistrations(studentsResult.data || []);
     } catch (error: any) {
-      toast({
-        title: "Error loading data",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error loading data", description: error.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     });
-  };
 
   const exportToCSV = (data: any[], filename: string) => {
     if (data.length === 0) {
-      toast({
-        title: "No data to export",
-        description: "There are no registrations to download.",
-        variant: "destructive",
-      });
+      toast({ title: "No data to export", description: "There are no registrations to download.", variant: "destructive" });
       return;
     }
-
     const headers = Object.keys(data[0]).filter(key => key !== 'id');
     const csvContent = [
       headers.join(','),
-      ...data.map(row => 
+      ...data.map(row =>
         headers.map(header => {
           const value = row[header];
-          if (Array.isArray(value)) {
-            return `"${value.join('; ')}"`;
-          }
-          return `"${value || ''}"`;
+          return Array.isArray(value) ? `"${value.join('; ')}"` : `"${value || ''}"`;
         }).join(',')
       )
     ].join('\n');
-
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
+    link.setAttribute('href', URL.createObjectURL(blob));
     link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleTutorViewDetails = (tutor: TutorRegistration) => {
-    setSelectedTutor(tutor);
-    setIsTutorDialogOpen(true);
-  };
-
-  const handleStudentViewDetails = (student: StudentRegistration) => {
-    setSelectedStudent(student);
-    setIsStudentDialogOpen(true);
-  };
-
-  const handleTutorStatusUpdate = (tutorId: string, status: string) => {
-    setStatusUpdateType('tutor');
-    setStatusUpdateId(tutorId);
-    setCurrentStatus(status);
-    setIsStatusDialogOpen(true);
-  };
-
-  const handleStudentStatusUpdate = (studentId: string, status: string) => {
-    setStatusUpdateType('student');
-    setStatusUpdateId(studentId);
-    setCurrentStatus(status);
-    setIsStatusDialogOpen(true);
-  };
-
-  const handleStatusUpdated = () => {
-    fetchRegistrations();
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen readable-bg flex items-center justify-center">
-        <div className="readable-text">Loading...</div>
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage tutor and student registrations</p>
-          </div>
-          <div className="flex space-x-4">
-            <Button 
-              onClick={() => setIsTutorAgreementOpen(true)}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <FileText className="h-4 w-4" />
-              Tutor Agreement
-            </Button>
-            <Button onClick={handleSignOut} variant="outline">
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">അഡ്മിൻ ഡാഷ്ബോർഡ്</h1>
+          <p className="text-muted-foreground text-sm mt-1">രജിസ്ട്രേഷനുകളും ആവശ്യങ്ങളും മാനേജ് ചെയ്യൂ</p>
         </div>
 
-        <StatsCards 
-          tutorCount={tutorRegistrations.length}
-          studentCount={studentRegistrations.length}
-        />
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <AdminStatCard icon={Users} label="അധ്യാപകർ" value={tutorRegistrations.length} color="text-blue-600" bgColor="bg-blue-50" />
+          <AdminStatCard icon={ClipboardList} label="വിദ്യാർത്ഥി ആവശ്യങ്ങൾ" value={studentRegistrations.length} color="text-green-600" bgColor="bg-green-50" />
+          <AdminStatCard icon={TrendingUp} label="മൊത്തം രജിസ്ട്രേഷനുകൾ" value={tutorRegistrations.length + studentRegistrations.length} color="text-purple-600" bgColor="bg-purple-50" />
+          <AdminStatCard icon={IndianRupee} label="വരുമാനം" value="—" color="text-amber-600" bgColor="bg-amber-50" />
+        </div>
 
-        <Tabs defaultValue="tutors" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="tutors">Tutor Registrations</TabsTrigger>
-            <TabsTrigger value="students">Student Requests</TabsTrigger>
+        {/* Tabs */}
+        <Tabs defaultValue="tutors" className="space-y-4">
+          <TabsList className="bg-muted/50">
+            <TabsTrigger value="tutors">അധ്യാപക രജിസ്ട്രേഷനുകൾ</TabsTrigger>
+            <TabsTrigger value="students">വിദ്യാർത്ഥി ആവശ്യങ്ങൾ</TabsTrigger>
           </TabsList>
 
           <TabsContent value="tutors">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                   <div>
-                    <CardTitle>Tutor Registrations ({filteredTutors.length})</CardTitle>
-                    <CardDescription>All registered tutors</CardDescription>
+                    <CardTitle className="text-base">അധ്യാപക രജിസ്ട്രേഷനുകൾ ({filteredTutors.length})</CardTitle>
+                    <CardDescription>എല്ലാ രജിസ്റ്റർ ചെയ്ത അധ്യാപകർ</CardDescription>
                   </div>
-                  <div className="flex space-x-4">
-                    <StatusFilter 
-                      selectedStatus={tutorStatusFilter}
-                      onStatusChange={setTutorStatusFilter}
-                    />
-                    <Button onClick={() => exportToCSV(tutorRegistrations, 'tutor_registrations')}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Download CSV
+                  <div className="flex gap-2">
+                    <StatusFilter selectedStatus={tutorStatusFilter} onStatusChange={setTutorStatusFilter} />
+                    <Button variant="outline" size="sm" onClick={() => exportToCSV(tutorRegistrations, 'tutor_registrations')}>
+                      <Download className="h-3.5 w-3.5 mr-1.5" /> CSV
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setIsTutorAgreementOpen(true)}>
+                      <FileText className="h-3.5 w-3.5 mr-1.5" /> Agreement
                     </Button>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <TutorTable 
+                <TutorTable
                   tutors={filteredTutors}
-                  onViewDetails={handleTutorViewDetails}
-                  onUpdateStatus={handleTutorStatusUpdate}
+                  onViewDetails={(t) => { setSelectedTutor(t); setIsTutorDialogOpen(true); }}
+                  onUpdateStatus={(id, status) => { setStatusUpdateType('tutor'); setStatusUpdateId(id); setCurrentStatus(status); setIsStatusDialogOpen(true); }}
                   formatDate={formatDate}
                 />
               </CardContent>
@@ -308,28 +204,24 @@ const AdminDashboard = () => {
           <TabsContent value="students">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                   <div>
-                    <CardTitle>Student Requests ({filteredStudents.length})</CardTitle>
-                    <CardDescription>All student tuition requests</CardDescription>
+                    <CardTitle className="text-base">വിദ്യാർത്ഥി ആവശ്യങ്ങൾ ({filteredStudents.length})</CardTitle>
+                    <CardDescription>എല്ലാ വിദ്യാർത്ഥി ആവശ്യങ്ങളും</CardDescription>
                   </div>
-                  <div className="flex space-x-4">
-                    <StatusFilter 
-                      selectedStatus={studentStatusFilter}
-                      onStatusChange={setStudentStatusFilter}
-                    />
-                    <Button onClick={() => exportToCSV(studentRegistrations, 'student_requests')}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Download CSV
+                  <div className="flex gap-2">
+                    <StatusFilter selectedStatus={studentStatusFilter} onStatusChange={setStudentStatusFilter} />
+                    <Button variant="outline" size="sm" onClick={() => exportToCSV(studentRegistrations, 'student_requests')}>
+                      <Download className="h-3.5 w-3.5 mr-1.5" /> CSV
                     </Button>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <StudentTable 
+                <StudentTable
                   students={filteredStudents}
-                  onViewDetails={handleStudentViewDetails}
-                  onUpdateStatus={handleStudentStatusUpdate}
+                  onViewDetails={(s) => { setSelectedStudent(s); setIsStudentDialogOpen(true); }}
+                  onUpdateStatus={(id, status) => { setStatusUpdateType('student'); setStatusUpdateId(id); setCurrentStatus(status); setIsStatusDialogOpen(true); }}
                   formatDate={formatDate}
                 />
               </CardContent>
@@ -337,36 +229,34 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
 
-        <EnhancedTutorDetailsDialog
-          tutor={selectedTutor}
-          isOpen={isTutorDialogOpen}
-          onClose={() => setIsTutorDialogOpen(false)}
-          formatDate={formatDate}
-        />
-
-        <StudentDetailsDialog
-          student={selectedStudent}
-          isOpen={isStudentDialogOpen}
-          onClose={() => setIsStudentDialogOpen(false)}
-          formatDate={formatDate}
-        />
-
-        <StatusUpdateDialog
-          isOpen={isStatusDialogOpen}
-          onClose={() => setIsStatusDialogOpen(false)}
-          type={statusUpdateType}
-          recordId={statusUpdateId}
-          currentStatus={currentStatus}
-          onStatusUpdated={handleStatusUpdated}
-        />
-
-        <TutorAgreementDialog
-          isOpen={isTutorAgreementOpen}
-          onClose={() => setIsTutorAgreementOpen(false)}
-        />
+        {/* Dialogs */}
+        <EnhancedTutorDetailsDialog tutor={selectedTutor} isOpen={isTutorDialogOpen} onClose={() => setIsTutorDialogOpen(false)} formatDate={formatDate} />
+        <StudentDetailsDialog student={selectedStudent} isOpen={isStudentDialogOpen} onClose={() => setIsStudentDialogOpen(false)} formatDate={formatDate} />
+        <StatusUpdateDialog isOpen={isStatusDialogOpen} onClose={() => setIsStatusDialogOpen(false)} type={statusUpdateType} recordId={statusUpdateId} currentStatus={currentStatus} onStatusUpdated={fetchRegistrations} />
+        <TutorAgreementDialog isOpen={isTutorAgreementOpen} onClose={() => setIsTutorAgreementOpen(false)} />
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
+
+function AdminStatCard({ icon: Icon, label, value, color, bgColor }: {
+  icon: React.ElementType; label: string; value: number | string; color: string; bgColor: string;
+}) {
+  return (
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-5">
+        <div className="flex items-center gap-4">
+          <div className={`h-12 w-12 rounded-xl ${bgColor} flex items-center justify-center flex-shrink-0`}>
+            <Icon className={`h-6 w-6 ${color}`} />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-foreground">{value}</div>
+            <p className="text-sm text-muted-foreground">{label}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default AdminDashboard;
