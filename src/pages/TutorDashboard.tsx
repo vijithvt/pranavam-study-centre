@@ -1,156 +1,153 @@
-
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Send, BookOpen, Wallet, Search, UserCircle, TrendingUp, Star } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { User } from '@supabase/supabase-js';
-
-interface TutorProfile {
-  id: string;
-  full_name: string;
-  email: string;
-  // Add other fields as needed from tutor_registrations
-}
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
 
 const TutorDashboard = () => {
-  const [tutor, setTutor] = useState<TutorProfile | null>(null);
-  const [authUser, setAuthUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const [tutorProfile, setTutorProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ proposals: 0, classes: 0, earnings: 0 });
 
   useEffect(() => {
-    const fetchTutorData = async () => {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-      if (sessionError || !session) {
-        toast({ title: "Authentication Error", description: "Please sign in.", variant: "destructive" });
-        navigate('/tutor-auth');
-        return;
-      }
-      setAuthUser(session.user);
-
-      // 1. Fetch profile to get email
-      const { data: profileData, error: profileError } = await (supabase as any)
-        .from('profiles')
-        .select('email, role')
-        .eq('id', session.user.id)
+    const fetchTutor = async () => {
+      if (!profile) return;
+      const { data } = await (supabase.from('tutors') as any)
+        .select('*')
+        .eq('user_id', profile.id)
         .single();
 
-      if (profileError || !profileData) {
-        toast({ title: "Profile Error", description: "Could not load your profile. Please try signing in again.", variant: "destructive" });
-        await supabase.auth.signOut(); // Sign out if profile is missing
-        navigate('/tutor-auth');
+      if (!data) {
+        navigate('/tutor-onboarding');
         return;
       }
+      setTutorProfile(data);
 
-      // 2. Fetch tutor registration details using email and check status
-      const { data: tutorRegData, error: tutorRegError } = await (supabase as any)
-        .from('tutor_registrations')
-        .select('*') // Fetch all details for the dashboard
-        .eq('email', profileData.email)
-        .single();
+      // Fetch stats
+      const [proposalsRes, classesRes] = await Promise.all([
+        (supabase.from('tutor_proposals') as any).select('id', { count: 'exact', head: true }).eq('tutor_id', data.id),
+        (supabase.from('assigned_classes') as any).select('id', { count: 'exact', head: true }).eq('tutor_id', data.id),
+      ]);
 
-      if (tutorRegError || !tutorRegData) {
-        toast({ title: "Access Denied", description: "Tutor registration not found.", variant: "destructive" });
-        await supabase.auth.signOut();
-        navigate('/tutor-auth');
-        return;
-      }
+      setStats({
+        proposals: proposalsRes.count || 0,
+        classes: classesRes.count || 0,
+        earnings: 0,
+      });
 
-      if (tutorRegData.status !== 'accepted') {
-        toast({ title: "Access Denied", description: "Your registration is not yet accepted.", variant: "destructive" });
-        await supabase.auth.signOut();
-        navigate('/tutor-auth');
-        return;
-      }
-      
-      // 3. Update role to 'tutor' in profiles if not already set
-      if (profileData.role !== 'tutor') {
-        const { error: updateRoleError } = await (supabase as any)
-          .from('profiles')
-          .update({ role: 'tutor' })
-          .eq('id', session.user.id);
-
-        if (updateRoleError) {
-          toast({ title: "Profile Update Error", description: "Could not update your role. Some features may not work.", variant: "destructive" });
-        }
-      }
-      
-      setTutor(tutorRegData as TutorProfile);
       setLoading(false);
     };
-
-    fetchTutorData();
-    
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/tutor-auth');
-      } else if (event === 'USER_UPDATED' && session) {
-        setAuthUser(session.user);
-        // Potentially refetch tutor data if email or other critical authUser info changes
-      }
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-
-  }, [navigate, toast]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/tutor-auth');
-  };
+    fetchTutor();
+  }, [profile, navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div>Loading tutor dashboard...</div>
-      </div>
-    );
-  }
-
-  if (!tutor) {
-     // This case should ideally be caught by the loading/redirect logic earlier
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div>Error loading tutor information. Please try again.</div>
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Tutor Dashboard</h1>
-          <Button onClick={handleSignOut} variant="outline">
-            Sign Out
-          </Button>
+    <DashboardLayout>
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Welcome Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">
+            സ്വാഗതം, {tutorProfile?.name || 'അധ്യാപകൻ'}!
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            നിങ്ങളുടെ അധ്യാപന ജീവിതം ഇവിടെ നിയന്ത്രിക്കൂ
+          </p>
         </div>
 
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <Send className="h-5 w-5 text-blue-600" />
+                </div>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="text-2xl font-bold text-foreground">{stats.proposals}</div>
+              <p className="text-sm font-medium text-foreground/80">അപേക്ഷകൾ അയച്ചത്</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="h-10 w-10 rounded-xl bg-green-50 flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-green-600" />
+                </div>
+                <Star className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="text-2xl font-bold text-foreground">{stats.classes}</div>
+              <p className="text-sm font-medium text-foreground/80">ക്ലാസുകൾ ലഭിച്ചത്</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="h-10 w-10 rounded-xl bg-purple-50 flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-purple-600" />
+                </div>
+              </div>
+              <div className="text-2xl font-bold text-foreground">₹{stats.earnings.toLocaleString('en-IN')}</div>
+              <p className="text-sm font-medium text-foreground/80">മൊത്തം വരുമാനം</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Available Enquiries Preview */}
         <Card>
-          <CardHeader>
-            <CardTitle>Welcome, {tutor.full_name}!</CardTitle>
-            <CardDescription>Here you can manage your assigned students and classes.</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-lg">ലഭ്യമായ പഠന ആവശ്യങ്ങൾ</CardTitle>
+            <Button variant="outline" size="sm" className="gap-1">
+              <Search className="h-3.5 w-3.5" />
+              എല്ലാം കാണുക
+            </Button>
           </CardHeader>
           <CardContent>
-            <p>Your email: {tutor.email}</p>
-            <p className="mt-4">More features coming soon: assigned students, class logging, etc.</p>
+            <div className="flex flex-col items-center py-8 text-center">
+              <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                <Search className="h-7 w-7 text-primary" />
+              </div>
+              <p className="text-muted-foreground text-sm">
+                പുതിയ പഠന ആവശ്യങ്ങൾ ലഭ്യമാകുമ്പോൾ ഇവിടെ കാണാം
+              </p>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Placeholder for future content like assigned students list */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold text-gray-800">Assigned Students</h2>
-          <p className="text-gray-600 mt-2">This section will display students assigned to you by the admin.</p>
-          {/* Example: <AssignedStudentsTable tutorId={tutor.id} /> */}
-        </div>
+        {/* Verification badge */}
+        {tutorProfile?.verification_status === 'pending' && (
+          <Card className="border-warning/30 bg-warning/5">
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="h-10 w-10 rounded-full bg-warning/10 flex items-center justify-center flex-shrink-0">
+                <UserCircle className="h-5 w-5 text-warning" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">പ്രൊഫൈൽ പരിശോധന തീർപ്പാക്കിയിട്ടില്ല</p>
+                <p className="text-xs text-muted-foreground">
+                  അഡ്മിൻ നിങ്ങളുടെ പ്രൊഫൈൽ പരിശോധിക്കുന്നു. സ്ഥിരീകരണം ലഭിക്കും വരെ കാത്തിരിക്കുക.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
