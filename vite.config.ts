@@ -23,4 +23,17 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     include: ['react', 'react-dom'],
   },
+  // Render hosting configuration
+  base: '/',
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
+    },
+  },
 }));
