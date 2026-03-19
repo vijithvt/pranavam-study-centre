@@ -1,99 +1,73 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
-          {/* Company Info */}
+    <footer className="bg-foreground text-background">
+      <div className="container py-12">
+        <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center mb-4">
-              <img src="/lovable-uploads/f1375cac-1988-4227-98e7-d4a89e68c1af.png" alt="Pranavam Study Centre" className="h-10 w-10 mr-3" />
-              <h3 className="text-xl font-bold">Pranavam Study Centre</h3>
+            <div className="mb-4 flex items-center gap-3">
+              <img
+                src="/lovable-uploads/f1375cac-1988-4227-98e7-d4a89e68c1af.png"
+                alt="Pranavam Study Centre logo"
+                className="h-10 w-10"
+                loading="lazy"
+              />
+              <div>
+                <h2 className="text-xl font-bold">Pranavam Study Centre</h2>
+                <p className="text-sm text-background/70">Kerala-focused tutor marketplace</p>
+              </div>
             </div>
-            <p className="text-gray-300 mb-4 max-w-md">
-              Connecting passionate educators with eager learners across Kerala. 
-              Quality education delivered to your doorstep since 2016.
+            <p className="max-w-md text-sm leading-7 text-background/75">
+              കേരളത്തിലെ വിദ്യാർത്ഥികൾക്കും രക്ഷിതാക്കൾക്കും school tuition, music, drawing, skill-based learning എന്നിവയ്ക്കായി വിശ്വസ്തരായ അധ്യാപകരെ കണ്ടെത്താൻ സഹായിക്കുന്ന premium platform.
             </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-2 text-primary" />
-                <span className="text-gray-300">
-                  Elavoorkkonam, Vilappilsala-Kundamoozhi Temple Rd, near Green Valley International School, Vilappilsala, Kerala 695573
-                </span>
+            <div className="mt-5 space-y-3 text-sm text-background/75">
+              <div className="flex items-start gap-3">
+                <MapPin className="mt-1 h-4 w-4 shrink-0 text-background" />
+                <span>Elavoorkkonam, Vilappilsala-Kundamoozhi Temple Rd, near Green Valley International School, Vilappilsala, Kerala 695573</span>
               </div>
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-2 text-primary" />
-                <span className="text-gray-300">+91 94963 15903</span>
+              <div className="flex items-center gap-3">
+                <Phone className="h-4 w-4 shrink-0 text-background" />
+                <a href="tel:+919496315903" className="hover:text-background">+91 94963 15903</a>
               </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-2 text-primary" />
-                <span className="text-gray-300">pranavamonline@gmail.com</span>
+              <div className="flex items-center gap-3">
+                <Mail className="h-4 w-4 shrink-0 text-background" />
+                <a href="mailto:pranavamonline@gmail.com" className="hover:text-background">pranavamonline@gmail.com</a>
               </div>
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/students" className="text-gray-300 hover:text-white transition-colors">
-                  Find a Tutor
-                </Link>
-              </li>
-              <li>
-                <Link to="/tutors" className="text-gray-300 hover:text-white transition-colors">
-                  Join as Tutor
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
+            <h3 className="font-semibold text-background">Quick Links</h3>
+            <ul className="mt-4 space-y-3 text-sm text-background/75">
+              <li><Link to="/" className="hover:text-background">Home</Link></li>
+              <li><a href="#home-enquiry" className="hover:text-background">ക്ലാസുകൾക്കായി അന്വേഷിക്കാം</a></li>
+              <li><a href="#popular-categories" className="hover:text-background">Categories</a></li>
+              <li><Link to="/about" className="hover:text-background">About</Link></li>
+              <li><Link to="/contact" className="hover:text-background">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Services */}
           <div>
-            <h4 className="font-semibold mb-4">Our Services</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li>Home Tuition</li>
-              <li>Online Classes</li>
-              <li>Exam Preparation</li>
-              <li>Subject Specialization</li>
-              <li>Personalized Learning</li>
+            <h3 className="font-semibold text-background">Learning Areas</h3>
+            <ul className="mt-4 space-y-3 text-sm text-background/75">
+              <li>School Tuition</li>
+              <li>College Subjects</li>
+              <li>Violin & Music</li>
+              <li>Drawing</li>
+              <li>Programming</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2025 Pranavam Study Centre. All rights reserved.
-            </p>
-            <div className="mt-4 md:mt-0">
-              <Link 
-                to="/auth" 
-                className="text-gray-400 hover:text-white text-sm transition-colors"
-              >
-                Admin Login
-              </Link>
-            </div>
+        <div className="mt-10 flex flex-col gap-4 border-t border-background/10 pt-6 text-sm text-background/60 md:flex-row md:items-center md:justify-between">
+          <p>© 2025 Pranavam Study Centre. All rights reserved.</p>
+          <div className="flex flex-wrap gap-4">
+            <Link to="/student-login" className="hover:text-background">Student Login</Link>
+            <Link to="/tutor-login" className="hover:text-background">Tutor Login</Link>
+            <Link to="/admin-login" className="hover:text-background">Admin Login</Link>
           </div>
         </div>
       </div>

@@ -26,12 +26,12 @@ const trustItems = [
 
 const TrustSection = () => {
   return (
-    <section aria-labelledby="trust-title" className="bg-muted/40 py-16 sm:py-20">
+    <section id="trust" aria-labelledby="trust-title" className="bg-muted/40 py-16 sm:py-20">
       <div className="container">
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div className="max-w-xl">
             <p className="mb-3 inline-flex rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-              കേരളത്തിലെ വിദ്യാർത്ഥികളുടെയും രക്ഷിതാക്കളുടെയും വിശ്വസ്ത പഠന സഹായി
+              Trusted by Kerala families
             </p>
             <h2 id="trust-title" className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Why Kerala families trust us
