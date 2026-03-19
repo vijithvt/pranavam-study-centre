@@ -1,76 +1,42 @@
 import React from 'react';
-import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight, MessageCircleHeart } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 
 const ModernCTASection = () => {
   return (
-    <section className="relative py-20 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
-        <div className="absolute inset-0 opacity-50" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
-      </div>
-
-      {/* Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl float-animation"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/20 rounded-full blur-3xl float-animation" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-pink-400/20 rounded-full blur-2xl float-animation" style={{animationDelay: '4s'}}></div>
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Main Content */}
-        <div className="slide-in-left">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white mb-6 pulse-glow">
-            <Sparkles className="w-8 h-8" />
-          </div>
-          
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
-              Ready to Transform
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 bg-clip-text text-transparent">
-              Your Learning Journey?
-            </span>
-          </h2>
-          
-          <p className="text-xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed slide-in-right" style={{animationDelay: '0.3s'}}>
-            Join thousands of successful students who have achieved their academic goals with our expert tutors. 
-            Your success story starts here.
-          </p>
-        </div>
-
-        {/* Enhanced CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center bounce-in" style={{animationDelay: '0.6s'}}>
-          <a
-            href="#registration"
-            className="group relative inline-flex items-center px-10 py-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 font-bold rounded-full shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 transform hover:scale-105 hover-lift shimmer-effect"
-          >
-            <span className="text-lg">Start Learning Today</span>
-            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
-          </a>
-          
-          <button className="group relative inline-flex items-center px-10 py-5 bg-white/10 backdrop-blur-md text-white font-semibold rounded-full border border-white/20 shadow-2xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 hover-lift">
-            <span className="text-lg">Learn More</span>
-            <ChevronRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
-          </button>
-        </div>
-
-        {/* Trust Indicators */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto slide-in-left" style={{animationDelay: '0.9s'}}>
-          {[
-            { icon: '🏆', title: 'Award Winning', desc: 'Kerala\'s Best Tuition Service 2023' },
-            { icon: '⚡', title: 'Quick Matching', desc: 'Find your tutor within 24 hours' },
-            { icon: '🔒', title: 'Verified Tutors', desc: '100% background checked experts' }
-          ].map((item, index) => (
-            <div key={index} className="text-center p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover-lift group">
-              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-              <p className="text-white/80 text-sm">{item.desc}</p>
+    <section aria-labelledby="final-cta-title" className="bg-card py-16 sm:py-20">
+      <div className="container">
+        <div className="relative overflow-hidden rounded-[2.25rem] border border-border bg-primary px-6 py-10 text-primary-foreground shadow-[0_30px_100px_hsl(var(--primary)/0.25)] sm:px-10 sm:py-14 lg:px-14">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary-foreground)/0.18),transparent_35%),radial-gradient(circle_at_bottom_right,hsl(var(--accent)/0.18),transparent_35%)]" />
+          <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div className="max-w-2xl">
+              <p className="mb-3 inline-flex rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-semibold text-primary-foreground">
+                Start Learning Today
+              </p>
+              <h2 id="final-cta-title" className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                ഇന്ന് തന്നെ മികച്ച അധ്യാപകരെ കണ്ടെത്തൂ
+              </h2>
+              <p className="mt-4 text-base leading-7 text-primary-foreground/80 sm:text-lg">
+                സ്കൂൾ, കോളേജ്, സംഗീതം, drawing, skill-based learning — എന്ത് പഠിക്കാനും അനുയോജ്യമായ tutor match ചെയ്യാൻ ഞങ്ങൾ സഹായിക്കും.
+              </p>
             </div>
-          ))}
+
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+              <Button asChild size="lg" variant="secondary" className="h-12 rounded-xl px-6 text-base font-semibold text-secondary-foreground">
+                <a href="#home-enquiry">
+                  <MessageCircleHeart className="mr-2 h-5 w-5" />
+                  ഇപ്പോൾ തന്നെ അന്വേഷിക്കാം
+                </a>
+              </Button>
+              <Button asChild size="lg" className="h-12 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 px-6 text-base font-semibold text-primary-foreground hover:bg-primary-foreground/20">
+                <a href="#popular-categories">
+                  വിഷയങ്ങൾ പരിശോധിക്കുക
+                  <ArrowUpRight className="ml-2 h-5 w-5" />
+                </a>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
