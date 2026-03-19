@@ -1,80 +1,86 @@
-
 import React from 'react';
-import { Star, Quote } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+
+const testimonials = [
+  {
+    name: 'രമ്യാ നായർ',
+    role: 'Parent, Kochi',
+    quote:
+      'എന്റെ മകൾക്ക് violin teacher അന്വേഷിക്കുമ്പോൾ വളരെ confusion ഉണ്ടായിരുന്നു. ഇവിടെ enquiry നൽകിയതിന് ശേഷം വളരെ patient ആയൊരു teacher connect ചെയ്തു. ഇപ്പോൾ അവൾ സന്തോഷത്തോടെ practice ചെയ്യുന്നു.',
+  },
+  {
+    name: 'അനൂപ് രാജ്',
+    role: 'Parent, Thrissur',
+    quote:
+      'Maths tutor വേണ്ടിയിരുന്നു. location, timing എല്ലാം പരിഗണിച്ച് match ചെയ്ത് തന്നത് വലിയ സഹായമായി. communication വളരെ professional ആയിരുന്നു.',
+  },
+  {
+    name: 'ദേവിക എസ്',
+    role: 'Student, തിരുവനന്തപുരം',
+    quote:
+      'Online Carnatic classes തുടങ്ങാൻ ആഗ്രഹം ഉണ്ടായിരുന്നു. Malayalam-ൽ സംസാരിച്ച് ചോദിക്കാൻ കഴിഞ്ഞത് തന്നെ confidence നൽകി. നല്ല tutor കിട്ടി.',
+  },
+  {
+    name: 'ഷീന ജോസഫ്',
+    role: 'Parent, Kottayam',
+    quote:
+      'School tuition-ക്കും English support-നും enquiry നൽകി. കുടുംബമായി സംസാരിക്കാൻ എളുപ്പമായൊരു experience ആയിരുന്നു. trustworthy feel ചെയ്തു.',
+  },
+];
 
 const Testimonials = () => {
-  const testimonials = [
-    {
-      name: 'Priya Nair',
-      role: 'Parent, Kochi',
-      content: 'Pranavam helped us find an excellent Mathematics tutor for my daughter. Her grades improved significantly, and she now enjoys solving problems!',
-      rating: 5,
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b37c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-    },
-    {
-      name: 'Rahul Krishnan',
-      role: 'Student, Class 12',
-      content: 'The Physics tutor I got through Pranavam is amazing. Complex concepts are explained so clearly. Highly recommend for science students!',
-      rating: 5,
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-    },
-    {
-      name: 'Anjali Menon',
-      role: 'Parent, Thrissur',
-      content: 'Professional service with caring tutors. My son\'s English speaking skills have improved tremendously. Thank you Pranavam team!',
-      rating: 5,
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-    }
-  ];
-
   return (
-    <section className="py-20 backwater-gradient">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            What Our Families Say
+    <section aria-labelledby="testimonials-title" className="bg-primary py-16 text-primary-foreground sm:py-20">
+      <div className="container">
+        <div className="mx-auto mb-10 max-w-3xl text-center sm:mb-14">
+          <p className="mb-3 inline-flex rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-semibold text-primary-foreground">
+            Social proof
+          </p>
+          <h2 id="testimonials-title" className="text-3xl font-bold tracking-tight sm:text-4xl">
+            കേരളത്തിലെ കുടുംബങ്ങൾ പറയുന്നത്
           </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Real feedback from students and parents who found success with our tutors
+          <p className="mt-4 text-base leading-7 text-primary-foreground/80 sm:text-lg">
+            mobile swipe, keyboard navigation, clear readability — എല്ലാം ശ്രദ്ധിച്ച് രൂപകൽപ്പന ചെയ്ത testimonial experience.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl card-hover"
-            >
-              <div className="flex items-center mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              
-              <Quote className="h-8 w-8 text-primary mb-4" />
-              
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                "{testimonial.content}"
-              </p>
-              
-              <div className="flex items-center">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover mr-4"
-                />
-                <div>
-                  <h4 className="font-semibold text-gray-900">
-                    {testimonial.name}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    {testimonial.role}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <Carousel
+          opts={{ align: 'start', loop: true }}
+          className="mx-auto max-w-6xl px-3 sm:px-12"
+          aria-label="Testimonials from students and parents"
+        >
+          <CarouselContent>
+            {testimonials.map((testimonial) => (
+              <CarouselItem key={testimonial.name} className="md:basis-1/2 xl:basis-1/3">
+                <article className="flex h-full flex-col rounded-[1.75rem] bg-card p-6 text-card-foreground shadow-xl sm:p-7">
+                  <div className="mb-5 flex items-center justify-between">
+                    <div className="flex gap-1 text-warning">
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star key={index} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                    <Quote className="h-5 w-5 text-primary" />
+                  </div>
+                  <p className="flex-1 text-sm leading-7 text-muted-foreground">“{testimonial.quote}”</p>
+                  <footer className="mt-6 border-t border-border pt-4">
+                    <p className="font-semibold text-foreground">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  </footer>
+                </article>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-0 border-primary-foreground/15 bg-card text-card-foreground hover:bg-card" />
+          <CarouselNext className="right-0 border-primary-foreground/15 bg-card text-card-foreground hover:bg-card" />
+        </Carousel>
       </div>
     </section>
   );
