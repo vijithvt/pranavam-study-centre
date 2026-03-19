@@ -29,9 +29,9 @@ import TutorDashboard from "./pages/TutorDashboard"
 // Routes that use the main public layout (Navigation + Footer)
 function PublicLayout() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Navigation />
-      <main className="flex-1">
+      <div className="flex-1">
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -60,7 +60,7 @@ function PublicLayout() {
             <Route path="*" element={<div className="p-8 text-center text-destructive">Page Not Found</div>} />
           </Routes>
         </Suspense>
-      </main>
+      </div>
       <Footer />
     </div>
   );

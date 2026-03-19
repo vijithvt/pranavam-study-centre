@@ -88,7 +88,7 @@ const PopularCategories = () => {
                 key={category.english}
                 type="button"
                 onClick={() => handleCategoryClick(category.english)}
-                className="group rounded-[1.75rem] border border-border bg-card p-5 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:translate-y-0 motion-reduce:transform-none sm:p-6"
+                className="group rounded-[1.75rem] border border-border bg-card p-5 text-left shadow-sm transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:translate-y-0 motion-reduce:transform-none sm:p-6"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${category.accent}`}>
