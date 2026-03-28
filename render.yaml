@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: pranavam-study-centre
+    runtime: static
+    buildCommand: bun install && bun run build
+    publishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20
